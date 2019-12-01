@@ -40,7 +40,7 @@ public class Day01Test {
 //        which requires no further fuel.
 //        So, the total fuel required for a module of mass 1969 is
 //        654 + 216 + 70 + 21 + 5 = 966.
-        Assert.assertEquals(966, fuelCalculationService.calculateModuleFuelExpert(1969));
+        Assert.assertEquals(966, fuelCalculationService.calculateModuleFuel(1969));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class Day01Test {
     {
 //        The fuel required by a module of mass 100756 and its fuel is:
 //        33583 + 11192 + 3728 + 1240 + 411 + 135 + 43 + 12 + 2 = 50346.
-        Assert.assertEquals(50346, fuelCalculationService.calculateModuleFuelExpert(100756));
+        Assert.assertEquals(50346, fuelCalculationService.calculateModuleFuel(100756));
     }
 
 

@@ -20,16 +20,6 @@ public class FuelCalculationService {
         loadInputs(pathToFile);
     }
 
-    public Integer calculateTotalFuelSimple() throws Exception {
-        int totalFuel = 0;
-
-        for (Integer moduleMass : moduleMasses) {
-            Integer thisFuel = calculateModuleFuelSimple(moduleMass);
-            totalFuel += thisFuel;
-        }
-        return totalFuel;
-    }
-
     public int calculateModuleFuelSimple(int moduleMass) {
 //        Fuel required to launch a given module is based on its mass.
 //        Specifically, to find the fuel required for a module, take its mass,
@@ -39,18 +29,7 @@ public class FuelCalculationService {
         return moduleFuel;
     }
 
-    public Integer calculateTotalFuelExpert() throws Exception {
-        int totalFuel = 0;
-
-        for (Integer moduleMass : moduleMasses) {
-            Integer thisFuel = calculateModuleFuelExpert(moduleMass);
-            totalFuel += thisFuel;
-        }
-        return totalFuel;
-    }
-
-    public int calculateModuleFuelExpert(int moduleMass) {
-        int moduleFuel = 0;
+    public int calculateModuleFuel(int moduleMass) {
 //        Fuel itself requires fuel just like a module - take its mass, divide by three,
 //        round down, and subtract 2. However, that fuel also requires fuel, and that fuel
 //        requires fuel, and so on. Any mass that would require negative fuel should instead
@@ -62,34 +41,49 @@ public class FuelCalculationService {
 //        the fuel amount you just calculated as the input mass and repeat the process,
 //        continuing until a fuel requirement is zero or negative.
 
-        int massUnaccountedFor = moduleMass;
-        int fuelRequired = 0;
-        while (true) {
-        // Do this until the amount of fuel required is zero or less
-            fuelRequired = calculateModuleFuelSimple(massUnaccountedFor);
-            if (fuelRequired > 0) {
-                // If this module still  may) require fuel
-                moduleFuel += fuelRequired;
-                massUnaccountedFor = fuelRequired;
-            }
-            else {
-                // We're done
-                break;
-            }
+        // Calculate the fuel required for this mass
+        int moduleFuel = calculateModuleFuelSimple(moduleMass);
+
+        // If the mass of fuel is >0, add in the fuel required for THAT too
+        if (moduleFuel > 0) {
+            moduleFuel += calculateModuleFuel(moduleFuel);
+            return moduleFuel;
+        } else {
+            // No more fuel required, stop recursing.
+            return 0;
         }
-        return moduleFuel;
+    }
+
+    public Integer calculateTotalFuelSimple() throws Exception {
+        int totalFuel = 0;
+
+        for (Integer moduleMass : moduleMasses) {
+            Integer thisFuel = calculateModuleFuelSimple(moduleMass);
+            totalFuel += thisFuel;
+        }
+        return totalFuel;
+    }
+
+    public Integer calculateTotalFuelExpert() throws Exception {
+        int totalFuel = 0;
+
+        for (Integer moduleMass : moduleMasses) {
+            Integer thisFuel = calculateModuleFuel(moduleMass);
+            totalFuel += thisFuel;
+        }
+        return totalFuel;
     }
 
     private void loadInputs(String pathToFile) {
         moduleMasses.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
-            Integer nextFrequency = 0;
+            Integer nextInt = 0;
             while ((line = br.readLine()) != null) {
                 // process the line.
-                nextFrequency = Integer.parseInt(line);
+                nextInt = Integer.parseInt(line);
 
-                moduleMasses.add(nextFrequency);
+                moduleMasses.add(nextInt);
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
