@@ -10,7 +10,6 @@ public class FuelCalculationService {
     private final String DEFAULT_INPUTS_PATH = "data/day01/input.txt";
 
     private ArrayList<Integer> moduleMasses = new ArrayList<>();
-    private HashMap<Integer, Integer> frequencyHistogram = new HashMap<>();
 
     public FuelCalculationService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -59,6 +58,7 @@ public class FuelCalculationService {
 
         for (Integer moduleMass : moduleMasses) {
             Integer thisFuel = calculateModuleFuelSimple(moduleMass);
+//            System.out.println(moduleMass + "\t"+thisFuel);
             totalFuel += thisFuel;
         }
         return totalFuel;

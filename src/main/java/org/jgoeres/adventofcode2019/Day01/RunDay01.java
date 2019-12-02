@@ -4,7 +4,8 @@ package org.jgoeres.adventofcode2019.Day01;
 public abstract class RunDay01 {
     static String pathToInputs = "data/day01/input.txt";
 //    static FuelCalculationService fuelCalculationService = new FuelCalculationService(pathToInputs);
-    static FuelCalculationService fuelCalculationService = new FuelCalculationService();
+//    static FuelCalculationService fuelCalculationService = new FuelCalculationService();
+    static FuelCalculationService fuelCalculationService = new FuelCalculationService("data/day01/input-fab.txt");
 
     static Integer totalFuelRequired = null;
 
