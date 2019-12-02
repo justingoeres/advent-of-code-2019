@@ -7,7 +7,7 @@ public abstract class RunDay02 {
     static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();
 
 
-    public static void problem2A() {
+    public static int problem2A() {
         // Day 2A
         System.out.println("=== DAY 2A ===");
 
@@ -18,12 +18,15 @@ public abstract class RunDay02 {
         // Run it
         intCodeProcessorService.runToCompletion();
 
-        System.out.println("Day 2A: Position 0 Value at Halt = " + intCodeProcessorService.getValueAtPosition(0));
+        int result = intCodeProcessorService.getValueAtPosition(0);
+        System.out.println("Day 2A: Position 0 Value at Halt = " + result);
 //        Day 2A: Position 0 Value at Halt = 4138687
 //        Time elapsed:	2 ms
+
+        return result;
     }
 
-    public static void problem2B() {
+    public static int problem2B() {
         // Day 2B
         System.out.println("=== DAY 2B ===");
 
@@ -56,10 +59,13 @@ public abstract class RunDay02 {
             }
         }
 
-        System.out.println("Day 2B: Final result = " + (100 * noun + verb));
+        result = 100 * noun + verb;
+        System.out.println("Day 2B: Final result = " + result);
 //        Target value 19690720 found for noun = 66, verb = 35
 //        Day 2B: Final result = 6635
 //        Time elapsed:	21 ms
+
+        return result;
     }
 
     private static void setIntCodeNounAndVerb(int noun, int verb) {

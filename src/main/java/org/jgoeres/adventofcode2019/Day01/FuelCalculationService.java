@@ -3,7 +3,6 @@ package org.jgoeres.adventofcode2019.Day01;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class FuelCalculationService {
 
@@ -53,7 +52,7 @@ public class FuelCalculationService {
         }
     }
 
-    public Integer calculateTotalFuelSimple() throws Exception {
+    public int calculateTotalFuelSimple() throws Exception {
         int totalFuel = 0;
 
         for (Integer moduleMass : moduleMasses) {
@@ -64,7 +63,7 @@ public class FuelCalculationService {
         return totalFuel;
     }
 
-    public Integer calculateTotalFuelExpert() throws Exception {
+    public int calculateTotalFuelExpert() throws Exception {
         int totalFuel = 0;
 
         for (Integer moduleMass : moduleMasses) {

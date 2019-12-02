@@ -3,13 +3,13 @@ package org.jgoeres.adventofcode2019.Day01;
 
 public abstract class RunDay01 {
     static String pathToInputs = "data/day01/input.txt";
-//    static FuelCalculationService fuelCalculationService = new FuelCalculationService(pathToInputs);
-//    static FuelCalculationService fuelCalculationService = new FuelCalculationService();
-    static FuelCalculationService fuelCalculationService = new FuelCalculationService("data/day01/input-fab.txt");
+    //    static FuelCalculationService fuelCalculationService = new FuelCalculationService(pathToInputs);
+    static FuelCalculationService fuelCalculationService = new FuelCalculationService();
+//    static FuelCalculationService fuelCalculationService = new FuelCalculationService("data/day01/input-fab.txt");
 
     static Integer totalFuelRequired = null;
 
-    public static void problem1A() {
+    public static int problem1A() {
         // Day 1A
         System.out.println("=== DAY 1A ===");
 
@@ -22,9 +22,11 @@ public abstract class RunDay01 {
         System.out.println("Day 1A: Total Fuel Required = " + totalFuelRequired);
 //        Day 1A: Total Fuel Required = 3412207
 //        Time elapsed:	3 ms
+
+        return totalFuelRequired;
     }
 
-    public static void problem1B() {
+    public static int problem1B() {
         // Day 1B
         System.out.println("=== DAY 1B ===");
 
@@ -35,8 +37,10 @@ public abstract class RunDay01 {
         }
 
         System.out.println("Day 1B: Total Fuel Required = " + totalFuelRequired);
+//        Day 2A: Position 0 Value at Halt = 5115436
+//        Time elapsed:	2 ms
 
-        // Answer: 655 after 138 passes
+        return totalFuelRequired;
     }
 }
 
