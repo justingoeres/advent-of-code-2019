@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode2019;
 
 import org.jgoeres.adventofcode2019.Day01.RunDay01;
+import org.jgoeres.adventofcode2019.Day02.RunDay02;
 
 /**
  * Hello world!
@@ -55,22 +56,22 @@ public class App {
 
             blankLine();
         }
-//
-//        if (RUN_DAY_2 || RUN_ALL) {
-//            setStartTime();
-//            RunDay2.problem2A();
-//            printElapsedTime();
-//
-//            blankLine();
-//
-////            DAY 2B
-//            setStartTime();
-//            RunDay2.problem2B();
-//            printElapsedTime();
-//
-//            blankLine();
-//        }
-//
+
+        if (RUN_DAY_2 || RUN_ALL) {
+            setStartTime();
+            RunDay02.problem2A();
+            printElapsedTime();
+
+            blankLine();
+
+//            DAY 2B
+            setStartTime();
+            RunDay02.problem2B();
+            printElapsedTime();
+
+            blankLine();
+        }
+
 //        if (RUN_DAY_3 || RUN_ALL) {
 //            setStartTime();
 //            RunDay3.problem3A();
