@@ -8,15 +8,20 @@ public class IntCodeProcessorService {
 
     private final String DEFAULT_INPUTS_PATH = "data/day02/input.txt";
 
-    private ArrayList<Integer> programCode = new ArrayList<>();
+    private String inputFile = DEFAULT_INPUTS_PATH;
+    private ArrayList<Integer> programCodeOriginal = new ArrayList<>();;
+    private ArrayList<Integer> programCode;
+
     private int pc = 0; // program counter
 
     public IntCodeProcessorService() {
-        loadInputs(DEFAULT_INPUTS_PATH);
+        // Load the inputs from the default file
+        loadInputs();
     }
 
     public IntCodeProcessorService(String pathToFile) {
-        loadInputs(pathToFile);
+        inputFile = pathToFile;
+        loadInputs();
     }
 
     public void runToCompletion() {
@@ -70,17 +75,26 @@ public class IntCodeProcessorService {
         return programCode.get(position);
     }
 
-    private void loadInputs(String pathToFile) {
+    public void reset() {
+        pc = 0;
+
+        // Reset by restoring to the original clean code.
+        programCode = (ArrayList<Integer>) programCodeOriginal.clone();
+    }
+
+    private void loadInputs() {
         String line;
-        programCode.clear();
-        try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
+        programCodeOriginal.clear();
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
                 // Add all the codes from this line to the programCode list
                 for (String element : data) {
-                    programCode.add(Integer.parseInt(element));
+                    programCodeOriginal.add(Integer.parseInt(element));
                 }
             }
+            // Initialize the programCode from what we just loaded.
+            reset();
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
