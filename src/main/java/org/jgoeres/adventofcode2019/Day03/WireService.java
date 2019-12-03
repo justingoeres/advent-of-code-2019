@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
+import com.google.common.collect.Range;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -16,7 +18,7 @@ public class WireService {
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
 
     private ArrayList<Integer> inputList = new ArrayList<>();
-    private ArrayList<List<XYPoint>> wires = new ArrayList<>();
+    private ArrayList<List<WireSegment>> wires = new ArrayList<>();
 
     public WireService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -39,6 +41,7 @@ public class WireService {
 
             }
         }
+        return null;
     }
 
     private void loadInputs(String pathToFile) {
@@ -55,10 +58,8 @@ public class WireService {
                 Pattern pattern = Pattern.compile("([UDRL])(\\d+)");
                 String match;
 
-                ArrayList<XYPoint> junctionPoints = new ArrayList<>();
+                ArrayList<WireSegment> wireSegments = new ArrayList<>();
                 // Start at the origin and build out the list of segments in this wire.
-                junctionPoints.add(origin);
-
                 XYPoint p1 = origin;
                 while ((match = scanner.findInLine(pattern)) != null) {
 //                    System.out.println(match);
@@ -71,80 +72,83 @@ public class WireService {
                         Integer distance = Integer.parseInt(matcher.group(2));
 
 //                        System.out.println(matcher.group(0) + "\t" + direction + "\t" + distance);
-                        XYPoint nextJunction = endPointFromDirectionAndLength(p1, direction, distance);
-                        junctionPoints.add(nextJunction);
+
+                        // Create this wire segment
+                        WireSegment wireSegment = new WireSegment(direction, distance, p1);
+
+                        // Add it to the segment list of the current wire
+                        wireSegments.add(wireSegment);
 
                         // Update the origin point for the next segment.
-                        p1 = nextJunction;
+                        p1 = wireSegment.getP2();
                     }
                 }
                 // Add this wire to the set of all wires.
-                wires.add(junctionPoints);
+                wires.add(wireSegments);
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
     }
 
-    private XYPoint endPointFromDirectionAndLength(XYPoint p1, Direction direction, int length) {
-        int x2 = 0;
-        int y2 = 0;
-        switch (direction) {
-            case UP:
-                x2 = p1.getX();
-                y2 = p1.getY() + length;
-                break;
-            case RIGHT:
-                x2 = p1.getX() + length;
-                y2 = p1.getY();
-                break;
-            case DOWN:
-                x2 = p1.getX();
-                y2 = p1.getY() - length;
-                break;
-            case LEFT:
-                x2 = p1.getX() - length;
-                y2 = p1.getY();
-                break;
-        }
-        return new XYPoint(x2, y2);
-    }
+    public XYPoint findIntersection(WireSegment w1, WireSegment w2) {
+        final XYPoint NO_INTERSECTION = null;
 
-    private XYPoint findIntersection(XYPoint p1a, XYPoint p1b, XYPoint p2a, XYPoint p2b) {
-        XYPoint NO_INTERSECTION = null;
-
-        if (isVertical(p1a, p1b) && isVertical(p2a, p2b)) {
+        Integer lowestIntersection;
+        if (isVertical(w1) && isVertical(w2)) {
             // If both are vertical
-            if (p1a.getX() != p2a.getX()) {
+            if (w1.getP1().getX() != w2.getP1().getX()) {
                 // and their x-coords aren't equal, then no intersection
                 return NO_INTERSECTION;
-            } else if (overlapping(p1a.getX(), p1b.getX(), p2a.getX(), p2b.getX())) {
-                // If they overlap, find the second-closest endpoint – that will be the closest intersection point to the origin
-                
-
+            } else if ((lowestIntersection = overlapping(w1.getP1().getY(), w1.getP2().getY(), w2.getP1().getY(), w2.getP2().getY())) != null) {
+                // if they overlap, return the closest overlap point
+                System.out.println(lowestIntersection);
+                return new XYPoint(w1.getP1().getX(), lowestIntersection);
             }
+        } else if (isHorizontal(w1) && isHorizontal(w2)) {
+            // If both are horizontal
+            if (w1.getP1().getY() != w2.getP1().getY()) {
+                // and their x-coords aren't equal, then no intersection
+                return NO_INTERSECTION;
+            } else if ((lowestIntersection = overlapping(w1.getP1().getX(), w1.getP2().getX(), w2.getP1().getX(), w2.getP2().getX())) != null) {
+                // if they overlap, return the closest overlap point
+                System.out.println(lowestIntersection);
+                return new XYPoint(lowestIntersection, w1.getP1().getY());
+            }
+        } else {
+            // The two segments are different orientations; let's see if they intersect!
+            // TODO: IMPLEMENT INTERSECTION CHECK HERE
         }
 
+        return null;
     }
 
-    private boolean isVertical(XYPoint p1, XYPoint p2) {
-        return (p1.getX() == p2.getX());
+    private boolean isVertical(WireSegment wireSegment) {
+        return (wireSegment.getP1().getX() == wireSegment.getP2().getX());
     }
 
-    private boolean isHorizontal(XYPoint p1, XYPoint p2) {
-        return (p1.getX() == p2.getX());
+    private boolean isHorizontal(WireSegment wireSegment) {
+        return (wireSegment.getP1().getY() == wireSegment.getP2().getY());
     }
 
-    private boolean overlapping(int x1, int x2, int x3, int x4) {
+    private Integer overlapping(int x1, int x2, int x3, int x4) {
         // These segments overlap if x3 is between x1 and x2
         //                      or if x4 is between x1 and x2
-        if ((x3 >= x1 && x3 <= x2) ||
-                (x3 >= x2 && x3 <= x1) ||
-                (x4 >= x1 && x4 <= x2) ||
-                (x4 >= x2 && x4 <= x1)) {
-            return true;
+        Range<Integer> w1Range = Range.closed(Math.min(x1, x2), Math.max(x1, x2));
+        Range<Integer> w2Range = Range.closed(Math.min(x3, x4), Math.max(x3, x4));
+
+        // Do these two segments overlap?
+        Range<Integer> intersection = w1Range.intersection(w2Range);
+        if (intersection != null) {
+            if (Math.abs(intersection.lowerEndpoint()) < Math.abs(intersection.upperEndpoint())) {
+                return intersection.lowerEndpoint();
+            } else {
+                return intersection.upperEndpoint();
+            }
+        } else {
+            return null;
         }
-        return false;
     }
+
 
 }

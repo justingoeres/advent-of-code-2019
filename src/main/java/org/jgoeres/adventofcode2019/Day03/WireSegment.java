@@ -6,12 +6,12 @@ public class WireSegment {
     private XYPoint p1;
     private XYPoint p2;
 
-    public WireSegment(Direction direction, Integer length, int x0, int y0) {
+    public WireSegment(Direction direction, Integer length, XYPoint p1) {
         this.direction = direction;
         this.length = length;
 
-        // Set the origin and endpoint of the segment
-        this.p1 = new XYPoint(x0, y0);
+        this.p1 = p1;
+        // Calculate the endpoint of the segment
         this.p2 = calculateP2();
     }
 
@@ -37,5 +37,21 @@ public class WireSegment {
                 break;
         }
         return new XYPoint(x, y);
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public XYPoint getP1() {
+        return p1;
+    }
+
+    public XYPoint getP2() {
+        return p2;
     }
 }
