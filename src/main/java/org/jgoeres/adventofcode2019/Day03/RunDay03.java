@@ -19,8 +19,8 @@ public abstract class RunDay03 {
 
         System.out.println("Day " + XX + "A: Distance to closest intersection = " + result);
 
-//        Day XXA: Answer =
-//        Time elapsed:	xxx ms
+//        Day 3A: Distance to closest intersection = 245
+//        Time elapsed:	138 ms
 
         return result;
     }
@@ -35,12 +35,12 @@ public abstract class RunDay03 {
         // Day XXB
         System.out.println("=== DAY " + XX + "B ===");
 
-        int result = 0;
+        int result = wireService.findLeastIntersectionSteps();
 
-        System.out.println("Day " + XX + "B: Answer = " + result);
+        System.out.println("Day " + XX + "B: Least steps to intersection = " + result);
 
-//        Day XXB: Answer =
-//        Time elapsed:	xxx ms
+//        Day 3B: Least steps to intersection = 48262
+//        Time elapsed:	27 ms
 
         return result;
     }

@@ -13,15 +13,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+@SuppressWarnings("ConstantConditions")
 public class WireService {
     private final String XX = "03";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
     private final XYPoint NO_INTERSECTION = null;
     private final XYPoint ORIGIN = new XYPoint(0, 0);
 
-
-    private ArrayList<Integer> inputList = new ArrayList<>();
     private ArrayList<List<WireSegment>> wires = new ArrayList<>();
+    private ArrayList<XYPoint> allIntersections = new ArrayList<>();
 
     public WireService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -33,6 +33,7 @@ public class WireService {
 
     public XYPoint findClosestIntersection(XYPoint reference) {
         // Iterate through all the wire combinations to find the closest intersection to the origin
+        // Also build a list of all intersections found, for use in Part B.
 
         int minDistance = Integer.MAX_VALUE;
         XYPoint minPoint = null;
@@ -41,13 +42,16 @@ public class WireService {
         List<WireSegment> wire1 = wires.get(0);
         List<WireSegment> wire2 = wires.get(1);
         for (int i = 0; i < wire1.size(); i++) {
-            // Check all wire2 segments that haven't been checked against this wire1 yet (don't repeat old combinations)
-            for (int j = i; j < wire2.size(); j++) {
+            // Check all wire2 segments against each wire1 segment
+            for (int j = 0; j < wire2.size(); j++) {
                 // Do these two segments intersect?
                 XYPoint intersection = findIntersection(wire1.get(i), wire2.get(j));
 
                 if (intersection != null && isNotOrigin(intersection)) {
                     // If there's an intersection
+                    // Add it to the list of all intersections
+                    allIntersections.add(intersection);
+
                     // Calculate its manhattan distance from the origin.
                     int manhattanDistance = manhattanDistance(intersection, reference);
                     if (manhattanDistance < minDistance) {
@@ -64,8 +68,33 @@ public class WireService {
         return minPoint;
     }
 
+    public int findLeastIntersectionSteps() {
+        // Iterate over all the intersection points found previously.
+        // For each one, calculate the along-the-wires distance to get to it.
+        // Find the smallest of those distances.
+        int minDistance = Integer.MAX_VALUE;
+        List<WireSegment> wire1 = wires.get(0);
+        List<WireSegment> wire2 = wires.get(1);
+
+        for (XYPoint intersection : allIntersections) {
+            // Check each intersection
+            int wire1Distance = wireDistanceToPoint(intersection, wire1);
+            int wire2Distance = wireDistanceToPoint(intersection, wire2);
+
+            int totalDistance = wire1Distance + wire2Distance;
+
+            if (totalDistance < minDistance) {
+//                System.out.println("New minimum distance:\t(" + intersection.getX() + ", " + intersection.getY() + ")" +
+//                        "\tDistances: " + wire1Distance + " + " + wire2Distance + " = " + totalDistance);
+                minDistance = totalDistance;
+
+            }
+
+        }
+        return minDistance;
+    }
+
     private void loadInputs(String pathToFile) {
-        inputList.clear();
         wires.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
@@ -133,7 +162,8 @@ public class WireService {
             }
         } else {
             // The two segments are different orientations; let's see if they intersect!
-            WireSegment hSegment, vSegment;
+            WireSegment hSegment;
+            WireSegment vSegment;
             if (isHorizontal(w1)) {
                 // w1 is horizontal, w2 is vertical
                 hSegment = w1;
@@ -155,13 +185,15 @@ public class WireService {
         //      AND
         //      The y-component of the horizontal segment is in-range of the vertical segment
 
-        int hMin = Math.min(hSegment.getP1().getX(), hSegment.getP2().getX());
-        int hMax = Math.max(hSegment.getP1().getX(), hSegment.getP2().getX());
-        Range<Integer> hRange = Range.closed(hMin, hMax);
+//        int hMin = Math.min(hSegment.getP1().getX(), hSegment.getP2().getX());
+//        int hMax = Math.max(hSegment.getP1().getX(), hSegment.getP2().getX());
+//        Range<Integer> hRange = Range.closed(hMin, hMax);
+        Range<Integer> hRange = rangeFromWireSegment(hSegment);
 
-        int vMin = Math.min(vSegment.getP1().getY(), vSegment.getP2().getY());
-        int vMax = Math.max(vSegment.getP1().getY(), vSegment.getP2().getY());
-        Range<Integer> vRange = Range.closed(vMin, vMax);
+//        int vMin = Math.min(vSegment.getP1().getY(), vSegment.getP2().getY());
+//        int vMax = Math.max(vSegment.getP1().getY(), vSegment.getP2().getY());
+//        Range<Integer> vRange = Range.closed(vMin, vMax);
+        Range<Integer> vRange = rangeFromWireSegment(vSegment);
 
         if ((hRange.contains(vSegment.getP1().getX())) &&
                 vRange.contains(hSegment.getP1().getY())) {
@@ -173,7 +205,6 @@ public class WireService {
         } else {
             return NO_INTERSECTION;
         }
-
     }
 
     private boolean isVertical(WireSegment wireSegment) {
@@ -205,6 +236,50 @@ public class WireService {
         }
     }
 
+    public int wireDistanceToPoint(XYPoint p1, List<WireSegment> wire) {
+        // Walk along the given wire to find the specified point.
+        int totalDistance = 0;
+        for (WireSegment wireSegment : wire) {
+            if (segmentContainsPoint(p1, wireSegment)) {
+                // We found the segment that contains this intersection
+                // The distance to the point is just the manhattan distance
+                // from the current segment origin to the point.
+                int partialDistanceX = manhattanDistance(p1, wireSegment.getP1());
+                totalDistance += partialDistanceX;
+
+                // Break out of the loop, since we found the intersection point
+                break;
+            } else {
+                // This segment does not contain the target point,
+                // so just accumulate the length and keep going
+                totalDistance += wireSegment.getLength();
+            }
+        }
+        return totalDistance;
+    }
+
+    private boolean segmentContainsPoint(XYPoint p1, WireSegment wireSegment) {
+        Range<Integer> segmentRange = rangeFromWireSegment(wireSegment);
+        // Does this segment contain the target point?
+        boolean segmentContainsPoint = false;
+        switch (wireSegment.getDirection()) {
+            case UP:
+            case DOWN:
+                // Apply the range to the y-coord of the point
+                segmentContainsPoint = ((wireSegment.getP1().getX() == p1.getX()) &&
+                        (segmentRange.contains(p1.getY())));
+                break;
+            case LEFT:
+            case RIGHT:
+                // Apply the range to the x-coord of the point
+                segmentContainsPoint = ((wireSegment.getP1().getY() == p1.getY()) &&
+                        (segmentRange.contains(p1.getX())));
+                break;
+        }
+        return segmentContainsPoint;
+    }
+
+
     private boolean isNotOrigin(XYPoint p1) {
         return ((p1.getX() != ORIGIN.getX()) || (
                 p1.getY() != ORIGIN.getY()));
@@ -215,6 +290,26 @@ public class WireService {
         int yDistance = Math.abs(p0.getY() - p1.getY());
 
         return (xDistance + yDistance);
+    }
+
+    private Range<Integer> rangeFromWireSegment(WireSegment wireSegment) {
+        int endpt1 = 0;
+        int endpt2 = 0;
+        switch (wireSegment.getDirection()) {
+            case UP:
+            case DOWN:
+                // Use the Y-coords of the segment to make the range
+                endpt1 = wireSegment.getP1().getY();
+                endpt2 = wireSegment.getP2().getY();
+                break;
+            case LEFT:
+            case RIGHT:
+                // Use the Y-coords of the segment to make the range
+                endpt1 = wireSegment.getP1().getX();
+                endpt2 = wireSegment.getP2().getX();
+                break;
+        }
+        return Range.closed(Math.min(endpt1, endpt2), Math.max(endpt1, endpt2));  // Ranges must have the "lower" number first
     }
 
 }
