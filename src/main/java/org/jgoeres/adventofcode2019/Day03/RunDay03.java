@@ -17,7 +17,7 @@ public abstract class RunDay03 {
         XYPoint closestIntersection = wireService.findClosestIntersection(ORIGIN);
         int result = wireService.manhattanDistance(closestIntersection,ORIGIN);
 
-        System.out.println("Day " + XX + "A: Answer = " + result);
+        System.out.println("Day " + XX + "A: Distance to closest intersection = " + result);
 
 //        Day XXA: Answer =
 //        Time elapsed:	xxx ms

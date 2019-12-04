@@ -53,10 +53,10 @@ public class WireService {
                     if (manhattanDistance < minDistance) {
                         minDistance = manhattanDistance;
                         minPoint = intersection;
-                        System.out.println("New minimum distance:\twire1[" + i + "]" +
-                                "\twire2[" + j + "]" +
-                                "\t(" + minPoint.getX() + ", " + minPoint.getY() + ")" +
-                                "\tDistance: " + minDistance);
+//                        System.out.println("New minimum distance:\twire1[" + i + "]" +
+//                                "\twire2[" + j + "]" +
+//                                "\t(" + minPoint.getX() + ", " + minPoint.getY() + ")" +
+//                                "\tDistance: " + minDistance);
                     }
                 }
             }
@@ -120,7 +120,6 @@ public class WireService {
                 return NO_INTERSECTION;
             } else if ((lowestIntersection = overlapping(w1.getP1().getY(), w1.getP2().getY(), w2.getP1().getY(), w2.getP2().getY())) != null) {
                 // if they overlap, return the closest overlap point
-                System.out.println(lowestIntersection);
                 return new XYPoint(w1.getP1().getX(), lowestIntersection);
             }
         } else if (isHorizontal(w1) && isHorizontal(w2)) {
@@ -130,7 +129,6 @@ public class WireService {
                 return NO_INTERSECTION;
             } else if ((lowestIntersection = overlapping(w1.getP1().getX(), w1.getP2().getX(), w2.getP1().getX(), w2.getP2().getX())) != null) {
                 // if they overlap, return the closest overlap point
-                System.out.println(lowestIntersection);
                 return new XYPoint(lowestIntersection, w1.getP1().getY());
             }
         } else {
