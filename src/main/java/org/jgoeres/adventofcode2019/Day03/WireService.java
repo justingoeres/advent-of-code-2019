@@ -16,6 +16,8 @@ import java.util.stream.Stream;
 public class WireService {
     private final String XX = "03";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
+    private final XYPoint NO_INTERSECTION = null;
+
 
     private ArrayList<Integer> inputList = new ArrayList<>();
     private ArrayList<List<WireSegment>> wires = new ArrayList<>();
@@ -92,8 +94,6 @@ public class WireService {
     }
 
     public XYPoint findIntersection(WireSegment w1, WireSegment w2) {
-        final XYPoint NO_INTERSECTION = null;
-
         Integer lowestIntersection;
         if (isVertical(w1) && isVertical(w2)) {
             // If both are vertical
@@ -117,10 +117,47 @@ public class WireService {
             }
         } else {
             // The two segments are different orientations; let's see if they intersect!
-            // TODO: IMPLEMENT INTERSECTION CHECK HERE
+            WireSegment hSegment, vSegment;
+            if (isHorizontal(w1)) {
+                // w1 is horizontal, w2 is vertical
+                hSegment = w1;
+                vSegment = w2;
+            } else {
+                // w2 is vertical, w1 is horizontal
+                hSegment = w2;
+                vSegment = w1;
+            }
+            return orthoIntersection(hSegment, vSegment);
+        }
+        // If we get here, there's no intersection point
+        return NO_INTERSECTION;
+    }
+
+    private XYPoint orthoIntersection(WireSegment hSegment, WireSegment vSegment) {
+        // The two segments intersect if:
+        //      The x-component of the vertical segment is in-range of the horizontal segment
+        //      AND
+        //      The y-component of the horizontal segment is in-range of the vertical segment
+
+        int hMin = Math.min(hSegment.getP1().getX(), hSegment.getP2().getX());
+        int hMax = Math.max(hSegment.getP1().getX(), hSegment.getP2().getX());
+        Range<Integer> hRange = Range.closed(hMin, hMax);
+
+        int vMin = Math.min(vSegment.getP1().getY(), vSegment.getP2().getY());
+        int vMax = Math.max(vSegment.getP1().getY(), vSegment.getP2().getY());
+        Range<Integer> vRange = Range.closed(vMin, vMax);
+
+        if ((hRange.contains(vSegment.getP1().getX())) &&
+                vRange.contains(hSegment.getP1().getY())) {
+            // These segments intersect!
+            // The intersection point is at the x-position of the *vertical* segment
+            //  and the y-position of the *horizontal* segment
+            XYPoint intersection = new XYPoint(vSegment.getP1().getX(), hSegment.getP1().getY());
+            return intersection;
+        } else {
+            return NO_INTERSECTION;
         }
 
-        return null;
     }
 
     private boolean isVertical(WireSegment wireSegment) {
@@ -134,12 +171,14 @@ public class WireService {
     private Integer overlapping(int x1, int x2, int x3, int x4) {
         // These segments overlap if x3 is between x1 and x2
         //                      or if x4 is between x1 and x2
-        Range<Integer> w1Range = Range.closed(Math.min(x1, x2), Math.max(x1, x2));
+        Range<Integer> w1Range = Range.closed(Math.min(x1, x2), Math.max(x1, x2));  // Ranges must have the "lower" number first
         Range<Integer> w2Range = Range.closed(Math.min(x3, x4), Math.max(x3, x4));
 
         // Do these two segments overlap?
         Range<Integer> intersection = w1Range.intersection(w2Range);
         if (intersection != null) {
+            // If the segments overlap, find the end of the overlap area
+            // that is closest to zero (has the smallest absolute value)
             if (Math.abs(intersection.lowerEndpoint()) < Math.abs(intersection.upperEndpoint())) {
                 return intersection.lowerEndpoint();
             } else {
