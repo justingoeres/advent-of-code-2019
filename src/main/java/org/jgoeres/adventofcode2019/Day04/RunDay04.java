@@ -6,15 +6,15 @@ public abstract class RunDay04 {
 
     static String pathToInputs = "data/day" + YY + "/input.txt";
 
-    static Day04Service day04Service = new Day04Service();
+    static SecureContainerService secureContainerService = new SecureContainerService();
 
     public static int problem4A() {
         // Day 4A
         System.out.println("=== DAY " + XX + "A ===");
 
-        int result = 0;
+        int result = secureContainerService.countValidPasswords();
 
-        System.out.println("Day " + XX + "A: Answer = " + result);
+        System.out.println("Day " + XX + "A: # of valid passwords in range = " + result);
 
 //        Day 4A: Answer =
 //        Time elapsed:	xxx ms
