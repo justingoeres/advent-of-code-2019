@@ -9,6 +9,8 @@ import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.jgoeres.adventofcode2019.Day03.RunDay03.ORIGIN;
+
 public class Day03Test {
     static String XX = "XX";
     WireService wireService = new WireService();
@@ -91,13 +93,38 @@ public class Day03Test {
         Assert.assertNull(intersection);
     }
 
+    @Test
+    public void Day3AExample1() {
+//        R75,D30,R83,U83,L12,D49,R71,U7,L72
+//        U62,R66,U55,R34,D71,R55,D58,R83 = distance 159
+
+        WireService wireServiceExample1 = new WireService("data/day03/example1.txt");
+        XYPoint closestIntersection = wireServiceExample1.findClosestIntersection(ORIGIN);
+        int result = wireServiceExample1.manhattanDistance(closestIntersection,ORIGIN);
+
+        Assert.assertEquals(159, result);
+
+    }
+
+    @Test
+    public void Day3AExample2() {
+//        R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51
+//        U98,R91,D20,R16,D67,R40,U7,R15,U6,R7 = distance 135
+
+        WireService wireServiceExample1 = new WireService("data/day03/example2.txt");
+        XYPoint closestIntersection = wireServiceExample1.findClosestIntersection(ORIGIN);
+        int result = wireServiceExample1.manhattanDistance(closestIntersection,ORIGIN);
+
+        Assert.assertEquals(135, result);
+
+    }
 
     @Test
     public void Day3A() {
         try {
             int result = RunDay03.problem3A();
 
-            Assert.assertEquals(0, result);
+            Assert.assertEquals(245, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -17,6 +17,7 @@ public class WireService {
     private final String XX = "03";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
     private final XYPoint NO_INTERSECTION = null;
+    private final XYPoint ORIGIN = new XYPoint(0, 0);
 
 
     private ArrayList<Integer> inputList = new ArrayList<>();
@@ -30,20 +31,37 @@ public class WireService {
         loadInputs(pathToFile);
     }
 
-    public XYPoint findClosestIntersection(ArrayList<XYPoint> wire1, ArrayList<XYPoint> wire2) {
+    public XYPoint findClosestIntersection(XYPoint reference) {
         // Iterate through all the wire combinations to find the closest intersection to the origin
-        XYPoint closest = new XYPoint(9999, 9999);
+
+        int minDistance = Integer.MAX_VALUE;
+        XYPoint minPoint = null;
 
         // Check all wire1 segments
-        for (int i = 0; i < wire1.size() - 1; i++) {
+        List<WireSegment> wire1 = wires.get(0);
+        List<WireSegment> wire2 = wires.get(1);
+        for (int i = 0; i < wire1.size(); i++) {
             // Check all wire2 segments that haven't been checked against this wire1 yet (don't repeat old combinations)
-            for (int j = i; j < wire2.size() - 1; j++) {
+            for (int j = i; j < wire2.size(); j++) {
                 // Do these two segments intersect?
+                XYPoint intersection = findIntersection(wire1.get(i), wire2.get(j));
 
-
+                if (intersection != null && isNotOrigin(intersection)) {
+                    // If there's an intersection
+                    // Calculate its manhattan distance from the origin.
+                    int manhattanDistance = manhattanDistance(intersection, reference);
+                    if (manhattanDistance < minDistance) {
+                        minDistance = manhattanDistance;
+                        minPoint = intersection;
+                        System.out.println("New minimum distance:\twire1[" + i + "]" +
+                                "\twire2[" + j + "]" +
+                                "\t(" + minPoint.getX() + ", " + minPoint.getY() + ")" +
+                                "\tDistance: " + minDistance);
+                    }
+                }
             }
         }
-        return null;
+        return minPoint;
     }
 
     private void loadInputs(String pathToFile) {
@@ -189,5 +207,16 @@ public class WireService {
         }
     }
 
+    private boolean isNotOrigin(XYPoint p1) {
+        return ((p1.getX() != ORIGIN.getX()) || (
+                p1.getY() != ORIGIN.getY()));
+    }
+
+    public int manhattanDistance(XYPoint p0, XYPoint p1) {
+        int xDistance = Math.abs(p0.getX() - p1.getX());
+        int yDistance = Math.abs(p0.getY() - p1.getY());
+
+        return (xDistance + yDistance);
+    }
 
 }
