@@ -57,6 +57,31 @@ public class Day04Test {
         }
     }
 
+    @Test
+    public void TestHasGroupOfExactly2() {
+        final int[][] testDigits = {
+                {3, 7, 7, 8, 8, 9},  // valid, 2 groups of 2
+                {1, 1, 1, 1, 2, 2}    // valid, group of 4 and group of 2
+        };
+        for (int test[] : testDigits) {
+            boolean result = secureContainerService.hasGroupOfExactly2(test);
+
+            Assert.assertTrue(result);
+        }
+    }
+
+    @Test
+    public void TestNotHasGroupOfExactly2() {
+        final int[][] testDigits = {
+                {3, 5, 9, 9, 9, 9},   // invalid, group of 4
+                {3, 5, 6, 0, 0, 0}   // invalid, group of 3
+        };
+        for (int test[] : testDigits) {
+            boolean result = secureContainerService.hasGroupOfExactly2(test);
+
+            Assert.assertFalse(result);
+        }
+    }
 
     @Test
     public void Day4A() {
@@ -74,7 +99,7 @@ public class Day04Test {
         try {
             int result = RunDay04.problem4B();
 
-            Assert.assertEquals(0, result);
+            Assert.assertEquals(316, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

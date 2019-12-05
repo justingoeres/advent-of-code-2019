@@ -17,9 +17,8 @@ public abstract class RunDay04 {
 
         System.out.println("Day " + XX + "A: # of valid passwords in range = " + result);
 
-//        Day 4A: Answer =
-//        Time elapsed:	xxx ms
-
+//        Day 4A: # of valid passwords in range = 511
+//        Time elapsed:	728 ms
         return result;
     }
 
@@ -27,13 +26,12 @@ public abstract class RunDay04 {
         // Day 4B
         System.out.println("=== DAY " + XX + "B ===");
 
-        int result = 0;
+        int result = secureContainerService.countPart2ValidPasswords();
 
-        System.out.println("Day " + XX + "B: Answer = " + result);
+        System.out.println("Day " + XX + "B: # of valid passwords in range = " + result);
 
-//        Day 4B: Answer =
-//        Time elapsed:	xxx ms
-
+//        Day 4B: # of valid passwords in range = 316
+//        Time elapsed:	1 ms
         return result;
     }
 
