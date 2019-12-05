@@ -5,6 +5,10 @@ public enum OpCode {
     MULTIPLY(2,3),
     INPUT(3,1),
     OUTPUT(4,1),
+    JUMP_IF_TRUE(5,2),
+    JUMP_IF_FALSE(6,2),
+    LESS_THAN(7,3),
+    EQUALS(7,3),
     HALT(99,0);
 
     private int value;
@@ -33,6 +37,14 @@ public enum OpCode {
                 return INPUT;
             case 4:
                 return OUTPUT;
+            case 5:
+                return JUMP_IF_TRUE;
+            case 6:
+                return JUMP_IF_FALSE;
+            case 7:
+                return LESS_THAN;
+            case 8:
+                return EQUALS;
             case 99:
                 return HALT;
         }

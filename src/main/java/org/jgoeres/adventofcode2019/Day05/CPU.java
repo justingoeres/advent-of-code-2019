@@ -30,11 +30,18 @@ public class CPU {
     private HashMap<OpCode, IOpCode> opCodeFunctorMap() {
         HashMap<OpCode, IOpCode> map = new HashMap<>();
 
+        // Day 2
         map.put(OpCode.ADD, (instruction) -> add(instruction));
         map.put(OpCode.MULTIPLY, (instruction) -> multiply(instruction));
         map.put(OpCode.HALT, (instruction) -> halt(instruction));
+        // Day 5A
         map.put(OpCode.INPUT, (instruction) -> input(instruction));
         map.put(OpCode.OUTPUT, (instruction) -> output(instruction));
+        // Day 5B
+        map.put(OpCode.JUMP_IF_TRUE, (instruction) -> jumpIfTrue(instruction));
+        map.put(OpCode.JUMP_IF_FALSE, (instruction) -> jumpIfFalse(instruction));
+        map.put(OpCode.LESS_THAN, (instruction) -> lessThan(instruction));
+        map.put(OpCode.EQUALS, (instruction) -> equals(instruction));
 
         return map;
     }
@@ -165,6 +172,68 @@ public class CPU {
         int val1 = getArgValue(instruction, 0);
         lastOutput = val1;
         System.out.println(val1);
+        return true;
+    }
+
+    private boolean jumpIfTrue(Instruction instruction) {
+        // JUMP_IF_TRUE
+        // jump-if-true: if the first parameter is *non-zero*,
+        // it sets the instruction pointer to the value from the second parameter.
+        // Otherwise, it does nothing.
+
+        // Get the arguments
+        int val1 = getArgValue(instruction, 0);
+//        int val2 = instruction.getParam(1).getValue();  // instructions that write out always use the value of the raw parameter
+        int val2 = getArgValue(instruction, 1);
+
+        if (val1 != 0) pc = val2;
+        return true;
+    }
+
+    private boolean jumpIfFalse(Instruction instruction) {
+        // JUMP_IF_FALSE
+        // jump-if-true: if the first parameter is *zero*,
+        // it sets the instruction pointer to the value from the second parameter.
+        // Otherwise, it does nothing.
+
+        // Get the arguments
+        int val1 = getArgValue(instruction, 0);
+//        int val2 = instruction.getParam(1).getValue();  // instructions that write out always use the value of the raw parameter
+        int val2 = getArgValue(instruction, 1);
+
+        if (val1 == 0) pc = val2;
+        return true;
+    }
+
+    private boolean lessThan(Instruction instruction) {
+        // LESS_THAN
+        // if the first parameter is less than the second parameter,
+        // it stores 1 in the position given by the third parameter.
+        // Otherwise, it stores 0.
+
+        // Get the arguments
+        int val1 = getArgValue(instruction, 0);
+        int val2 = getArgValue(instruction, 1);
+        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+
+        int lessThan = (val1 < val2) ? 1 : 0;
+        programCode.set(val3, lessThan);
+        return true;
+    }
+
+    private boolean equals(Instruction instruction) {
+        // EQUALS
+        // if the first parameter is equal to the second parameter,
+        // it stores 1 in the position given by the third parameter.
+        // Otherwise, it stores 0.
+
+        // Get the arguments
+        int val1 = getArgValue(instruction, 0);
+        int val2 = getArgValue(instruction, 1);
+        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+
+        int lessThan = (val1 == val2) ? 1 : 0;
+        programCode.set(val3, lessThan);
         return true;
     }
 

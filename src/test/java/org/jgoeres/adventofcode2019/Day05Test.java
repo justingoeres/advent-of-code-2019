@@ -52,11 +52,40 @@ public class Day05Test {
     }
 
     @Test
+    public void Day5BExample2() {
+//                3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,
+//                1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,
+//                999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99
+//        The above example program uses an input instruction to ask for a single number.
+//        The program will then
+//        output 999 if the input value is below 8,
+//        output 1000 if the input value is equal to 8, or
+//        output 1001 if the input value is greater than 8.
+        intCodeProcessorService = new IntCodeProcessorService("data/day05/example2.txt");
+
+        final int[][] testVectors = {
+                {-2, 999},   //        output 999 if the input value is below 8,
+                {7, 999},   //        output 999 if the input value is below 8,
+                {8, 1000},  //        output 1000 if the input value is equal to 8, or
+                {9, 1001},   //        output 1001 if the input value is greater than 8.
+                {9999, 1001}   //        output 1001 if the input value is greater than 8.
+        };
+
+        for (int testVector[] : testVectors) {
+            intCodeProcessorService.reset();
+            intCodeProcessorService.setCpuInputValue(testVector[0]);
+            intCodeProcessorService.runToCompletion();
+            int result = intCodeProcessorService.getProgramOutput();
+            Assert.assertEquals(testVector[1], result);
+        }
+    }
+
+    @Test
     public void Day5B() {
         try {
             int result = RunDay05.problem5B();
 
-            Assert.assertEquals(6635, result);
+            Assert.assertEquals(15586959, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
