@@ -2,7 +2,6 @@ package org.jgoeres.adventofcode2019.Day05;
 
 public abstract class RunDay05 {
     static String pathToInputs = "data/day05/input.txt";
-    //    static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService(pathToInputs);
     static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();
 
 
@@ -11,17 +10,14 @@ public abstract class RunDay05 {
         System.out.println("=== DAY 5A ===");
 
         // Set up the processor in the 1202 alarm configuration
-        intCodeProcessorService.setValueAtPosition(1, 12);
-        intCodeProcessorService.setValueAtPosition(2, 2);
-
+        intCodeProcessorService.setCpuInputValue(1);
         // Run it
         intCodeProcessorService.runToCompletion();
 
-        int result = intCodeProcessorService.getValueAtPosition(0);
-        System.out.println("Day 5A: Position 0 Value at Halt = " + result);
-//        Day 5A: Position 0 Value at Halt = 4138687
-//        Time elapsed:	5 ms
-
+        int result = intCodeProcessorService.getProgramOutput();
+        System.out.println("Day 5A: Program Output = " + result);
+//        Day 5A: Program Output = 9775037
+//        Time elapsed:	17 ms
         return result;
     }
 

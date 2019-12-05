@@ -9,8 +9,7 @@ public class Day05Test {
     IntCodeProcessorService intCodeProcessorService;
 
     @Test
-    public void Day5AWithDay2Example1()
-    {
+    public void Day5AWithDay2Example1() {
         intCodeProcessorService = new IntCodeProcessorService("data/day05/day2example1.txt");
         intCodeProcessorService.runToCompletion();
         Assert.assertEquals(3500, intCodeProcessorService.getValueAtPosition(0));
@@ -30,11 +29,14 @@ public class Day05Test {
     }
 
     @Test
-    public void Day5AExample1()
-    {
+    public void Day5AExample1() {
+//        The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
         intCodeProcessorService = new IntCodeProcessorService("data/day05/example1.txt");
+        intCodeProcessorService.setCpuInputValue(555);
         intCodeProcessorService.runToCompletion();
-        Assert.assertEquals(3500, intCodeProcessorService.getValueAtPosition(0));
+
+        int result = intCodeProcessorService.getProgramOutput();
+        Assert.assertEquals(555, result);
     }
 
     @Test
@@ -42,7 +44,8 @@ public class Day05Test {
         try {
             int result = RunDay05.problem5A();
 
-            Assert.assertEquals(4138687, result);
+//            Your puzzle answer was 9775037.
+            Assert.assertEquals(9775037, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

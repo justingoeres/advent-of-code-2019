@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.jgoeres.adventofcode2019.Day05.ParamMode.IMMEDIATE;
+
 public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();
 
@@ -11,6 +13,7 @@ public class CPU {
     int inputValue = 0;
     ArrayList<Integer> programCode;
     ArrayList<Integer> programCodeOriginal;
+    private int lastOutput = 0;
 
     public CPU(ArrayList<Integer> programCode) {
         this.programCodeOriginal = programCode;
@@ -19,6 +22,7 @@ public class CPU {
 
     public void reset() {
         pc = 0;
+        lastOutput = 0;
         programCode = (ArrayList<Integer>) programCodeOriginal.clone();
     }
 
@@ -26,9 +30,11 @@ public class CPU {
     private HashMap<OpCode, IOpCode> opCodeFunctorMap() {
         HashMap<OpCode, IOpCode> map = new HashMap<>();
 
-        map.put(OpCode.ADD, (pc, programCode) -> add());
-        map.put(OpCode.MULTIPLY, (pc, programCode) -> multiply());
-        map.put(OpCode.HALT, (pc, programCode) -> halt());
+        map.put(OpCode.ADD, (instruction) -> add(instruction));
+        map.put(OpCode.MULTIPLY, (instruction) -> multiply(instruction));
+        map.put(OpCode.HALT, (instruction) -> halt(instruction));
+        map.put(OpCode.INPUT, (instruction) -> input(instruction));
+        map.put(OpCode.OUTPUT, (instruction) -> output(instruction));
 
         return map;
     }
@@ -36,8 +42,8 @@ public class CPU {
     public boolean executeNext() {
         // Use the program counter to read the current OpCode and execute it.
         // Return true to continue, false to halt.
-        OpCode opCode = OpCode.fromInt(getValueAtPCAndAdvance());
-        boolean keepGoing = opCodeFunctorMap().get(opCode).execute(pc, programCode);
+        Instruction nextInstruction = decodeInstruction();
+        boolean keepGoing = opCodeFunctorMap().get(nextInstruction.getOpCode()).execute(nextInstruction);
         return keepGoing;
     }
 
@@ -45,15 +51,65 @@ public class CPU {
         programCode.set(position, value);
     }
 
+    private int getValueAtPCAndAdvance() {
+        int value = getValueAtPosition(pc);
+        pc++;
+        return value;
+    }
+
     public int getValueAtPosition(int position) {
         return programCode.get(position);
+    }
+
+    public Instruction decodeInstruction() {
+        //  1002,4,3,4,33
+        //
+        //ABCDE
+        // 1002
+        //
+        //DE - two-digit opcode,      02 == opcode 2
+        // C - mode of 1st parameter,  0 == position mode
+        // B - mode of 2nd parameter,  1 == immediate mode
+        // A - mode of 3rd parameter,  0 == position mode,
+        //                                  omitted due to being a leading zero
+        //This instruction multiplies its first two parameters. The first parameter,
+        // 4 in position mode, works like it did before - its value is the value
+        // stored at address 4 (33). The second parameter, 3 in immediate mode,
+        // simply has value 3. The result of this operation, 33 * 3 = 99, is
+        // written according to the third parameter, 4 in position mode, which
+        // also works like it did before - 99 is written to address 4.
+
+        // Get the raw instruction value from the pc.
+        int instr = getValueAtPCAndAdvance();
+
+        // Decode it into opcode & parameter modes
+        int opCodeInt = instr % 100;    // last two digits are opcode
+        OpCode opCode = OpCode.fromInt(opCodeInt);
+        instr /= 100;
+
+        int numArgs = opCode.getNumArgs();
+
+        ArrayList<Parameter> params = new ArrayList<>();
+        // Read in the parameters for this opCode
+        for (int i = 0; i < numArgs; i++) {
+            ParamMode paramMode = ParamMode.fromInt(instr % 10);
+            instr /= 10;
+            int paramValue = getValueAtPCAndAdvance();
+
+            Parameter param = new Parameter(paramMode, paramValue);
+            params.add(param);
+        }
+
+        Instruction nextInstruction = new Instruction(opCode, params);
+        return nextInstruction;
     }
 
     public void setInputValue(int inputValue) {
         this.inputValue = inputValue;
     }
 
-    private boolean add() {
+    /*********** OpCode Implementations ***********/
+    private boolean add(Instruction instruction) {
         // ADD
         // Adds together numbers read from two positions and
         // stores the result in a third position. The three integers
@@ -63,67 +119,69 @@ public class CPU {
         // at which the output should be stored.
 
         // Get the arguments
-        int pos1 = getValueAtPCAndAdvance();
-        int pos2 = getValueAtPCAndAdvance();
-        int pos3 = getValueAtPCAndAdvance();
+        int val1 = getArgValue(instruction, 0);
+        int val2 = getArgValue(instruction, 1);
+        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
 
-        int val1 = programCode.get(pos1);
-        int val2 = programCode.get(pos2);
-
-        programCode.set(pos3, val1 + val2);
+        programCode.set(val3, val1 + val2);
         return true;
     }
 
-    private boolean multiply() {
+    private boolean multiply(Instruction instruction) {
         // MULTIPLY
         // Works exactly like ADD, except it multiplies the
         // two inputs instead of adding them. Again, the three integers after
         // the opcode indicate where the inputs and outputs are, not their values.
 
         // Get the arguments
-        int pos1 = getValueAtPCAndAdvance();
-        int pos2 = getValueAtPCAndAdvance();
-        int pos3 = getValueAtPCAndAdvance();
+        int val1 = getArgValue(instruction, 0);
+        int val2 = getArgValue(instruction, 1);
+        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
 
-        int val1 = programCode.get(pos1);
-        int val2 = programCode.get(pos2);
-
-        programCode.set(pos3, val1 * val2);
+        programCode.set(val3, val1 * val2);
         return true;
     }
 
-    private boolean input() {
+    private boolean input(Instruction instruction) {
         // INPUT
         // Opcode 3 takes a single integer as input and saves
         // it to the position given by its only parameter.
         // For example, the instruction 3,50 would take an
         // input value and store it at address 50.
-        int pos1 = getValueAtPCAndAdvance();
+        // Get the arguments
+        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
 
-        programCode.set(pos1, inputValue);
+        programCode.set(val1, inputValue);
         return true;
     }
 
-    private boolean output() {
+    private boolean output(Instruction instruction) {
         // OUTPUT
         // Opcode 4 outputs the value of its only parameter.
         // For example, the instruction 4,50 would output the
         // value at address 50.
-        int pos1 = getValueAtPCAndAdvance();
-
-        System.out.println(getValueAtPosition(pos1));
+        // Get the arguments
+//        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
+        int val1 = getArgValue(instruction, 0);
+        lastOutput = val1;
+        System.out.println(val1);
         return true;
     }
 
-    private boolean halt() {
+    private boolean halt(Instruction instruction) {
         // HALT
         // Stop execution by returning false.
         return false;
     }
 
-    private int getValueAtPCAndAdvance() {
-        int value = getValueAtPosition(pc);
-        pc++;
+    private int getArgValue(Instruction instruction, int index) {
+        ParamMode mode = instruction.getParam(index).getMode();
+        int arg = instruction.getParam(index).getValue();
+        int value = (mode == IMMEDIATE) ? arg : getValueAtPosition(arg);
         return value;
+    }
+
+    public int getLastOutput() {
+        return lastOutput;
     }
 }

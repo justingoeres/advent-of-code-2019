@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class IntCodeProcessorService {
 
-    private final String DEFAULT_INPUTS_PATH = "data/day02/input.txt";
+    private final String DEFAULT_INPUTS_PATH = "data/day05/input.txt";
 
     private String inputFile = DEFAULT_INPUTS_PATH;
     private CPU cpu;
@@ -22,20 +22,23 @@ public class IntCodeProcessorService {
     }
 
     public void runToCompletion() {
-        while (processCurrentOpCode()) ;
+        while (cpu.executeNext()) ;
     }
 
     public void setValueAtPosition(int position, int value) {
         cpu.setValueAtPosition(position, value);
     }
 
-    public boolean processCurrentOpCode() {
-        boolean keepGoing = cpu.executeNext();
-        return keepGoing;
+    public void setCpuInputValue(int cpuInputValue) {
+        cpu.setInputValue(cpuInputValue);
     }
 
     public int getValueAtPosition(int position) {
         return cpu.getValueAtPosition(position);
+    }
+
+    public int getProgramOutput() {
+        return cpu.getLastOutput();
     }
 
     public void reset() {

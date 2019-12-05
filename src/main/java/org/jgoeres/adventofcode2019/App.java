@@ -4,6 +4,7 @@ import org.jgoeres.adventofcode2019.Day01.RunDay01;
 import org.jgoeres.adventofcode2019.Day02.RunDay02;
 import org.jgoeres.adventofcode2019.Day03.RunDay03;
 import org.jgoeres.adventofcode2019.Day04.RunDay04;
+import org.jgoeres.adventofcode2019.Day05.RunDay05;
 
 /**
  * Hello world!
@@ -101,20 +102,20 @@ public class App {
 
             blankLine();
         }
-//
-//        if (RUN_DAY_5 || RUN_ALL) {
-//            setStartTime();
-//            RunDay5.problem5A();
-//            printElapsedTime();
-//
-//            blankLine();
-//
-//            setStartTime();
-//            RunDay5.problem5B();
-//            printElapsedTime();
-//
-//            blankLine();
-//        }
+
+        if (RUN_DAY_5 || RUN_ALL) {
+            setStartTime();
+            RunDay05.problem5A();
+            printElapsedTime();
+
+            blankLine();
+
+            setStartTime();
+            RunDay05.problem5B();
+            printElapsedTime();
+
+            blankLine();
+        }
 //
 //        if (RUN_DAY_6 || RUN_ALL) {
 //            setStartTime();
