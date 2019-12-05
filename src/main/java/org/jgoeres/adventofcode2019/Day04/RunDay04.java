@@ -12,6 +12,7 @@ public abstract class RunDay04 {
         // Day 4A
         System.out.println("=== DAY " + XX + "A ===");
 
+        secureContainerService.findAllValid();
         int result = secureContainerService.countValidPasswords();
 
         System.out.println("Day " + XX + "A: # of valid passwords in range = " + result);

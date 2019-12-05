@@ -43,6 +43,20 @@ public class Day04Test {
         }
     }
 
+    @Test
+    public void TestFindNextValid() {
+        final int[][] testPairs = {
+                {359282, 359999},   // input lower bound
+                {356000, 356666},
+                {377889, 377889}    // valid, should return self
+        };
+        for (int testPair[] : testPairs) {
+            secureContainerService.setCurrentPassword(testPair[0]);
+            int result = secureContainerService.findNextValid();
+            Assert.assertEquals(testPair[1], result);
+        }
+    }
+
 
     @Test
     public void Day4A() {
