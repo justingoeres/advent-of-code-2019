@@ -8,6 +8,7 @@ public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();
 
     int pc;
+    int inputValue = 0;
     ArrayList<Integer> programCode;
     ArrayList<Integer> programCodeOriginal;
 
@@ -48,6 +49,9 @@ public class CPU {
         return programCode.get(position);
     }
 
+    public void setInputValue(int inputValue) {
+        this.inputValue = inputValue;
+    }
 
     private boolean add() {
         // ADD
@@ -85,6 +89,29 @@ public class CPU {
         int val2 = programCode.get(pos2);
 
         programCode.set(pos3, val1 * val2);
+        return true;
+    }
+
+    private boolean input() {
+        // INPUT
+        // Opcode 3 takes a single integer as input and saves
+        // it to the position given by its only parameter.
+        // For example, the instruction 3,50 would take an
+        // input value and store it at address 50.
+        int pos1 = getValueAtPCAndAdvance();
+
+        programCode.set(pos1, inputValue);
+        return true;
+    }
+
+    private boolean output() {
+        // OUTPUT
+        // Opcode 4 outputs the value of its only parameter.
+        // For example, the instruction 4,50 would output the
+        // value at address 50.
+        int pos1 = getValueAtPCAndAdvance();
+
+        System.out.println(getValueAtPosition(pos1));
         return true;
     }
 
