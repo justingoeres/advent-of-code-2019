@@ -6,18 +6,17 @@ public abstract class RunDay06 {
 
     static String pathToInputs = "data/day" + YY + "/input.txt";
 
-    static Day06Service day06Service = new Day06Service();
+    static OrbiterService orbiterService = new OrbiterService();
 
     public static int problem6A() {
         // Day 6A
         System.out.println("=== DAY " + XX + "A ===");
 
-        int result = 0;
+        int result = orbiterService.calculateAllOrbits();
 
         System.out.println("Day " + XX + "A: Answer = " + result);
-
-//        Day 6A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 6A: Answer = 333679
+//        Time elapsed:	27 ms
 
         return result;
     }

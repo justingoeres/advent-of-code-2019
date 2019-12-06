@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Day06Service {
+public class OrbiterService {
     private final String XX = "06";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
 
@@ -16,14 +16,33 @@ public class Day06Service {
     private Map<String, Orbiter> allOrbiters = new HashMap<>();
     private Set<Orbiter> terminals = new HashSet<>();
 
-    public Day06Service() {
+    public OrbiterService() {
         loadInputs(DEFAULT_INPUTS_PATH);
     }
 
-    public Day06Service(String pathToFile) {
+    public OrbiterService(String pathToFile) {
         loadInputs(pathToFile);
     }
 
+    public int calculateAllOrbits() {
+        // Iterate over all the known orbits
+        // For each one, count all orbits all the way back up to COM
+        int totalOrbits = 0;
+        for (Orbiter orbiter : allOrbiters.values()) {
+            totalOrbits += countOrbits(orbiter);
+        }
+        return totalOrbits;
+    }
+
+    private int countOrbits(Orbiter orbiter) {
+        if (orbiter.getParentOrbit() == null) {
+            // The orbiter with no parent is COM
+            return 0;
+        } else {
+            // Otherwise get the parent and keep counting
+            return (1 + countOrbits(orbiter.getParentOrbit()));
+        }
+    }
 
     private void loadInputs(String pathToFile) {
         // Input example:
