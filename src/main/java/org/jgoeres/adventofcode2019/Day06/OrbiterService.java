@@ -12,7 +12,6 @@ public class OrbiterService {
     private final String XX = "06";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
 
-    private ArrayList<Integer> inputList = new ArrayList<>();
     private Map<String, Orbiter> allOrbiters = new HashMap<>();
     private Set<Orbiter> terminals = new HashSet<>();
 
@@ -59,10 +58,9 @@ public class OrbiterService {
             currentOrbiter = parentOrbiter;
         }
 
-        boolean found = false;
         currentOrbiter = targetOrbiter;
         int steps = 0;
-        while (!found) {
+        while (true) {  // Go until we find a common parent
             steps++;
             parentOrbiter = currentOrbiter.getParentOrbit();
             if (sourcePathToCOM.contains(parentOrbiter)) break;
@@ -80,7 +78,6 @@ public class OrbiterService {
         //  CYP)BC6
         //  FPL)G1W
         //  6MM)5MX
-        inputList.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
             while ((line = br.readLine()) != null) {
@@ -89,7 +86,6 @@ public class OrbiterService {
 
                 // orbitPair[0] is the parent orbiter
                 // orbitPair[1] is the child orbiter (parent is its 'direct orbit')
-                // Create both orbiters (if they don't already exist)
                 String parentName = orbitPair[0];
                 String childName = orbitPair[1];
 
