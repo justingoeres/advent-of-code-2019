@@ -34,11 +34,24 @@ public class Day06Test {
     }
 
     @Test
+    public void Day06AExample2() {
+        try {
+            OrbiterService orbiterService = new OrbiterService("data/day06/example2.txt");
+
+            int result = orbiterService.calculateTransfers("YOU", "SAN");
+            Assert.assertEquals(4, result);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    @Test
     public void Day06B() {
         try {
             int result = RunDay06.problem6B();
 
-            Assert.assertEquals(0, result);
+            Assert.assertEquals(370, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -44,6 +44,37 @@ public class OrbiterService {
         }
     }
 
+    public int calculateTransfers(String sourceName, String targetName) {
+        ArrayList<Orbiter> sourcePathToCOM = new ArrayList<>();
+
+        Orbiter sourceOrbiter = allOrbiters.get(sourceName);
+        Orbiter targetOrbiter = allOrbiters.get(targetName);
+
+        // Build a list of steps back to COM for source.
+        Orbiter currentOrbiter = sourceOrbiter.getParentOrbit();    // start counting from parent, not from ourselves
+        Orbiter parentOrbiter = null;
+        while (currentOrbiter.getParentOrbit() != null) {
+            parentOrbiter = currentOrbiter.getParentOrbit();
+            sourcePathToCOM.add(parentOrbiter);
+            currentOrbiter = parentOrbiter;
+        }
+
+        boolean found = false;
+        currentOrbiter = targetOrbiter;
+        int steps = 0;
+        while (!found) {
+            steps++;
+            parentOrbiter = currentOrbiter.getParentOrbit();
+            if (sourcePathToCOM.contains(parentOrbiter)) break;
+            currentOrbiter = parentOrbiter;
+        }
+        // parentOrbiter is now the common parent between source & target.
+        // So find out what index parentOrbiter is in sourceOrbiter's path list and add it to steps.
+        steps += sourcePathToCOM.indexOf(parentOrbiter);
+
+        return steps;
+    }
+
     private void loadInputs(String pathToFile) {
         // Input example:
         //  CYP)BC6

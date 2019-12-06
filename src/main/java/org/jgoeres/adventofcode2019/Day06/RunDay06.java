@@ -25,12 +25,11 @@ public abstract class RunDay06 {
         // Day 6B
         System.out.println("=== DAY " + XX + "B ===");
 
-        int result = 0;
+        int result = orbiterService.calculateTransfers("YOU", "SAN");
 
         System.out.println("Day " + XX + "B: Answer = " + result);
-
-//        Day 6B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 6B: Answer = 370
+//        Time elapsed:	3 ms
 
         return result;
     }
