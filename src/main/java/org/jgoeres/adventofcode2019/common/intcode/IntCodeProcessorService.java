@@ -1,4 +1,4 @@
-package org.jgoeres.adventofcode2019.Day05;
+package org.jgoeres.adventofcode2019.common.intcode;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

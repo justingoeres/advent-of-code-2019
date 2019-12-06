@@ -1,10 +1,10 @@
-package org.jgoeres.adventofcode2019.Day05;
+package org.jgoeres.adventofcode2019.common.intcode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.jgoeres.adventofcode2019.Day05.ParamMode.IMMEDIATE;
+import static org.jgoeres.adventofcode2019.common.intcode.ParamMode.IMMEDIATE;
 
 public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();

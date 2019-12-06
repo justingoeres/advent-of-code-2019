@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day05;
 
+import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
+
 public abstract class RunDay05 {
     static String pathToInputs = "data/day05/input.txt";
     static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();

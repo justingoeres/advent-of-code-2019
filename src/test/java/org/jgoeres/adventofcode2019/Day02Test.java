@@ -1,7 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.Day01.FuelCalculationService;
-import org.jgoeres.adventofcode2019.Day02.IntCodeProcessorService;
+import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 import org.jgoeres.adventofcode2019.Day02.RunDay02;
 import org.junit.Assert;
 import org.junit.Test;
