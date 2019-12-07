@@ -12,7 +12,7 @@ import org.jgoeres.adventofcode2019.Day07.RunDay07;
  * Hello world!
  */
 public class App {
-    static final boolean RUN_ALL = true;
+    static final boolean RUN_ALL = false;
 
     static final boolean RUN_DAY_1 = false;
     static final boolean RUN_DAY_2 = false;
@@ -20,7 +20,7 @@ public class App {
     static final boolean RUN_DAY_4 = false;
     static final boolean RUN_DAY_5 = false;
     static final boolean RUN_DAY_6 = false;
-    static final boolean RUN_DAY_7 = false;
+    static final boolean RUN_DAY_7 = true;
     static final boolean RUN_DAY_8 = false;
     static final boolean RUN_DAY_9 = false;
     static final boolean RUN_DAY_10 = false;

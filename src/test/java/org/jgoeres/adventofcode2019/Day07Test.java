@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Day07Test {
     static String XX = "07";
@@ -18,49 +20,6 @@ public class Day07Test {
 //        3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0
 
         intCodeProcessorService = new IntCodeProcessorDay07("data/day07/example1.txt");
-//        /**** STAGE 1 ****/
-//        // First amplifier's phase setting is 4
-//        intCodeProcessorService.setCpuInputValue(4);
-//        // First amplifier's input value is 0
-//        intCodeProcessorService.setCpuInputValue(0);
-//        intCodeProcessorService.runToCompletion();
-//        stageOutput = intCodeProcessorService.getProgramOutput();
-//
-//        /**** STAGE 2 ****/
-//        intCodeProcessorService.reset();
-//        // Next amplifier's phase setting is 3
-//        intCodeProcessorService.setCpuInputValue(3);
-//        // Next amplifier's input value is the output of the previous stage
-//        intCodeProcessorService.setCpuInputValue(stageOutput);
-//        intCodeProcessorService.runToCompletion();
-//        stageOutput = intCodeProcessorService.getProgramOutput();
-//
-//        /**** STAGE 3 ****/
-//        intCodeProcessorService.reset();
-//        // Next amplifier's phase setting is 2
-//        intCodeProcessorService.setCpuInputValue(2);
-//        // Next amplifier's input value is the output of the previous stage
-//        intCodeProcessorService.setCpuInputValue(stageOutput);
-//        intCodeProcessorService.runToCompletion();
-//        stageOutput = intCodeProcessorService.getProgramOutput();
-//
-//        /**** STAGE 4 ****/
-//        intCodeProcessorService.reset();
-//        // Next amplifier's phase setting is 1
-//        intCodeProcessorService.setCpuInputValue(1);
-//        // Next amplifier's input value is the output of the previous stage
-//        intCodeProcessorService.setCpuInputValue(stageOutput);
-//        intCodeProcessorService.runToCompletion();
-//        stageOutput = intCodeProcessorService.getProgramOutput();
-//
-//        /**** STAGE 5 ****/
-//        intCodeProcessorService.reset();
-//        // Next amplifier's phase setting is 0
-//        intCodeProcessorService.setCpuInputValue(0);
-//        // Next amplifier's input value is the output of the previous stage
-//        intCodeProcessorService.setCpuInputValue(stageOutput);
-//        intCodeProcessorService.runToCompletion();
-//        int result = intCodeProcessorService.getProgramOutput();
 
         ArrayList<Integer> phaseSettings = new ArrayList<>();
         phaseSettings.add(4);
@@ -123,11 +82,54 @@ public class Day07Test {
     }
 
     @Test
+    public void Day7BExample4() {
+//        Max thruster signal 139629729 (from phase setting sequence 9,8,7,6,5):
+//
+//        3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,
+//        27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5
+        intCodeProcessorService = new IntCodeProcessorDay07("data/day07/example4.txt");
+
+        Queue<Integer> phaseSettings = new LinkedList<>();
+        phaseSettings.add(9);
+        phaseSettings.add(8);
+        phaseSettings.add(7);
+        phaseSettings.add(6);
+        phaseSettings.add(5);
+
+        intCodeProcessorService.initParallelAmplifierStages();
+        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+
+        Assert.assertEquals(139629729, result);
+    }
+
+    @Test
+    public void Day7BExample5() {
+//        Max thruster signal 18216 (from phase setting sequence 9,7,8,5,6):
+//
+//        3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,
+//                -5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,
+//                53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10
+        intCodeProcessorService = new IntCodeProcessorDay07("data/day07/example5.txt");
+
+        Queue<Integer> phaseSettings = new LinkedList<>();
+        phaseSettings.add(9);
+        phaseSettings.add(7);
+        phaseSettings.add(8);
+        phaseSettings.add(5);
+        phaseSettings.add(6);
+
+        intCodeProcessorService.initParallelAmplifierStages();
+        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+
+        Assert.assertEquals(18216, result);
+    }
+
+    @Test
     public void Day07B() {
         try {
             int result = RunDay07.problem7B();
 
-            Assert.assertEquals(0, result);
+            Assert.assertEquals(17956613, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

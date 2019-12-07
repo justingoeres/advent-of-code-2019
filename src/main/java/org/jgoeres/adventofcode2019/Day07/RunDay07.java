@@ -1,7 +1,6 @@
 package org.jgoeres.adventofcode2019.Day07;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 public abstract class RunDay07 {
     static String pathToInputs = "data/day07/input.txt";
@@ -30,7 +29,7 @@ public abstract class RunDay07 {
 
                             // Use only unique phase setting combinations – no duplicates
                             HashSet<Integer> set = new HashSet<>(phaseSettings);
-                            if (phaseSettings.size() != set.size()){
+                            if (phaseSettings.size() != set.size()) {
                                 // If the set & array sizes are NOT equal, then there
                                 // is at least one dupe in the array. Skip it.
                                 continue;
@@ -46,7 +45,7 @@ public abstract class RunDay07 {
 //                                            + phaseSettings.get(3) + ", "
 //                                            + phaseSettings.get(4));
 
-                                    // If this output exceeds the max we've found so far, store it
+                            // If this output exceeds the max we've found so far, store it
                             if (thrustOutput > maxThrustOutput) {
                                 maxThrustOutput = thrustOutput;
 
@@ -68,29 +67,74 @@ public abstract class RunDay07 {
 
         int result = maxThrustOutput;
         System.out.println("Day 7A: Max thrust output = " + result);
-// 73517948 too high
-//        Day 7A: Program Output =
-//        Time elapsed:	17 ms
+//        Day 7A: Max thrust output = 914828
+//        Time elapsed:	137 ms
         return result;
     }
 
     public static int problem7B() {
-        // Day 7B
-        System.out.println("=== DAY 7B ===");
+        int maxThrustOutput = Integer.MIN_VALUE;
+        int PHASE_MIN = 5;
+        int PHASE_MAX = 9;
 
-        // Set the processor up for the thermal radiator controller test
-        intCodeProcessorService.reset();
-        intCodeProcessorService.setCpuInputValue(5);
-        intCodeProcessorService.runToCompletion();
+        intCodeProcessorService.initParallelAmplifierStages();
+        // Iterate through all possible phase settings of the amplifiers
+        Queue<Integer> phaseSettings = new LinkedList<>();
+        for (int i = PHASE_MIN; i <= PHASE_MAX; i++) {
+            for (int j = PHASE_MIN; j <= PHASE_MAX; j++) {
+                for (int k = PHASE_MIN; k <= PHASE_MAX; k++) {
+                    for (int l = PHASE_MIN; l <= PHASE_MAX; l++) {
+                        for (int m = PHASE_MIN; m <= PHASE_MAX; m++) {
+                            phaseSettings.clear();
+                            phaseSettings.add(i);
+                            phaseSettings.add(j);
+                            phaseSettings.add(k);
+                            phaseSettings.add(l);
+                            phaseSettings.add(m);
 
-        int result = intCodeProcessorService.getProgramOutput();
-//        System.out.println("Day 7B: Program Output = " + result);
-//        Day 7B: Program Output =
-//        Time elapsed:	1 ms
+                            // Use only unique phase setting combinations – no duplicates
+                            HashSet<Integer> set = new HashSet<>(phaseSettings);
+                            if (phaseSettings.size() != set.size()) {
+                                // If the set & array sizes are NOT equal, then there
+                                // is at least one dupe in the array. Skip it.
+                                continue;
+                            }
+
+                            int thrustOutput = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+
+//                            System.out.println("Thrust output\t" + thrustOutput
+//                                    + "\tfor phase settings "
+//                                    + (i) + ", "
+//                                    + (j) + ", "
+//                                    + (k) + ", "
+//                                    + (l) + ", "
+//                                    + (m));
+
+                            // If this output exceeds the max we've found so far, store it
+                            if (thrustOutput > maxThrustOutput) {
+                                maxThrustOutput = thrustOutput;
+
+//                                System.out.println("Max thrust\t" + maxThrustOutput
+//                                        + "\tfor phase settings "
+//                                        + (i) + ", "
+//                                        + (j) + ", "
+//                                        + (k) + ", "
+//                                        + (l) + ", "
+//                                        + (m));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        int result = maxThrustOutput;
+        System.out.println("Day 7B: Max thrust output = " + result);
+//        Day 7B: Max thrust output = 17956613
+//        Time elapsed:	194 ms
 
         return result;
     }
-
 }
 
 

@@ -13,6 +13,13 @@ public class CPU {
     ArrayList<Integer> programCodeOriginal;
     private int lastOutput = 0;
 
+
+    Instruction nextInstruction = null;
+    private boolean waitingForInput = false;
+    private boolean outputReady = false;
+    private boolean halted = false;
+
+
     public CPU(ArrayList<Integer> programCode) {
         this.programCodeOriginal = programCode;
         reset();
@@ -21,6 +28,9 @@ public class CPU {
     public void reset() {
         pc = 0;
         lastOutput = 0;
+        waitingForInput = false;
+        outputReady = false;
+        halted = false;
         programCode = (ArrayList<Integer>) programCodeOriginal.clone();
     }
 
@@ -47,7 +57,13 @@ public class CPU {
     public boolean executeNext() {
         // Use the program counter to read the current OpCode and execute it.
         // Return true to continue, false to halt.
-        Instruction nextInstruction = decodeInstruction();
+        if (!waitingForInput) {
+            // If we're NOT waiting for input, get the next instruction
+            nextInstruction = decodeInstruction();
+        } else {
+            // If we're waiting for input, stay on the input instruction to see if we have any
+        }
+        // Execute the next instruction
         boolean keepGoing = opCodeFunctorMap().get(nextInstruction.getOpCode()).execute(nextInstruction);
         return keepGoing;
     }
@@ -63,7 +79,13 @@ public class CPU {
     }
 
     public int getValueAtPosition(int position) {
-        return programCode.get(position);
+        int result = 0;
+        try {
+            result =  programCode.get(position);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return result;
     }
 
     public Instruction decodeInstruction() {
@@ -155,9 +177,16 @@ public class CPU {
         // input value and store it at address 50.
         // Get the arguments
         int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
-        Integer inputValue = inputQueue.poll();
-        if (inputValue == null) inputValue = 0;
-        programCode.set(val1, inputValue);
+//        Integer inputValue = inputQueue.poll();
+        Integer inputValue;
+        if ((inputValue = inputQueue.poll()) == null) {
+            // If there NOT is an input waiting for us
+            waitingForInput = true; // Set the flag that says we need input.
+        } else {
+            // If there IS an input waiting, process it.
+            programCode.set(val1, inputValue);
+            waitingForInput = false;    // and we're not waiting anymore
+        }
         return true;
     }
 
@@ -171,6 +200,7 @@ public class CPU {
         int val1 = getArgValue(instruction, 0);
         lastOutput = val1;
 //        System.out.println(val1);
+        outputReady = true;
         return true;
     }
 
@@ -239,6 +269,7 @@ public class CPU {
     private boolean halt(Instruction instruction) {
         // HALT
         // Stop execution by returning false.
+        halted = true;
         return false;
     }
 
@@ -250,6 +281,19 @@ public class CPU {
     }
 
     public int getLastOutput() {
+        outputReady = false;    // Set the flag that we've consumed this output.
         return lastOutput;
+    }
+
+    public boolean isWaitingForInput() {
+        return waitingForInput;
+    }
+
+    public boolean isOutputReady() {
+        return outputReady;
+    }
+
+    public boolean isHalted() {
+        return halted;
     }
 }

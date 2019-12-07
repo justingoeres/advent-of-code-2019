@@ -11,12 +11,17 @@ public class IntCodeProcessorService {
 
     public IntCodeProcessorService(String pathToFile) {
         inputFile = pathToFile;
-        loadInputs();
+        cpu = loadInputs();
     }
 
     public void runToCompletion() {
         while (cpu.executeNext()) ;
     }
+
+    public boolean executeNext() {
+        return cpu.executeNext();
+    }
+
 
     public void setValueAtPosition(int position, int value) {
         cpu.setValueAtPosition(position, value);
@@ -34,11 +39,27 @@ public class IntCodeProcessorService {
         return cpu.getLastOutput();
     }
 
+    public boolean isWaitingForInput() {
+        return cpu.isWaitingForInput();
+    }
+
+    public boolean isOutputReady() {
+        return cpu.isOutputReady();
+    }
+
+    public boolean isHalted() {
+        return cpu.isHalted();
+    }
+
+    protected String getInputFile() {
+        return inputFile;
+    }
+
     public void reset() {
         cpu.reset();
     }
 
-    private void loadInputs() {
+    protected CPU loadInputs() {
         // To load the program, simply read all the ints into an ArrayList.
         // We will interpret opcodes/arguments/pc as we execute it later
         ArrayList<Integer> programCode = new ArrayList<>();
@@ -52,9 +73,10 @@ public class IntCodeProcessorService {
                 }
             }
             // Initialize the CPU with the code we just loaded.
-            cpu = new CPU(programCode);
+            return (new CPU(programCode));
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
+        return null;
     }
 }
