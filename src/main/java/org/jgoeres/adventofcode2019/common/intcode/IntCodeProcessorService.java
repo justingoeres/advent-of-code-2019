@@ -30,7 +30,7 @@ public class IntCodeProcessorService {
     }
 
     public void setCpuInputValue(int cpuInputValue) {
-        cpu.setInputValue(cpuInputValue);
+        cpu.addToInputQueue(cpuInputValue);
     }
 
     public int getValueAtPosition(int position) {

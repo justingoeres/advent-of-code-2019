@@ -1,8 +1,6 @@
 package org.jgoeres.adventofcode2019.common.intcode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.jgoeres.adventofcode2019.common.intcode.ParamMode.IMMEDIATE;
 
@@ -10,7 +8,7 @@ public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();
 
     int pc;
-    int inputValue = 0;
+    Queue<Integer> inputQueue = new LinkedList<>();
     ArrayList<Integer> programCode;
     ArrayList<Integer> programCodeOriginal;
     private int lastOutput = 0;
@@ -111,8 +109,8 @@ public class CPU {
         return nextInstruction;
     }
 
-    public void setInputValue(int inputValue) {
-        this.inputValue = inputValue;
+    public void addToInputQueue(int inputValue) {
+        this.inputQueue.add(inputValue);
     }
 
     /*********** OpCode Implementations ***********/
@@ -157,7 +155,7 @@ public class CPU {
         // input value and store it at address 50.
         // Get the arguments
         int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
-
+        int inputValue = inputQueue.remove();
         programCode.set(val1, inputValue);
         return true;
     }
