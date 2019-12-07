@@ -155,7 +155,8 @@ public class CPU {
         // input value and store it at address 50.
         // Get the arguments
         int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
-        int inputValue = inputQueue.remove();
+        Integer inputValue = inputQueue.poll();
+        if (inputValue == null) inputValue = 0;
         programCode.set(val1, inputValue);
         return true;
     }
@@ -169,7 +170,7 @@ public class CPU {
 //        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
         int val1 = getArgValue(instruction, 0);
         lastOutput = val1;
-        System.out.println(val1);
+//        System.out.println(val1);
         return true;
     }
 

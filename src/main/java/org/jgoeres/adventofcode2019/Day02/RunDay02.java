@@ -4,8 +4,8 @@ import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
 public abstract class RunDay02 {
     static String pathToInputs = "data/day02/input.txt";
-    //    static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService(pathToInputs);
-    static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();
+        static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService(pathToInputs);
+//    static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();
 
 
     public static int problem2A() {

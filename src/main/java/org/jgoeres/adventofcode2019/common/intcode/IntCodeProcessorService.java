@@ -6,15 +6,8 @@ import java.util.ArrayList;
 
 public class IntCodeProcessorService {
 
-    private final String DEFAULT_INPUTS_PATH = "data/day05/input.txt";
-
-    private String inputFile = DEFAULT_INPUTS_PATH;
+    private String inputFile;
     private CPU cpu;
-
-    public IntCodeProcessorService() {
-        // Load the inputs from the default file
-        loadInputs();
-    }
 
     public IntCodeProcessorService(String pathToFile) {
         inputFile = pathToFile;
