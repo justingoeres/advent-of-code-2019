@@ -54,3 +54,6 @@ So, the final image looks like this:
 10
 What message is produced after decoding your image?
 
+Your puzzle answer was UGCUH.
+
+Both parts of this puzzle are complete! They provide two gold stars: **

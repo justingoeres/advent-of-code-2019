@@ -33,12 +33,17 @@ public abstract class RunDay08 {
         // Day 8B
         System.out.println("=== DAY " + XX + "B ===");
 
+        spaceImageService.renderFinalImage();
         int result = 0;
 
-        System.out.println("Day " + XX + "B: Answer = " + result);
-
-//        Day 8B: Answer =
-//        Time elapsed:	xxx ms
+//        System.out.println("Day " + XX + "B: Answer = " + result);
+//        1  1  11   11  1  1 1  1
+//        1  1 1  1 1  1 1  1 1  1
+//        1  1 1    1    1  1 1111
+//        1  1 1 11 1    1  1 1  1
+//        1  1 1  1 1  1 1  1 1  1
+//        11   111  11   11  1  1
+//        Time elapsed:	52 ms
 
         return result;
     }
