@@ -3,6 +3,8 @@ package org.jgoeres.adventofcode2019.common.intcode;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IntCodeProcessorService {
 
@@ -62,14 +64,16 @@ public class IntCodeProcessorService {
     protected CPU loadInputs() {
         // To load the program, simply read all the ints into an ArrayList.
         // We will interpret opcodes/arguments/pc as we execute it later
-        ArrayList<Integer> programCode = new ArrayList<>();
+        HashMap<Integer, Integer> programCode = new HashMap<>();
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
             while ((line = br.readLine()) != null) {
+                int addr = 0;
                 String[] data = line.split(",");
                 // Add all the codes from this line to the programCode list
                 for (String element : data) {
-                    programCode.add(Integer.parseInt(element));
+                    programCode.put(addr, Integer.parseInt(element));
+                    addr++;
                 }
             }
             // Initialize the CPU with the code we just loaded.

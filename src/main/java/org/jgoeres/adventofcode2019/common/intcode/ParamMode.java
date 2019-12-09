@@ -17,6 +17,8 @@ public enum ParamMode {
                 return POSITION;
             case 1:
                 return IMMEDIATE;
+            case 2:
+                return RELATIVE;
         }
         return null;
     }

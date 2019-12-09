@@ -41,14 +41,14 @@ public class Day05Test {
 
     @Test
     public void Day5A() {
+        int result = 0;
         try {
-            int result = RunDay05.problem5A();
-
-//            Your puzzle answer was 9775037.
-            Assert.assertEquals(9775037, result);
+            result = RunDay05.problem5A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+//            Your puzzle answer was 9775037.
+        Assert.assertEquals(9775037, result);
     }
 
     @Test
@@ -82,12 +82,13 @@ public class Day05Test {
 
     @Test
     public void Day5B() {
+        int result = 0;
         try {
-            int result = RunDay05.problem5B();
+            result = RunDay05.problem5B();
 
-            Assert.assertEquals(15586959, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        Assert.assertEquals(15586959, result);
     }
 }

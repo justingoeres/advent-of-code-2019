@@ -72,13 +72,14 @@ public class Day07Test {
 
     @Test
     public void Day07A() {
+        int result = 0;
         try {
-            int result = RunDay07.problem7A();
+            result = RunDay07.problem7A();
 
-            Assert.assertEquals(914828, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        Assert.assertEquals(914828, result);
     }
 
     @Test
@@ -126,12 +127,13 @@ public class Day07Test {
 
     @Test
     public void Day07B() {
+        int result = 0;
         try {
-            int result = RunDay07.problem7B();
+            result = RunDay07.problem7B();
 
-            Assert.assertEquals(17956613, result);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        Assert.assertEquals(17956613, result);
     }
 }
