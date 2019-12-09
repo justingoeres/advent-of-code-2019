@@ -8,6 +8,7 @@ public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();
 
     int pc;
+    int relativeBase;
     Queue<Integer> inputQueue = new LinkedList<>();
     ArrayList<Integer> programCode;
     ArrayList<Integer> programCodeOriginal;
@@ -27,6 +28,7 @@ public class CPU {
 
     public void reset() {
         pc = 0;
+        relativeBase = 0;
         lastOutput = 0;
         waitingForInput = false;
         outputReady = false;
@@ -50,6 +52,7 @@ public class CPU {
         map.put(OpCode.JUMP_IF_FALSE, (instruction) -> jumpIfFalse(instruction));
         map.put(OpCode.LESS_THAN, (instruction) -> lessThan(instruction));
         map.put(OpCode.EQUALS, (instruction) -> equals(instruction));
+        map.put(OpCode.RELATIVE_BASE, (instruction) -> relativeBase(instruction));
 
         return map;
     }
@@ -81,7 +84,7 @@ public class CPU {
     public int getValueAtPosition(int position) {
         int result = 0;
         try {
-            result =  programCode.get(position);
+            result = programCode.get(position);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -266,6 +269,18 @@ public class CPU {
         return true;
     }
 
+    private boolean relativeBase(Instruction instruction) {
+        // RELATIVE_BASE
+        // Opcode 9 adjusts the relative base by the value of its only parameter.
+        // The relative base increases (or decreases, if the value is negative)
+        // by the value of the parameter.
+
+        int val1 = getArgValue(instruction, 0);
+        relativeBase += val1;
+        System.out.println("Relative Base:\t" + (relativeBase - val1) + "\t->\t" + val1 + "\t=\t" + relativeBase);
+        return true;
+    }
+
     private boolean halt(Instruction instruction) {
         // HALT
         // Stop execution by returning false.
@@ -276,8 +291,19 @@ public class CPU {
     private int getArgValue(Instruction instruction, int index) {
         ParamMode mode = instruction.getParam(index).getMode();
         int arg = instruction.getParam(index).getValue();
-        int value = (mode == IMMEDIATE) ? arg : getValueAtPosition(arg);
-        return value;
+        switch(mode){
+            case IMMEDIATE:
+                return arg;
+            case POSITION:
+                return getValueAtPosition(arg);
+            case RELATIVE:
+                // The address a relative mode parameter refers to is itself plus the current relative base
+                return getValueAtPosition(arg + relativeBase);
+            default:
+                return 0;
+        }
+//        int value = (mode == IMMEDIATE) ? arg : getValueAtPosition(arg);
+//        return value;
     }
 
     public int getLastOutput() {

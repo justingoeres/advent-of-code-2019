@@ -8,7 +8,8 @@ public enum OpCode {
     JUMP_IF_TRUE(5,2),
     JUMP_IF_FALSE(6,2),
     LESS_THAN(7,3),
-    EQUALS(7,3),
+    EQUALS(8,3),
+    RELATIVE_BASE(9,1),
     HALT(99,0);
 
     private int value;
@@ -45,6 +46,8 @@ public enum OpCode {
                 return LESS_THAN;
             case 8:
                 return EQUALS;
+            case 9:
+                return RELATIVE_BASE;
             case 99:
                 return HALT;
         }
