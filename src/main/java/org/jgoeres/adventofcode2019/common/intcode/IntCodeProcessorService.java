@@ -2,9 +2,7 @@ package org.jgoeres.adventofcode2019.common.intcode;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class IntCodeProcessorService {
 
@@ -25,19 +23,19 @@ public class IntCodeProcessorService {
     }
 
 
-    public void setValueAtPosition(int position, int value) {
+    public void setValueAtPosition(Long position, Long value) {
         cpu.setValueAtPosition(position, value);
     }
 
-    public void setCpuInputValue(int cpuInputValue) {
+    public void setCpuInputValue(Long cpuInputValue) {
         cpu.addToInputQueue(cpuInputValue);
     }
 
-    public int getValueAtPosition(int position) {
+    public Long getValueAtPosition(Long position) {
         return cpu.getValueAtPosition(position);
     }
 
-    public int getProgramOutput() {
+    public Long getProgramOutput() {
         return cpu.getLastOutput();
     }
 
@@ -64,15 +62,15 @@ public class IntCodeProcessorService {
     protected CPU loadInputs() {
         // To load the program, simply read all the ints into an ArrayList.
         // We will interpret opcodes/arguments/pc as we execute it later
-        HashMap<Integer, Integer> programCode = new HashMap<>();
+        HashMap<Long, Long> programCode = new HashMap<>();
         String line;
         try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
             while ((line = br.readLine()) != null) {
-                int addr = 0;
+                Long addr = 0L;
                 String[] data = line.split(",");
                 // Add all the codes from this line to the programCode list
                 for (String element : data) {
-                    programCode.put(addr, Integer.parseInt(element));
+                    programCode.put(addr, Long.parseLong(element));
                     addr++;
                 }
             }

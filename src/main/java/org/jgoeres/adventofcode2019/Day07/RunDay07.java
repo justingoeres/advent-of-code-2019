@@ -14,7 +14,7 @@ public abstract class RunDay07 {
         int PHASE_MAX = 4;
 
         // Iterate through all possible phase settings of the amplifiers
-        ArrayList<Integer> phaseSettings = new ArrayList<>();
+        ArrayList<Integer> phaseSettings = new ArrayList<Integer>();
         for (int i = 0; i <= PHASE_MAX; i++) {
             for (int j = 0; j <= PHASE_MAX; j++) {
                 for (int k = 0; k <= PHASE_MAX; k++) {
@@ -72,8 +72,8 @@ public abstract class RunDay07 {
         return result;
     }
 
-    public static int problem7B() {
-        int maxThrustOutput = Integer.MIN_VALUE;
+    public static Long problem7B() {
+        Long maxThrustOutput = Long.MIN_VALUE;
         int PHASE_MIN = 5;
         int PHASE_MAX = 9;
 
@@ -100,7 +100,7 @@ public abstract class RunDay07 {
                                 continue;
                             }
 
-                            int thrustOutput = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+                            Long thrustOutput = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
 
 //                            System.out.println("Thrust output\t" + thrustOutput
 //                                    + "\tfor phase settings "
@@ -128,7 +128,7 @@ public abstract class RunDay07 {
             }
         }
 
-        int result = maxThrustOutput;
+        Long result = maxThrustOutput;
         System.out.println("Day 7B: Max thrust output = " + result);
 //        Day 7B: Max thrust output = 17956613
 //        Time elapsed:	194 ms

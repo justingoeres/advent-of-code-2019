@@ -1,26 +1,26 @@
 package org.jgoeres.adventofcode2019.common.intcode;
 
 public enum OpCode {
-    ADD(1,3),
-    MULTIPLY(2,3),
-    INPUT(3,1),
-    OUTPUT(4,1),
-    JUMP_IF_TRUE(5,2),
-    JUMP_IF_FALSE(6,2),
-    LESS_THAN(7,3),
-    EQUALS(8,3),
-    RELATIVE_BASE(9,1),
-    HALT(99,0);
+    ADD(1L,3),
+    MULTIPLY(2L,3),
+    INPUT(3L,1),
+    OUTPUT(4L,1),
+    JUMP_IF_TRUE(5L,2),
+    JUMP_IF_FALSE(6L,2),
+    LESS_THAN(7L,3),
+    EQUALS(8L,3),
+    RELATIVE_BASE(9L,1),
+    HALT(99L,0);
 
-    private int value;
+    private long value;
     private int numArgs;
 
-    OpCode(int value, int numArgs) {
+    OpCode(long value, int numArgs) {
         this.value = value;
         this.numArgs = numArgs;
     }
 
-    public int getValue(){
+    public long getValue(){
         return value;
     }
 
@@ -28,8 +28,8 @@ public enum OpCode {
         return numArgs;
     }
 
-    public static OpCode fromInt(int x) {
-        switch (x) {
+    public static OpCode fromInt(long x) {
+        switch (Math.round(x)) {
             case 1:
                 return ADD;
             case 2:

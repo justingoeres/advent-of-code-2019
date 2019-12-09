@@ -11,8 +11,8 @@ public enum ParamMode {
         this.modeInt = modeInt;
     }
 
-    public static ParamMode fromInt(int x) {
-        switch (x) {
+    public static ParamMode fromInt(long x) {
+        switch (Math.round(x)) {
             case 0:
                 return POSITION;
             case 1:

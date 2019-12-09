@@ -20,21 +20,21 @@ public class IntCodeProcessorDay07 extends IntCodeProcessorService {
         super(pathToFile);
     }
 
-    public int runAmplifierStages(ArrayList<Integer> phases) {
+    public Integer runAmplifierStages(ArrayList<Integer> phases) {
 
-        int inputValue = 0; // input to Stage 1 is zero.
-        for (int phase : phases) {
+        Integer inputValue = 0; // input to Stage 1 is zero.
+        for (Integer phase : phases) {
             // Run each stage with its corresponding phase setting
             // reset before executing so the program is in the original state
             this.reset();
             // First input value is phase
-            this.setCpuInputValue(phase);
+            this.setCpuInputValue(phase.longValue());
             // Second input value is input signal
-            this.setCpuInputValue(inputValue);
+            this.setCpuInputValue(inputValue.longValue());
             // Then run
             this.runToCompletion();
             // Output of this stage is the input to the next
-            inputValue = this.getProgramOutput();
+            inputValue = this.getProgramOutput().intValue();
         }
         // When we're done, return the final stage output value
         return inputValue;
@@ -58,15 +58,15 @@ public class IntCodeProcessorDay07 extends IntCodeProcessorService {
         ioWiring.put(allAmplifiers.get(0), allAmplifiers.get(4));
     }
 
-    public int runParallelAmplifierStages(Queue<Integer> phaseSettings) {
+    public Long runParallelAmplifierStages(Queue<Integer> phaseSettings) {
         // Reset all processors and setup their phases
         for (CPU amplifier : allAmplifiers) {
             amplifier.reset();
-            amplifier.addToInputQueue(phaseSettings.poll());
+            amplifier.addToInputQueue(phaseSettings.poll().longValue());
         }
 
         // Set amplifier A's input to zero for the very first iteration only.
-        allAmplifiers.get(0).addToInputQueue(0);
+        allAmplifiers.get(0).addToInputQueue(0L);
 
         while (!allAmplifiers.get(4).isHalted()) {    // Keep going until the last amplifier stops
             // Execute the next tick for all processors.
@@ -87,7 +87,7 @@ public class IntCodeProcessorDay07 extends IntCodeProcessorService {
                 }
             }
         }
-        int result = allAmplifiers.get(4).getLastOutput();
+        Long result = allAmplifiers.get(4).getLastOutput();
         return result;
     }
 

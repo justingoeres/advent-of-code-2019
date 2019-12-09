@@ -12,7 +12,8 @@ public class Day05Test {
     public void Day5AWithDay2Example1() {
         intCodeProcessorService = new IntCodeProcessorService("data/day05/day2example1.txt");
         intCodeProcessorService.runToCompletion();
-        Assert.assertEquals(3500, intCodeProcessorService.getValueAtPosition(0));
+        long result = intCodeProcessorService.getValueAtPosition(0L);
+        Assert.assertEquals(3500L, result);
     }
 
 
@@ -21,34 +22,35 @@ public class Day05Test {
         intCodeProcessorService = new IntCodeProcessorService("data/day05/day2input.txt");
 
         // Set up the processor in the 1202 alarm configuration
-        intCodeProcessorService.setValueAtPosition(1, 12);
-        intCodeProcessorService.setValueAtPosition(2, 2);
+        intCodeProcessorService.setValueAtPosition(1L, 12L);
+        intCodeProcessorService.setValueAtPosition(2L, 2L);
 
         intCodeProcessorService.runToCompletion();
-        Assert.assertEquals(4138687, intCodeProcessorService.getValueAtPosition(0));
+        long result = intCodeProcessorService.getValueAtPosition(0L);
+        Assert.assertEquals(4138687L, result);
     }
 
     @Test
     public void Day5AExample1() {
 //        The program 3,0,4,0,99 outputs whatever it gets as input, then halts.
         intCodeProcessorService = new IntCodeProcessorService("data/day05/example1.txt");
-        intCodeProcessorService.setCpuInputValue(555);
+        intCodeProcessorService.setCpuInputValue(555L);
         intCodeProcessorService.runToCompletion();
 
-        int result = intCodeProcessorService.getProgramOutput();
-        Assert.assertEquals(555, result);
+        long result = intCodeProcessorService.getProgramOutput();
+        Assert.assertEquals(555L, result);
     }
 
     @Test
     public void Day5A() {
-        int result = 0;
+        long result = 0L;
         try {
             result = RunDay05.problem5A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 //            Your puzzle answer was 9775037.
-        Assert.assertEquals(9775037, result);
+        Assert.assertEquals(9775037L, result);
     }
 
     @Test
@@ -63,7 +65,7 @@ public class Day05Test {
 //        output 1001 if the input value is greater than 8.
         intCodeProcessorService = new IntCodeProcessorService("data/day05/example2.txt");
 
-        final int[][] testVectors = {
+        final Integer[][] testVectors = {
                 {-2, 999},   //        output 999 if the input value is below 8,
                 {7, 999},   //        output 999 if the input value is below 8,
                 {8, 1000},  //        output 1000 if the input value is equal to 8, or
@@ -71,24 +73,24 @@ public class Day05Test {
                 {9999, 1001}   //        output 1001 if the input value is greater than 8.
         };
 
-        for (int testVector[] : testVectors) {
+        for (Integer[] testVector : testVectors) {
             intCodeProcessorService.reset();
-            intCodeProcessorService.setCpuInputValue(testVector[0]);
+            intCodeProcessorService.setCpuInputValue(testVector[0].longValue());
             intCodeProcessorService.runToCompletion();
-            int result = intCodeProcessorService.getProgramOutput();
-            Assert.assertEquals(testVector[1], result);
+            int result = intCodeProcessorService.getProgramOutput().intValue();
+            Assert.assertEquals(testVector[1].intValue(), result);
         }
     }
 
     @Test
     public void Day5B() {
-        int result = 0;
+        Long result = 0L;
         try {
             result = RunDay05.problem5B();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(15586959, result);
+        Assert.assertEquals(15586959L, result.longValue());
     }
 }

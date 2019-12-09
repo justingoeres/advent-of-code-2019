@@ -40,7 +40,7 @@ public class Day07Test {
 //                101,5,23,23,1,24,23,23,4,23,99,0,0
 
         intCodeProcessorService = new IntCodeProcessorDay07("data/day07/example2.txt");
-        ArrayList<Integer> phaseSettings = new ArrayList<>();
+        ArrayList<Integer> phaseSettings = new ArrayList<Integer>();
         phaseSettings.add(0);
         phaseSettings.add(1);
         phaseSettings.add(2);
@@ -98,7 +98,7 @@ public class Day07Test {
         phaseSettings.add(5);
 
         intCodeProcessorService.initParallelAmplifierStages();
-        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings).intValue();
 
         Assert.assertEquals(139629729, result);
     }
@@ -120,7 +120,7 @@ public class Day07Test {
         phaseSettings.add(6);
 
         intCodeProcessorService.initParallelAmplifierStages();
-        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings);
+        int result = intCodeProcessorService.runParallelAmplifierStages(phaseSettings).intValue();
 
         Assert.assertEquals(18216, result);
     }
@@ -129,7 +129,7 @@ public class Day07Test {
     public void Day07B() {
         int result = 0;
         try {
-            result = RunDay07.problem7B();
+            result = RunDay07.problem7B().intValue();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

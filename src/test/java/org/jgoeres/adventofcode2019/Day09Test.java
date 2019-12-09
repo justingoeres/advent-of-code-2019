@@ -18,8 +18,8 @@ public class Day09Test {
         intCodeProcessorService = new IntCodeProcessorService("data/day09/example1.txt");
 
         intCodeProcessorService.runToCompletion();
-        int result = intCodeProcessorService.getProgramOutput();
-        Assert.assertEquals(43210, result);
+        long result = intCodeProcessorService.getProgramOutput();
+        Assert.assertEquals(99L, result);
     }
 
     @Test
@@ -39,7 +39,7 @@ public class Day09Test {
 //        104,1125899906842624,99
 //        should output the large number in the middle.
 
-        intCodeProcessorService = new IntCodeProcessorService("data/day09/example2.txt");
+        intCodeProcessorService = new IntCodeProcessorService("data/day09/example3.txt");
 
         intCodeProcessorService.runToCompletion();
         long result = intCodeProcessorService.getProgramOutput();
@@ -48,13 +48,13 @@ public class Day09Test {
 
     @Test
     public void Day9A() {
-        int result = 0;
+        long result = 0L;
         try {
             result = RunDay09.problem9A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(1560, result);
+        Assert.assertEquals(4080871669L, result);
     }
 
     @Test

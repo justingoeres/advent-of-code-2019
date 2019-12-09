@@ -2,9 +2,9 @@ package org.jgoeres.adventofcode2019.common.intcode;
 
 public class Parameter {
     private ParamMode mode;
-    private int value;
+    private Long value;
 
-    public Parameter(ParamMode mode, int value) {
+    public Parameter(ParamMode mode, Long value) {
         this.mode = mode;
         this.value = value;
     }
@@ -17,11 +17,11 @@ public class Parameter {
         this.mode = mode;
     }
 
-    public int getValue() {
+    public Long getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(Long value) {
         this.value = value;
     }
 }

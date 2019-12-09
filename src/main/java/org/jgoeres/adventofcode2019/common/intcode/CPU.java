@@ -2,15 +2,17 @@ package org.jgoeres.adventofcode2019.common.intcode;
 
 import java.util.*;
 
+import static org.jgoeres.adventofcode2019.common.intcode.ParamMode.RELATIVE;
+
 public class CPU {
     private static final Map<OpCode, Runnable> commands = new HashMap<>();
 
-    int pc;
-    int relativeBase;
-    Queue<Integer> inputQueue = new LinkedList<>();
-    HashMap<Integer, Integer> programCode;
-    HashMap<Integer, Integer> programCodeOriginal;
-    private int lastOutput = 0;
+    long pc;
+    Long relativeBase;
+    Queue<Long> inputQueue = new LinkedList<Long>();
+    HashMap<Long, Long> programCode;
+    HashMap<Long, Long> programCodeOriginal;
+    private Long lastOutput = 0L;
 
 
     Instruction nextInstruction = null;
@@ -19,19 +21,19 @@ public class CPU {
     private boolean halted = false;
 
 
-    public CPU(HashMap<Integer, Integer> programCode) {
+    public CPU(HashMap<Long, Long> programCode) {
         this.programCodeOriginal = programCode;
         reset();
     }
 
     public void reset() {
         pc = 0;
-        relativeBase = 0;
-        lastOutput = 0;
+        relativeBase = 0L;
+        lastOutput = 0L;
         waitingForInput = false;
         outputReady = false;
         halted = false;
-        programCode = (HashMap<Integer, Integer>) programCodeOriginal.clone();
+        programCode = (HashMap<Long, Long>) programCodeOriginal.clone();
     }
 
     // Create a map of OpCodes to functors that implement them
@@ -69,25 +71,25 @@ public class CPU {
         return keepGoing;
     }
 
-    public void setValueAtPosition(int position, int value) {
+    public void setValueAtPosition(Long position, Long value) {
         programCode.put(position, value);
     }
 
-    private int getValueAtPCAndAdvance() {
-        int value = getValueAtPosition(pc);
+    private Long getValueAtPCAndAdvance() {
+        Long value = getValueAtPosition(pc);
         pc++;
         return value;
     }
 
-    public int getValueAtPosition(int position) {
-        int result = 0;
+    public Long getValueAtPosition(Long position) {
+        Long result = 0L;
         try {
             if (programCode.containsKey(position)) {
                 // If this location exists in memory, retrieve it
                 result = programCode.get(position);
             } else {
                 // return zero
-                result = 0;
+                result = 0L;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -114,10 +116,10 @@ public class CPU {
         // also works like it did before - 99 is written to address 4.
 
         // Get the raw instruction value from the pc.
-        int instr = getValueAtPCAndAdvance();
+        Long instr = getValueAtPCAndAdvance();
 
         // Decode it into opcode & parameter modes
-        int opCodeInt = instr % 100;    // last two digits are opcode
+        long opCodeInt = instr % 100;    // last two digits are opcode
         OpCode opCode = OpCode.fromInt(opCodeInt);
         instr /= 100;
 
@@ -128,7 +130,7 @@ public class CPU {
         for (int i = 0; i < numArgs; i++) {
             ParamMode paramMode = ParamMode.fromInt(instr % 10);
             instr /= 10;
-            int paramValue = getValueAtPCAndAdvance();
+            Long paramValue = getValueAtPCAndAdvance();
 
             Parameter param = new Parameter(paramMode, paramValue);
             params.add(param);
@@ -138,7 +140,7 @@ public class CPU {
         return nextInstruction;
     }
 
-    public void addToInputQueue(int inputValue) {
+    public void addToInputQueue(Long inputValue) {
         this.inputQueue.add(inputValue);
     }
 
@@ -153,9 +155,10 @@ public class CPU {
         // at which the output should be stored.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
-        int val2 = getArgValue(instruction, 1);
-        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val1 = getArgValue(instruction, 0);
+        Long val2 = getArgValue(instruction, 1);
+//        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
 
         programCode.put(val3, val1 + val2);
         return true;
@@ -168,9 +171,10 @@ public class CPU {
         // the opcode indicate where the inputs and outputs are, not their values.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
-        int val2 = getArgValue(instruction, 1);
-        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val1 = getArgValue(instruction, 0);
+        Long val2 = getArgValue(instruction, 1);
+//        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
 
         programCode.put(val3, val1 * val2);
         return true;
@@ -183,9 +187,8 @@ public class CPU {
         // For example, the instruction 3,50 would take an
         // input value and store it at address 50.
         // Get the arguments
-        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
-//        Integer inputValue = inputQueue.poll();
-        Integer inputValue;
+        Long val1 = getOutputArgValue(instruction,0);
+        Long inputValue;
         if ((inputValue = inputQueue.poll()) == null) {
             // If there NOT is an input waiting for us
             waitingForInput = true; // Set the flag that says we need input.
@@ -204,7 +207,7 @@ public class CPU {
         // value at address 50.
         // Get the arguments
 //        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
-        int val1 = getArgValue(instruction, 0);
+        Long val1 = getArgValue(instruction, 0);
         lastOutput = val1;
         System.out.println(val1);
         outputReady = true;
@@ -218,11 +221,11 @@ public class CPU {
         // Otherwise, it does nothing.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
+        Long val1 = getArgValue(instruction, 0);
 //        int val2 = instruction.getParam(1).getValue();  // instructions that write out always use the value of the raw parameter
-        int val2 = getArgValue(instruction, 1);
+        Long val2 = getArgValue(instruction, 1);
 
-        if (val1 != 0) pc = val2;
+        if (val1 != 0L) pc = val2;
         return true;
     }
 
@@ -233,11 +236,11 @@ public class CPU {
         // Otherwise, it does nothing.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
+        Long val1 = getArgValue(instruction, 0);
 //        int val2 = instruction.getParam(1).getValue();  // instructions that write out always use the value of the raw parameter
-        int val2 = getArgValue(instruction, 1);
+        Long val2 = getArgValue(instruction, 1);
 
-        if (val1 == 0) pc = val2;
+        if (val1 == 0L) pc = val2;
         return true;
     }
 
@@ -248,11 +251,12 @@ public class CPU {
         // Otherwise, it stores 0.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
-        int val2 = getArgValue(instruction, 1);
-        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val1 = getArgValue(instruction, 0);
+        Long val2 = getArgValue(instruction, 1);
+//        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
 
-        int lessThan = (val1 < val2) ? 1 : 0;
+        Long lessThan = (val1 < val2) ? 1L : 0L;
         programCode.put(val3, lessThan);
         return true;
     }
@@ -264,11 +268,12 @@ public class CPU {
         // Otherwise, it stores 0.
 
         // Get the arguments
-        int val1 = getArgValue(instruction, 0);
-        int val2 = getArgValue(instruction, 1);
-        int val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val1 = getArgValue(instruction, 0);
+        Long val2 = getArgValue(instruction, 1);
+//        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
 
-        int lessThan = (val1 == val2) ? 1 : 0;
+        Long lessThan = (val1 == val2) ? 1L : 0L;
         programCode.put(val3, lessThan);
         return true;
     }
@@ -279,7 +284,7 @@ public class CPU {
         // The relative base increases (or decreases, if the value is negative)
         // by the value of the parameter.
 
-        int val1 = getArgValue(instruction, 0);
+        Long val1 = getArgValue(instruction, 0);
         relativeBase += val1;
 //        System.out.println("Relative Base:\t" + (relativeBase - val1) + "\t->\t" + val1 + "\t=\t" + relativeBase);
         return true;
@@ -292,9 +297,9 @@ public class CPU {
         return false;
     }
 
-    private int getArgValue(Instruction instruction, int index) {
+    private Long getArgValue(Instruction instruction, int index) {
         ParamMode mode = instruction.getParam(index).getMode();
-        int arg = instruction.getParam(index).getValue();
+        Long arg = instruction.getParam(index).getValue();
         switch (mode) {
             case IMMEDIATE:
                 return arg;
@@ -304,13 +309,27 @@ public class CPU {
                 // The address a relative mode parameter refers to is itself plus the current relative base
                 return getValueAtPosition(arg + relativeBase);
             default:
-                return 0;
+                return 0L;
         }
 //        int value = (mode == IMMEDIATE) ? arg : getValueAtPosition(arg);
 //        return value;
     }
 
-    public int getLastOutput() {
+    private Long getOutputArgValue(Instruction instruction, int index) {
+        ParamMode mode = instruction.getParam(index).getMode();
+        Long arg = instruction.getParam(index).getValue();
+        switch (mode) {
+            case IMMEDIATE:
+            case POSITION:
+            default:
+                return arg;
+            case RELATIVE:
+                return arg + relativeBase;
+        }
+    }
+
+
+    public Long getLastOutput() {
         outputReady = false;    // Set the flag that we've consumed this output.
         return lastOutput;
     }

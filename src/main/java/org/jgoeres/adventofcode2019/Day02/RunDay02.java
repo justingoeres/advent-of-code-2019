@@ -8,18 +8,18 @@ public abstract class RunDay02 {
 //    static IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService();
 
 
-    public static int problem2A() {
+    public static Long problem2A() {
         // Day 2A
         System.out.println("=== DAY 2A ===");
 
         // Set up the processor in the 1202 alarm configuration
-        intCodeProcessorService.setValueAtPosition(1, 12);
-        intCodeProcessorService.setValueAtPosition(2, 2);
+        intCodeProcessorService.setValueAtPosition(1L, 12L);
+        intCodeProcessorService.setValueAtPosition(2L, 2L);
 
         // Run it
         intCodeProcessorService.runToCompletion();
 
-        int result = intCodeProcessorService.getValueAtPosition(0);
+        Long result = intCodeProcessorService.getValueAtPosition(0L);
         System.out.println("Day 2A: Position 0 Value at Halt = " + result);
 //        Day 2A: Position 0 Value at Halt = 4138687
 //        Time elapsed:	2 ms
@@ -27,7 +27,7 @@ public abstract class RunDay02 {
         return result;
     }
 
-    public static int problem2B() {
+    public static Long problem2B() {
         // Day 2B
         System.out.println("=== DAY 2B ===");
 
@@ -37,18 +37,18 @@ public abstract class RunDay02 {
         // (your puzzle input) - in other words, don't reuse memory from a
         // previous attempt.
 
-        int noun, result;
-        int verb = 0;
+        Long noun, result;
+        Long verb = 0L;
         int target = 19690720;
 
         nounloop:
-        for (noun = 0; noun <= 99; noun++) {
-            for (verb = 0; verb < 99; verb++) {
+        for (noun = 0L; noun <= 99; noun++) {
+            for (verb = 0L; verb < 99; verb++) {
                 intCodeProcessorService.reset();
                 setIntCodeNounAndVerb(noun, verb);
                 intCodeProcessorService.runToCompletion();
 
-                result = intCodeProcessorService.getValueAtPosition(0);
+                result = intCodeProcessorService.getValueAtPosition(0L);
 //                System.out.println("\tnoun = " + noun + "\tverb = " + verb + "\tresult = " + result);
 
                 if (result == target) {
@@ -69,9 +69,9 @@ public abstract class RunDay02 {
         return result;
     }
 
-    private static void setIntCodeNounAndVerb(int noun, int verb) {
-        intCodeProcessorService.setValueAtPosition(1, noun);
-        intCodeProcessorService.setValueAtPosition(2, verb);
+    private static void setIntCodeNounAndVerb(Long noun, Long verb) {
+        intCodeProcessorService.setValueAtPosition(1L, noun);
+        intCodeProcessorService.setValueAtPosition(2L, verb);
     }
 
 }

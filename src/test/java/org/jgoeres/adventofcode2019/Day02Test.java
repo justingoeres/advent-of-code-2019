@@ -12,24 +12,25 @@ public class Day02Test {
     public void Day2AExample1() {
         intCodeProcessorService = new IntCodeProcessorService("data/day02/example1.txt");
         intCodeProcessorService.runToCompletion();
-        Assert.assertEquals(3500, intCodeProcessorService.getValueAtPosition(0));
+        long result = intCodeProcessorService.getValueAtPosition(0L);
+        Assert.assertEquals(3500, result);
     }
 
     @Test
     public void Day2A() {
-        int result = 0;
+        long result = 0;
         try {
             result = RunDay02.problem2A();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(4138687, result);
+        Assert.assertEquals(4138687L, result);
     }
 
     @Test
     public void Day2B() {
-        int result = 0;
+        long result = 0;
         try {
             result = RunDay02.problem2B();
 
