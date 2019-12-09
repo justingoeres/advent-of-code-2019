@@ -27,15 +27,16 @@ public abstract class RunDay09 {
         // Day 9B
         System.out.println("=== DAY 9B ===");
 
-        // Set the processor up for the thermal radiator controller test
         intCodeProcessorService.reset();
-        intCodeProcessorService.setCpuInputValue(5L);
+        // Set up the BOOST program in sensor boost mode
+        intCodeProcessorService.setCpuInputValue(2L);
+        // Run it
         intCodeProcessorService.runToCompletion();
 
         Long result = intCodeProcessorService.getProgramOutput();
-//        System.out.println("Day 9B: Program Output = " + result);
-//        Day 9B: Program Output = 15586959
-//        Time elapsed:	1 ms
+        System.out.println("Day 9B: Program Output = " + result);
+//        Day 9B: Program Output = 75202
+//        Time elapsed:	251 ms
 
         return result;
     }

@@ -66,6 +66,6 @@ public class Day09Test {
             System.out.println(e.getMessage());
         }
         // No test for this – just prints result
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(75202L, result);
     }
 }
