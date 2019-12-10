@@ -6,8 +6,18 @@ import org.jgoeres.adventofcode2019.Day10.RunDay10;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class Day10Test {
     static String XX = "10";
+
+    @Test
+    public void listAllAngles() {
+        AsteroidMonitorService asteroidMonitorService = new AsteroidMonitorService("data/day10/example1.txt");
+        XYPoint c = new XYPoint(2, 2);
+        ArrayList<XYPoint> asteroids = asteroidMonitorService.listVisibleAsteroidsFromPoint(c);
+        asteroidMonitorService.listAllAngles(asteroids, c);
+    }
 
     @Test
     public void Day10AExample1() {
@@ -75,11 +85,10 @@ public class Day10Test {
         int result = 0;
         try {
             result = RunDay10.problem10A();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(256, result);
     }
 
     @Test
@@ -87,7 +96,6 @@ public class Day10Test {
         int result = 0;
         try {
             result = RunDay10.problem10B();
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

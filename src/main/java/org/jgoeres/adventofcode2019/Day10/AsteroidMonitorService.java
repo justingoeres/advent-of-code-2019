@@ -4,6 +4,7 @@ import org.jgoeres.adventofcode2019.Day03.XYPoint;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class AsteroidMonitorService {
@@ -22,8 +23,29 @@ public class AsteroidMonitorService {
         loadInputs(pathToFile);
     }
 
-    public int visibleAsteroidsFromPoint(XYPoint c) {
+    public int countVisibleAsteroidsFromPoint(XYPoint c) {
+        ArrayList<XYPoint> visibleAsteroids = listVisibleAsteroidsFromPoint(c);
+        return visibleAsteroids.size();
+    }
+
+    public AsteroidVisibleData findMaxVisibleAsteroids() {
+        int maxVisible = Integer.MIN_VALUE;
+        XYPoint maxVisibleAsteroid = null;
+        // iterate over all the asteroids
+        for (XYPoint asteroid : asteroids) {
+            int visible = countVisibleAsteroidsFromPoint(asteroid);
+            if (visible > maxVisible) {
+                maxVisible = visible;
+                maxVisibleAsteroid = asteroid;
+                System.out.println("New Max:\t" + maxVisibleAsteroid.toString() + "\t" + "can see " + maxVisible);
+            }
+        }
+        return new AsteroidVisibleData(maxVisibleAsteroid, maxVisible);
+    }
+
+    public ArrayList<XYPoint> listVisibleAsteroidsFromPoint(XYPoint c) {
         HashSet<AsteroidVector> visible = new HashSet<>();
+        ArrayList<XYPoint> visibleAsteroids = new ArrayList<>();
         // Iterate through all the asteroids
         for (XYPoint asteroid : asteroids) {
             // Skip the one we're on
@@ -39,24 +61,30 @@ public class AsteroidMonitorService {
             AsteroidVector asteroidVector = new AsteroidVector(slope, quadrant);
 
             // If so, add the target to the list of visible asteroids
-            visible.add(asteroidVector);
-        }
-        return visible.size();
-    }
-
-    public AsteroidVisibleData findMaxVisibleAsteroids() {
-        int maxVisible = Integer.MIN_VALUE;
-        XYPoint maxVisibleAsteroid = null;
-        // iterate over all the asteroids
-        for (XYPoint asteroid : asteroids) {
-            int visible = visibleAsteroidsFromPoint(asteroid);
-            if (visible > maxVisible) {
-                maxVisible = visible;
-                maxVisibleAsteroid = asteroid;
-                System.out.println("New Max:\t" + maxVisibleAsteroid.toString() + "\t" + "can see " + maxVisible);
+            if (visible.add(asteroidVector)) {
+                visibleAsteroids.add(asteroid);
             }
         }
-        return new AsteroidVisibleData(maxVisibleAsteroid, maxVisible);
+        return visibleAsteroids;
+    }
+//    public ArrayList<XYPoint> generateBeamList(XYPoint c) {
+//        // From point c, generate the edge coordinates for 1 full beam rotation
+//    }
+
+    public void listAllAngles(ArrayList<XYPoint> asteroids, XYPoint c) {
+        for (XYPoint asteroid : asteroids) {
+            System.out.println(asteroid.toString() + "\t" + angleFromPoint(asteroid, c));
+        }
+        return;
+    }
+
+    public double angleFromPoint(XYPoint p, XYPoint c) {
+        XYPoint endpt = new XYPoint(p.getX() - c.getX(), p.getY() - c.getY());
+        double angleInRadians = Math.atan2(endpt.getY(), endpt.getX());
+        // Shift the range so that it runs from -PI/2 to 3*PI/2 (instead of -PI to +PI)
+        if (angleInRadians < -Math.PI / 2) angleInRadians += 2 * Math.PI;
+//        double angleInRadians = Math.atan2(endpt.getX(), endpt.getY());
+        return angleInRadians;
     }
 
     /**
