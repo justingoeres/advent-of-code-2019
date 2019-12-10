@@ -95,3 +95,7 @@ Best is 11,13 with 210 other asteroids detected:
 ###.##.####.##.#..##
 Find the best location for a new monitoring station. How many other asteroids can be detected from that location?
 
+Your puzzle answer was 256.
+
+The first half of this puzzle is complete! It provides one gold star: *
+

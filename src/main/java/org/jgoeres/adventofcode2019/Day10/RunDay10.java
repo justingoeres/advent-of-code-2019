@@ -12,7 +12,7 @@ public abstract class RunDay10 {
         // Day 10A
         System.out.println("=== DAY " + XX + "A ===");
 
-        int result = 0;
+        int result = asteroidMonitorService.findMaxVisibleAsteroids().getNumVisible();
 
         System.out.println("Day " + XX + "A: Answer = " + result);
 

@@ -25,6 +25,10 @@ public class XYPoint {
         this.y = y;
     }
 
+    @Override
+    public String toString() {
+        return (getX() + ", " + getY());
+    }
 
     @Override
     public boolean equals(Object obj) {
