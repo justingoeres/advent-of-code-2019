@@ -5,7 +5,9 @@ import org.jgoeres.adventofcode2019.Day03.XYPoint;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 public class AsteroidMonitorService {
     private final String XX = "10";
@@ -13,7 +15,8 @@ public class AsteroidMonitorService {
 
     private final char ASTEROID = '#';
 
-    private HashSet<XYPoint> asteroids = new HashSet<>();
+    //    private HashSet<XYPoint> asteroids = new HashSet<>();
+    private ArrayList<XYPoint> asteroids = new ArrayList<>();
 
     public AsteroidMonitorService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -37,10 +40,59 @@ public class AsteroidMonitorService {
             if (visible > maxVisible) {
                 maxVisible = visible;
                 maxVisibleAsteroid = asteroid;
-                System.out.println("New Max:\t" + maxVisibleAsteroid.toString() + "\t" + "can see " + maxVisible);
+//                System.out.println("New Max:\t" + maxVisibleAsteroid.toString() + "\t" + "can see " + maxVisible);
             }
         }
         return new AsteroidVisibleData(maxVisibleAsteroid, maxVisible);
+    }
+
+    public XYPoint vaporizeAsteroidsFromPoint(XYPoint c) {
+        // Vaporize everything, return the last one
+        XYPoint lastDestroyed = vaporizeAsteroidsFromPoint(c, Integer.MAX_VALUE);
+        return lastDestroyed;
+    }
+
+
+    public XYPoint vaporizeAsteroidsFromPoint(XYPoint c, int limit) {
+        // Before we start, sort the asteroids array by distance relative to our reference point.
+        sortAsteroidsByDistanceToPoint(c);
+
+        int i = 1;
+        XYPoint lastDestroyed = null;
+        // Remove our base from the asteroids list since we never blast it.
+        asteroids.remove(c);
+        while (!asteroids.isEmpty()) {
+            // Keep going until we're out of asteroids (or see below to break when we hit the limit)
+            // Get all the asteroids visible from point c.
+            ArrayList<XYPoint> visibleAsteroids = listVisibleAsteroidsFromPoint(c);
+            // Sort them by angle
+            TreeSet<AsteroidAngle> sortedVisible = sortVisibleFromPoint(visibleAsteroids, c);
+            // Iterate through those visible asteroids, removing them from the big list (vaporizing them!)
+            for (AsteroidAngle target : sortedVisible) {
+                XYPoint targetAsteroid = target.getAsteroid();
+                if (asteroids.contains(targetAsteroid)) {
+                    asteroids.remove(targetAsteroid);
+                    lastDestroyed = targetAsteroid;
+//                    System.out.println("Destroyed asteroid #" + i + " at " + lastDestroyed);
+                    if (i >= limit) {
+                        // If we've hit the limit of asteroids we want to destroy
+                        return lastDestroyed;
+                    } else {
+                        // continue
+                        i++;
+                    }
+                } else {
+                    System.out.println("WARNING:\tAsteroid " + target.getAsteroid() + " not found in asteroids list.");
+                }
+            }
+//            System.out.println("Round complete");
+        }
+        return lastDestroyed;
+    }
+
+    public void sortAsteroidsByDistanceToPoint(XYPoint c) {
+        // Sort the 'asteroids' ArrayList by distance from point c
+        Collections.sort(asteroids, new AsteroidDistanceComparator(c));
     }
 
     public ArrayList<XYPoint> listVisibleAsteroidsFromPoint(XYPoint c) {
@@ -67,9 +119,16 @@ public class AsteroidMonitorService {
         }
         return visibleAsteroids;
     }
-//    public ArrayList<XYPoint> generateBeamList(XYPoint c) {
-//        // From point c, generate the edge coordinates for 1 full beam rotation
-//    }
+
+    public TreeSet<AsteroidAngle> sortVisibleFromPoint(ArrayList<XYPoint> asteroids, XYPoint c) {
+        TreeSet<AsteroidAngle> sorted = new TreeSet<>(new AsteroidAngleComparator());
+        for (XYPoint asteroid : asteroids) {
+            double angle = angleFromPoint(asteroid, c);
+            AsteroidAngle asteroidAngle = new AsteroidAngle(asteroid, angle);
+            sorted.add(asteroidAngle);
+        }
+        return sorted;
+    }
 
     public void listAllAngles(ArrayList<XYPoint> asteroids, XYPoint c) {
         for (XYPoint asteroid : asteroids) {
@@ -99,6 +158,12 @@ public class AsteroidMonitorService {
         return (a / gcm) + "/" + (b / gcm);
     }
 
+    public int calculateDay10BAnswerValue(XYPoint p) {
+        // what do you get if you multiply its X coordinate by 100
+        // and then add its Y coordinate? (For example, 8,2 becomes 802.)
+        return (100 * p.getX() + p.getY());
+    }
+
     private void loadInputs(String pathToFile) {
         asteroids.clear();
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
@@ -118,24 +183,6 @@ public class AsteroidMonitorService {
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
-        }
-    }
-
-    public class AsteroidVisibleData {
-        XYPoint xyPoint;
-        int numVisible;
-
-        public AsteroidVisibleData(XYPoint xyPoint, int numVisible) {
-            this.xyPoint = xyPoint;
-            this.numVisible = numVisible;
-        }
-
-        public XYPoint getXyPoint() {
-            return xyPoint;
-        }
-
-        public int getNumVisible() {
-            return numVisible;
         }
     }
 }
