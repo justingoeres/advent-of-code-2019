@@ -1,17 +1,18 @@
 package org.jgoeres.adventofcode2019;
 
+import org.jgoeres.adventofcode2019.Day11.RunDay11;
 import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DayXXTest {
-    static String XX = "XX";
+public class Day11Test {
+    static String XX = "11";
 
     @Test
-    public void DayXXA() {
+    public void Day11A() {
         int result = 0;
         try {
-            result = RunDayXX.problemXXA();
+            result = RunDay11.problem11A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -19,10 +20,10 @@ public class DayXXTest {
     }
 
     @Test
-    public void DayXXB() {
+    public void Day11B() {
         int result = 0;
         try {
-            result = RunDayXX.problemXXB();
+            result = RunDay11.problem11B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
