@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day11;
 
+import static org.jgoeres.adventofcode2019.common.AoCMath.ORIGIN;
+
 public abstract class RunDay11 {
     static String XX = "11";
     static String YY = XX;
@@ -7,6 +9,7 @@ public abstract class RunDay11 {
     static String pathToInputs = "data/day" + YY + "/input.txt";
 
     static Day11Service day11Service = new Day11Service();
+    static PaintingRobot paintingRobot = new PaintingRobot(ORIGIN);
 
     public static int problem11A() {
         // Day 11A

@@ -2,11 +2,14 @@ package org.jgoeres.adventofcode2019;
 
 import org.jgoeres.adventofcode2019.Day11.RunDay11;
 import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
+import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class Day11Test {
     static String XX = "11";
+
+    IntCodeProcessorService intCodeProcessorService = new IntCodeProcessorService("data/day11/input.txt");
 
     @Test
     public void Day11A() {
