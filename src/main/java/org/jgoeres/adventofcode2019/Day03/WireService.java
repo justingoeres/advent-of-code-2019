@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
 import com.google.common.collect.Range;
+import org.jgoeres.adventofcode2019.common.AoCMath;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;
@@ -11,12 +12,14 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.jgoeres.adventofcode2019.common.AoCMath.ORIGIN;
+import static org.jgoeres.adventofcode2019.common.AoCMath.manhattanDistance;
+
 @SuppressWarnings("ConstantConditions")
 public class WireService {
     private final String XX = "03";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
     private final XYPoint NO_INTERSECTION = null;
-    private final XYPoint ORIGIN = new XYPoint(0, 0);
 
     private ArrayList<List<WireSegment>> wires = new ArrayList<>();
     private ArrayList<XYPoint> allIntersections = new ArrayList<>();
@@ -97,7 +100,6 @@ public class WireService {
         try (BufferedReader br = new BufferedReader(new FileReader(pathToFile))) {
             String line;
 
-            final XYPoint origin = new XYPoint(0, 0);
             while ((line = br.readLine()) != null) {
                 // Each line of text is one wire
                 // e.g. R1002,U407,R530,D268,R516,U937,L74
@@ -107,7 +109,7 @@ public class WireService {
 
                 ArrayList<WireSegment> wireSegments = new ArrayList<>();
                 // Start at the origin and build out the list of segments in this wire.
-                XYPoint p1 = origin;
+                XYPoint p1 = ORIGIN;
                 while ((match = scanner.findInLine(pattern)) != null) {
 //                    System.out.println(match);
                     Matcher matcher = pattern.matcher(match);
@@ -281,13 +283,6 @@ public class WireService {
     private boolean isNotOrigin(XYPoint p1) {
         return ((p1.getX() != ORIGIN.getX()) || (
                 p1.getY() != ORIGIN.getY()));
-    }
-
-    public int manhattanDistance(XYPoint p0, XYPoint p1) {
-        int xDistance = Math.abs(p0.getX() - p1.getX());
-        int yDistance = Math.abs(p0.getY() - p1.getY());
-
-        return (xDistance + yDistance);
     }
 
     private Range<Integer> rangeFromWireSegment(WireSegment wireSegment) {

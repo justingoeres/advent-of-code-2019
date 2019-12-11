@@ -8,7 +8,8 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.jgoeres.adventofcode2019.Day03.RunDay03.ORIGIN;
+import static org.jgoeres.adventofcode2019.common.AoCMath.ORIGIN;
+import static org.jgoeres.adventofcode2019.common.AoCMath.manhattanDistance;
 
 public class Day03Test {
     static String XX = "XX";
@@ -99,7 +100,7 @@ public class Day03Test {
 
         WireService wireServiceExample1 = new WireService("data/day03/example1.txt");
         XYPoint closestIntersection = wireServiceExample1.findClosestIntersection(ORIGIN);
-        int result = wireServiceExample1.manhattanDistance(closestIntersection, ORIGIN);
+        int result = manhattanDistance(closestIntersection, ORIGIN);
 
         Assert.assertEquals(159, result);
     }
@@ -111,7 +112,7 @@ public class Day03Test {
 
         WireService wireServiceExample1 = new WireService("data/day03/example2.txt");
         XYPoint closestIntersection = wireServiceExample1.findClosestIntersection(ORIGIN);
-        int result = wireServiceExample1.manhattanDistance(closestIntersection, ORIGIN);
+        int result = manhattanDistance(closestIntersection, ORIGIN);
 
         Assert.assertEquals(135, result);
     }

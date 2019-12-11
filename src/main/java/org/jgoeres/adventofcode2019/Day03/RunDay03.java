@@ -1,12 +1,15 @@
 package org.jgoeres.adventofcode2019.Day03;
 
+import org.jgoeres.adventofcode2019.common.AoCMath;
 import org.jgoeres.adventofcode2019.common.XYPoint;
+
+import static org.jgoeres.adventofcode2019.common.AoCMath.ORIGIN;
+import static org.jgoeres.adventofcode2019.common.AoCMath.manhattanDistance;
 
 public abstract class RunDay03 {
     static String XX = "3";
     static String YY = "0" + XX;
 
-    public static XYPoint ORIGIN = new XYPoint(0, 0);
     static String pathToInputs = "data/day" + YY + "/input.txt";
 
 
@@ -17,7 +20,7 @@ public abstract class RunDay03 {
         System.out.println("=== DAY " + XX + "A ===");
 
         XYPoint closestIntersection = wireService.findClosestIntersection(ORIGIN);
-        int result = wireService.manhattanDistance(closestIntersection,ORIGIN);
+        int result = manhattanDistance(closestIntersection,ORIGIN);
 
         System.out.println("Day " + XX + "A: Distance to closest intersection = " + result);
 

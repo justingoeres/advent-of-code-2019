@@ -4,6 +4,8 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.util.Comparator;
 
+import static org.jgoeres.adventofcode2019.common.AoCMath.manhattanDistance;
+
 public class AsteroidDistanceComparator implements Comparator<XYPoint> {
     XYPoint c;
 
@@ -26,8 +28,4 @@ public class AsteroidDistanceComparator implements Comparator<XYPoint> {
         this.c = c;
     }
 
-    private Integer manhattanDistance(XYPoint a, XYPoint b) {
-        return (Math.abs(b.getX() - a.getX())
-                + Math.abs(b.getY() - a.getY()));
-    }
 }
