@@ -16,6 +16,9 @@ import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 public class HullPaintingService {
     private final String XX = "11";
     private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
+    private final Character HASH = '#';
+    private final Character SPACE = ' ';
+    private final String EMPTY = "";
 
     private IntCodeProcessorService intCodeProcessorService;
     private PaintingRobot robot;
@@ -23,15 +26,24 @@ public class HullPaintingService {
 
     public HullPaintingService() {
         loadInputs(DEFAULT_INPUTS_PATH);
-        robot = new PaintingRobot(ORIGIN);
-        hullArea = new HashMap<>();
+        reset();
     }
 
     public HullPaintingService(String pathToFile) {
         // Create the intCode computer, the robot, and the (empty) hull area
         loadInputs(pathToFile);
-        robot = new PaintingRobot(ORIGIN);
+        reset();
+    }
+
+    public void reset() {
+        intCodeProcessorService.reset();
+        robot = new PaintingRobot(new XYPoint(0, 0));
         hullArea = new HashMap<>();
+    }
+
+    public void reset(Color startColor) {
+        reset();
+        hullArea.put(robot.getLocation(), startColor);
     }
 
     public int paintTheHull() {
@@ -65,6 +77,39 @@ public class HullPaintingService {
         }
         // Return the total number of panels painted (i.e. the total hull area we reached)
         return hullArea.size();
+    }
+
+    public void printHull() {
+        // Find the min & max x & y values of the hull so we know the bounds to iterate over
+        int xMin = Integer.MAX_VALUE;
+        int xMax = Integer.MIN_VALUE;
+        int yMin = Integer.MAX_VALUE;
+        int yMax = Integer.MIN_VALUE;
+        for (XYPoint panel : hullArea.keySet()) {
+            int x = panel.getX();
+            int y = panel.getY();
+            if (x < xMin) xMin = x;
+            if (x > xMax) xMax = x;
+            if (y < yMin) yMin = y;
+            if (y > yMax) yMax = y;
+        }
+//        System.out.println("X range: " + xMin + " - " + xMax);
+//        System.out.println("Y range: " + yMin + " - " + yMax);
+        // Now that we know our boundaries, print the hull
+        // y is lines, x is characters
+        for (int y = yMax; y >= yMin; y--) {    // It's upside-down
+            String line = EMPTY;
+            // for each line
+            for (int x = xMin; x <= xMax; x++) {
+                // for each position on the line
+                Color panelColor = readPanelColor(new XYPoint(x, y));    // If not found, this returns BLACK.
+                Character panelChar = (panelColor == WHITE) ? HASH : SPACE;
+                // Add the character to this line
+                line += panelChar;
+            }
+            // when we're done with the line, print it
+            System.out.println(line);
+        }
     }
 
     private void executeToNextInput() {

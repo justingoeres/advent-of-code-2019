@@ -30,6 +30,12 @@ public class Day11Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        // No pass/fail criteria for this, it just prints
+        //   ## #  # #### #    ####   ## ###  #  #
+        //    # # #     # #       #    # #  # #  #
+        //    # ##     #  #      #     # ###  ####
+        //    # # #   #   #     #      # #  # #  #
+        // #  # # #  #    #    #    #  # #  # #  # #
+        //  ##  #  # #### #### ####  ##  ###  #  #
     }
 }

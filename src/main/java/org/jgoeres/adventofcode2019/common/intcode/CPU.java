@@ -33,6 +33,7 @@ public class CPU {
         waitingForInput = false;
         outputReady = false;
         halted = false;
+        inputQueue.clear();
         programCode = (HashMap<Long, Long>) programCodeOriginal.clone();
     }
 
