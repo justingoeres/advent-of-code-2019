@@ -7,8 +7,8 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 import static org.jgoeres.adventofcode2019.common.Direction.UP;
 
 public class PaintingRobot {
-    XYPoint location;
-    Direction facing;
+    private XYPoint location;
+    private Direction facing;
 
     public PaintingRobot(XYPoint location) {
         this.location = location;
@@ -19,7 +19,7 @@ public class PaintingRobot {
         facing = facing.rotate(rotation);
     }
 
-    public void moveRobot() {
+    public void stepRobot() {
         int DEFAULT_DISTANCE = 1;
         moveRobot(DEFAULT_DISTANCE);
     }
@@ -28,12 +28,24 @@ public class PaintingRobot {
         switch (facing) {
             case UP:
                 location.setY(location.getY() + numSteps);
+                break;
             case RIGHT:
                 location.setX(location.getX() + numSteps);
+                break;
             case DOWN:
                 location.setY(location.getY() - numSteps);
+                break;
             case LEFT:
                 location.setX(location.getX() - numSteps);
+                break;
         }
+    }
+
+    public XYPoint getLocation() {
+        return location;
+    }
+
+    public Direction getFacing() {
+        return facing;
     }
 }

@@ -209,7 +209,7 @@ public class CPU {
 //        int val1 = instruction.getParam(0).getValue();  // instructions that write out always use the value of the raw parameter
         Long val1 = getArgValue(instruction, 0);
         lastOutput = val1;
-        System.out.println(val1);
+//        System.out.println(val1);
         outputReady = true;
         return true;
     }

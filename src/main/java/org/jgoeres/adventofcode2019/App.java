@@ -10,6 +10,7 @@ import org.jgoeres.adventofcode2019.Day07.RunDay07;
 import org.jgoeres.adventofcode2019.Day08.RunDay08;
 import org.jgoeres.adventofcode2019.Day09.RunDay09;
 import org.jgoeres.adventofcode2019.Day10.RunDay10;
+import org.jgoeres.adventofcode2019.Day11.RunDay11;
 
 /**
  * Hello world!
@@ -26,8 +27,8 @@ public class App {
     static final boolean RUN_DAY_7 = false;
     static final boolean RUN_DAY_8 = false;
     static final boolean RUN_DAY_9 = false;
-    static final boolean RUN_DAY_10 = true;
-    static final boolean RUN_DAY_11 = false;
+    static final boolean RUN_DAY_10 = false;
+    static final boolean RUN_DAY_11 = true;
     static final boolean RUN_DAY_12 = false;
     static final boolean RUN_DAY_13 = false;
     static final boolean RUN_DAY_14 = false;
@@ -192,19 +193,19 @@ public class App {
             blankLine();
         }
 
-//        if (RUN_DAY_11 || RUN_ALL) {
-//            setStartTime();
-//            RunDay11.problem11A();
-//            printElapsedTime();
-//
-//            blankLine();
-//
-//            setStartTime();
-//            RunDay11.problem11B();
-//            printElapsedTime();
-//
-//            blankLine();
-//        }
+        if (RUN_DAY_11 || RUN_ALL) {
+            setStartTime();
+            RunDay11.problem11A();
+            printElapsedTime();
+
+            blankLine();
+
+            setStartTime();
+            RunDay11.problem11B();
+            printElapsedTime();
+
+            blankLine();
+        }
 //
 //        if (RUN_DAY_12 || RUN_ALL) {
 //            setStartTime();

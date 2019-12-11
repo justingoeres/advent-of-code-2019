@@ -8,19 +8,18 @@ public abstract class RunDay11 {
 
     static String pathToInputs = "data/day" + YY + "/input.txt";
 
-    static Day11Service day11Service = new Day11Service();
+    static HullPaintingService hullPaintingService = new HullPaintingService();
     static PaintingRobot paintingRobot = new PaintingRobot(ORIGIN);
 
     public static int problem11A() {
         // Day 11A
         System.out.println("=== DAY " + XX + "A ===");
+        int result = hullPaintingService.paintTheHull();
 
-        int result = 0;
+        System.out.println("Day " + XX + "A: Number of panels painted = " + result);
 
-        System.out.println("Day " + XX + "A: Answer = " + result);
-
-//        Day 11A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 11A: Number of panels painted = 1894
+//        Time elapsed:	216 ms
 
         return result;
     }
