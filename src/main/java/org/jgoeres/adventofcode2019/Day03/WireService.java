@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
 import com.google.common.collect.Range;
-import org.jgoeres.adventofcode2019.common.AoCMath;
+import org.jgoeres.adventofcode2019.common.Direction;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;

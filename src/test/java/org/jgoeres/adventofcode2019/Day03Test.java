@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.Day03.Direction;
+import org.jgoeres.adventofcode2019.common.Direction;
 import org.jgoeres.adventofcode2019.Day03.RunDay03;
 import org.jgoeres.adventofcode2019.Day03.WireSegment;
 import org.jgoeres.adventofcode2019.Day03.WireService;

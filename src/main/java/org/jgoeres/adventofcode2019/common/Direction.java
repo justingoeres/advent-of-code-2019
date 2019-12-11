@@ -1,4 +1,4 @@
-package org.jgoeres.adventofcode2019.Day03;
+package org.jgoeres.adventofcode2019.common;
 
 import java.util.HashMap;
 import java.util.Map;
