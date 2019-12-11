@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019.Day10;
 
-import org.jgoeres.adventofcode2019.Day03.XYPoint;
+import org.jgoeres.adventofcode2019.common.XYPoint;
 
 public abstract class RunDay10 {
     static String XX = "10";

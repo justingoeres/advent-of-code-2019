@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
+import org.jgoeres.adventofcode2019.common.XYPoint;
+
 public abstract class RunDay03 {
     static String XX = "3";
     static String YY = "0" + XX;

@@ -4,8 +4,7 @@ import org.jgoeres.adventofcode2019.Day03.Direction;
 import org.jgoeres.adventofcode2019.Day03.RunDay03;
 import org.jgoeres.adventofcode2019.Day03.WireSegment;
 import org.jgoeres.adventofcode2019.Day03.WireService;
-import org.jgoeres.adventofcode2019.Day03.XYPoint;
-import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
+import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.junit.Assert;
 import org.junit.Test;
 

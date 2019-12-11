@@ -1,14 +1,10 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.Day03.XYPoint;
-import org.jgoeres.adventofcode2019.Day10.AsteroidAngle;
+import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.Day10.AsteroidMonitorService;
 import org.jgoeres.adventofcode2019.Day10.RunDay10;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class Day10Test {
     static String XX = "10";

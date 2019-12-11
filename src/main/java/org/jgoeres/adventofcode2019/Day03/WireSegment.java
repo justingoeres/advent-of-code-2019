@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
+import org.jgoeres.adventofcode2019.common.XYPoint;
+
 public class WireSegment {
     private Direction direction;
     private Integer length;

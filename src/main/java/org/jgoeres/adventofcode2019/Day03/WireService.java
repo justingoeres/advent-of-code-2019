@@ -1,14 +1,13 @@
 package org.jgoeres.adventofcode2019.Day03;
 
 import com.google.common.collect.Range;
+import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

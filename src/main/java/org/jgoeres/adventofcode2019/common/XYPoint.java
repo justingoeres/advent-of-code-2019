@@ -1,4 +1,4 @@
-package org.jgoeres.adventofcode2019.Day03;
+package org.jgoeres.adventofcode2019.common;
 
 public class XYPoint {
     private int x;

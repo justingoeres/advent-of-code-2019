@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019.Day10;
 
-import org.jgoeres.adventofcode2019.Day03.XYPoint;
+import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
