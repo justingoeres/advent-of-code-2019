@@ -59,9 +59,9 @@ public class Day09Test {
 
     @Test
     public void Day9B() {
-        int result = 0;
+        long result = 0L;
         try {
-            RunDay09.problem9B();
+            result = RunDay09.problem9B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
