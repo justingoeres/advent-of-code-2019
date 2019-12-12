@@ -1,12 +1,16 @@
 package org.jgoeres.adventofcode2019.common;
 
 public class XYPoint {
-    private int x;
-    private int y;
+    private int x = 0;
+    private int y = 0;
 
     public XYPoint(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public XYPoint() {
+        // Create at 0,0
     }
 
     public int getX() {
@@ -37,7 +41,8 @@ public class XYPoint {
         if (obj == this)
             return true;
         // Two points are equivalent if they have the same coordinates
-        return ((this.x == ((XYPoint) obj).getX()) && (this.y == ((XYPoint) obj).getY()));
+        return ((this.x == ((XYPoint) obj).getX())
+                && (this.y == ((XYPoint) obj).getY()));
     }
 
     @Override
