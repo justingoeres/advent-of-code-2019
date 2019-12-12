@@ -273,8 +273,8 @@ public class CPU {
 //        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
         Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
 
-        Long lessThan = (val1 == val2) ? 1L : 0L;
-        programCode.put(val3, lessThan);
+        Long equals = (val1.longValue() == val2.longValue()) ? 1L : 0L;
+        programCode.put(val3, equals);
         return true;
     }
 
