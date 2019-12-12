@@ -12,12 +12,14 @@ public abstract class RunDay12 {
         // Day 12A
         System.out.println("=== DAY " + XX + "A ===");
 
-        int result = 0;
+        int numTicks = 1000;
+        NBodyService.simulate(numTicks);
+        int result = NBodyService.calculateTotalSystemEnergy();
 
-        System.out.println("Day " + XX + "A: Answer = " + result);
+        System.out.println("Day " + XX + "A: Total system energy after " + numTicks + " steps = " + result);
 
-//        Day 12A: Answer =
-//        Time elapsed:	xxx ms
+//        Day #A: Total system energy after 1000 steps = 11384
+//        Time elapsed:	75 ms
 
         return result;
     }

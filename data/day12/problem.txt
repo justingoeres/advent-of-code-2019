@@ -177,3 +177,8 @@ pot: 16 + 13 + 23 = 52;   kin: 7 +  1 + 1 =  9;   total: 52 *  9 = 468
 Sum of total energy: 290 + 608 + 574 + 468 = 1940
 
 What is the total energy in the system after simulating the moons given in your scan for 1000 steps?
+
+Your puzzle answer was 11384.
+
+The first half of this puzzle is complete! It provides one gold star: *
+
