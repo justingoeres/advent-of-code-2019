@@ -12,3 +12,5 @@
 |   9       |   Sensor Boost                        |   IntCode Processor (relative mode)
 |  10       |   Monitoring Station                  |   Asteroid visibility, angle & beam sweeping
 |  11       |   Space Police                        |   IntCode Processor (robot control)
+|  12       |   The N-Body Problem                  |   XYZPoints, gravity
+|  13       |   Care Package                        |   IntCode Processor (arcade cabinet)
