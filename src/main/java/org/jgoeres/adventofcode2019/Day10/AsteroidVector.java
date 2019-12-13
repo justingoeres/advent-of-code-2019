@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.Day10;
 
+import java.util.Objects;
+
 public class AsteroidVector {
     String slopeAsFraction;
     QuadrantEnum quadrant;
@@ -22,7 +24,9 @@ public class AsteroidVector {
 
     @Override
     public int hashCode() {
-        return (slopeAsFraction.hashCode() + quadrant.hashCode());
+//        return (slopeAsFraction.hashCode() + quadrant.hashCode());
+        return (Objects.hash(slopeAsFraction, quadrant));
+
     }
 
 }

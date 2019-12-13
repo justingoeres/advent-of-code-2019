@@ -2,6 +2,8 @@ package org.jgoeres.adventofcode2019.Day12;
 
 import org.jgoeres.adventofcode2019.common.XYZPoint;
 
+import java.util.Objects;
+
 public class Moon {
     XYZPoint position;
     XYZPoint velocity;
@@ -53,6 +55,25 @@ public class Moon {
         return potentialEnergy * kineticEnergy;
     }
 
+    public XYZPoint getPosition() {
+        return position;
+    }
+
+    public XYZPoint getVelocity() {
+        return velocity;
+    }
+
+    public Moon duplicate() {
+        XYZPoint newMoonP = new XYZPoint(getPosition().getX(),
+                getPosition().getY(),
+                getPosition().getZ());
+        XYZPoint newMoonV = new XYZPoint(getVelocity().getX(),
+                getVelocity().getY(),
+                getVelocity().getZ());
+        Moon newMoon = new Moon(newMoonP, newMoonV);
+        return newMoon;
+    }
+    
     @Override
     public String toString() {
         String toString = "pos=<x= " + position.getX()
@@ -62,5 +83,22 @@ public class Moon {
                 + ", y= " + velocity.getY()
                 + ", z= " + velocity.getZ() + ">";
         return toString;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Moon))
+            return false;
+        if (obj == this)
+            return true;
+        // Two moons are equivalent if they have the same position & velocity
+        boolean posEqual = this.getPosition().equals(((Moon) obj).getPosition());
+        boolean velEqual = this.getVelocity().equals(((Moon) obj).getVelocity());
+        return posEqual && velEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, velocity);
     }
 }

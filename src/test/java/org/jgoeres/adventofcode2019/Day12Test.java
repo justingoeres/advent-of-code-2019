@@ -5,18 +5,18 @@ import org.jgoeres.adventofcode2019.Day12.RunDay12;
 import org.junit.Assert;
 import org.junit.Test;
 
+
 public class Day12Test {
     static String XX = "12";
 
-
     @Test
     public void Day12AExample1() {
-         NBodyService NBodyService = new NBodyService("data/day12/example1.txt");
+        NBodyService NBodyService = new NBodyService("data/day12/example1.txt");
 
         int finalEnergy = 0;
         try {
             NBodyService.simulate(10);
-             finalEnergy = NBodyService.calculateTotalSystemEnergy();
+            finalEnergy = NBodyService.calculateTotalSystemEnergy();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -49,13 +49,26 @@ public class Day12Test {
     }
 
     @Test
+    public void Day12BExample1() {
+        NBodyService NBodyService = new NBodyService("data/day12/example1.txt");
+
+        long result = 0;
+        try {
+            result = NBodyService.findPeriodicities();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(2772, result);
+    }
+
+    @Test
     public void Day12B() {
-        int result = 0;
+        long result = 0;
         try {
             result = RunDay12.problem12B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(452582583272768L, result);
     }
 }

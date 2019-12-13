@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.common;
 
+import java.util.Objects;
+
 public class XYPoint {
     private int x = 0;
     private int y = 0;
@@ -47,7 +49,6 @@ public class XYPoint {
 
     @Override
     public int hashCode() {
-        // Make the hash code things like (4,3) -> 40003
-        return (this.x * 10000 + this.y);
+        return (Objects.hash(x, y));
     }
 }
