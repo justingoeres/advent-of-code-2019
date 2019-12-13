@@ -27,6 +27,11 @@ public abstract class RunDay13 {
 
         int result = 0;
 
+        // Reset the game to play again!
+        arcadeService.reset();
+        arcadeService.setFreePlay(true);
+        arcadeService.playTheGamePartB();
+
         System.out.println("Day " + DAY + "B: Answer = " + result);
 
 //        Day 13B: Answer =

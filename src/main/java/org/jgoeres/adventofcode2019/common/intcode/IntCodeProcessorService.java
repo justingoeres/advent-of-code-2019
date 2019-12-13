@@ -33,6 +33,9 @@ public class IntCodeProcessorService {
         while (!isOutputReady()
                 && !isHalted()) {
             executeNext();
+            // If the processor is waiting for input, break out of this or it'll get stuck forever!
+            if(isWaitingForInput()){
+                break;}
         }
     }
 

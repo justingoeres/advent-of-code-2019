@@ -52,8 +52,71 @@ public class ArcadeService {
             // Put the tile onscreen
             putTileOnScreen(tileData);
         }
-        // Return the total number of panels painted (i.e. the total hull area we reached)
+        // Return the total number of BLOCK tiles onscreen
+        /** DEBUG **/
+        // render the screen
+        renderScreen();
         return countTilesOfType(BLOCK);
+    }
+
+    public int playTheGamePartB() {
+        // run the robot program until the game ends, but pause for input
+        // The arcade cabinet runs Intcode software like the game the Elves sent (your puzzle input).
+        // It has a primitive screen capable of drawing square tiles on a grid.
+        while (!intCodeProcessorService.isHalted()) {
+//            Run until we halt
+            if (!intCodeProcessorService.isWaitingForInput()) { // If we're NOT waiting for input
+                // The software draws tiles to the screen with output instructions: every three output instructions
+                // specify the x position (distance from the left), y position (distance from the top), and tile id.
+                intCodeProcessorService.executeToNextOutput();
+                // Read the x position
+                int tileX = intCodeProcessorService.getProgramOutput().intValue();
+
+                intCodeProcessorService.executeToNextOutput();
+                // Read the y position
+                int tileY = intCodeProcessorService.getProgramOutput().intValue();
+
+                intCodeProcessorService.executeToNextOutput();
+                // Read the tile glyph (or player score)
+                int tileGlyphInt = intCodeProcessorService.getProgramOutput().intValue();
+
+                // When three output instructions specify X=-1, Y=0, the third output instruction is not a tile;
+                // the value instead specifies the new score to show in the segment display
+                if (tileX == -1 && tileY == 0) {
+                    System.out.println("SCORE:\t" + tileGlyphInt);
+                    // it's the score display!
+                } else {
+                    // it's tile data!
+                    // Put it together in tile data
+                    Tile tileGlyph = Tile.get(tileGlyphInt);
+                    TileData tileData = new TileData(new XYPoint(tileX, tileY), tileGlyph);
+                    /** DEBUG **/
+//            System.out.println(tileData);
+                    // Put the tile onscreen
+                    putTileOnScreen(tileData);
+                }
+            } else {
+                // We ARE waiting for input
+                // Draw the screen
+                renderScreen();
+                // Get some input
+                intCodeProcessorService.setCpuInputValue(0L);
+                intCodeProcessorService.executeNext();  // and execute the instruction
+            }
+        }
+        // Return the total number of BLOCK tiles onscreen
+        /** DEBUG **/
+        // render the screen
+        renderScreen();
+        return countTilesOfType(BLOCK);
+    }
+
+
+    public void setFreePlay(boolean freePlay) {
+//        Memory address 0 represents the number of quarters that have been inserted;
+//        set it to 2 to play for free.
+        long free = freePlay ? 2L : 0L;
+        intCodeProcessorService.setValueAtPosition(0L, free);
     }
 
     private void putTileOnScreen(TileData tileData) {
@@ -112,6 +175,12 @@ public class ArcadeService {
             return EMPTY;
         }
     }
+
+    public void reset() {
+        intCodeProcessorService.reset();
+        screenArea.clear();
+    }
+
 
     private void loadInputs(String pathToFile) {
         intCodeProcessorService = new IntCodeProcessorService(pathToFile);
