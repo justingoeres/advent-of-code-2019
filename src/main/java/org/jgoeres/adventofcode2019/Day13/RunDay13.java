@@ -30,9 +30,9 @@ public abstract class RunDay13 {
         // Reset the game to play again!
         arcadeService.reset();
         arcadeService.setFreePlay(true);
-        arcadeService.playTheGamePartB();
+        result = arcadeService.playTheGamePartB();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Final score = " + result);
 
 //        Day 13B: Answer =
 //        Time elapsed:	xxx ms

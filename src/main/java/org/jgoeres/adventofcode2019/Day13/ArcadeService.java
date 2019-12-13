@@ -11,6 +11,8 @@ public class ArcadeService {
     private final String DAY = "13";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
 
+    private final boolean DISPLAY_ENABLED = false;
+
     private IntCodeProcessorService intCodeProcessorService;
     private HashMap<XYPoint, Tile> screenArea = new HashMap<>();
 
@@ -28,7 +30,7 @@ public class ArcadeService {
         // The arcade cabinet runs Intcode software like the game the Elves sent (your puzzle input).
         // It has a primitive screen capable of drawing square tiles on a grid.
         while (!intCodeProcessorService.isHalted()) {
-//            Run until we halt
+            // Run until we halt
 
             // The software draws tiles to the screen with output instructions: every three output instructions
             // specify the x position (distance from the left), y position (distance from the top), and tile id.
@@ -47,15 +49,15 @@ public class ArcadeService {
 
             // Put it together in tile data
             TileData tileData = new TileData(new XYPoint(tileX, tileY), tileGlyph);
-            /** DEBUG **/
-//            System.out.println(tileData);
-            // Put the tile onscreen
+            // Put the tile into the screenArea for rendering later
             putTileOnScreen(tileData);
         }
         // Return the total number of BLOCK tiles onscreen
         /** DEBUG **/
         // render the screen
-        renderScreen();
+        if (DISPLAY_ENABLED) {
+            renderScreen();
+        }
         return countTilesOfType(BLOCK);
     }
 
@@ -63,6 +65,9 @@ public class ArcadeService {
         // run the robot program until the game ends, but pause for input
         // The arcade cabinet runs Intcode software like the game the Elves sent (your puzzle input).
         // It has a primitive screen capable of drawing square tiles on a grid.
+        int ballX = 0;
+        int paddleX = 0;
+        int score = 0;
         while (!intCodeProcessorService.isHalted()) {
 //            Run until we halt
             if (!intCodeProcessorService.isWaitingForInput()) { // If we're NOT waiting for input
@@ -80,35 +85,55 @@ public class ArcadeService {
                 // Read the tile glyph (or player score)
                 int tileGlyphInt = intCodeProcessorService.getProgramOutput().intValue();
 
+                // If the processor halts somewhere in the instructions above, bail out.
+                if (intCodeProcessorService.isHalted()) break;
+
                 // When three output instructions specify X=-1, Y=0, the third output instruction is not a tile;
                 // the value instead specifies the new score to show in the segment display
                 if (tileX == -1 && tileY == 0) {
-                    System.out.println("SCORE:\t" + tileGlyphInt);
                     // it's the score display!
+                    score = tileGlyphInt;
+                    if (DISPLAY_ENABLED) {
+                        System.out.println("------ SCORE:\t" + score + " ------");
+                    }
                 } else {
                     // it's tile data!
-                    // Put it together in tile data
                     Tile tileGlyph = Tile.get(tileGlyphInt);
                     TileData tileData = new TileData(new XYPoint(tileX, tileY), tileGlyph);
-                    /** DEBUG **/
-//            System.out.println(tileData);
-                    // Put the tile onscreen
+                    switch (tileGlyph) {
+                        // If this is the ball or paddle, record its x coordinate to use in the autoplay
+                        case BALL:
+                            if (!(tileX == 4 && tileY == 4)) {  // Why does it keep drawing a ball at 4,4?? Let's just ignore that
+                                ballX = tileX;
+                            }
+                            break;
+                        case PADDLE:
+                            paddleX = tileX;
+                            break;
+                        default:
+                            // otherwise do nothing and continue
+                    }
+                    // Put the tile into the screenArea for rendering later
                     putTileOnScreen(tileData);
                 }
             } else {
                 // We ARE waiting for input
                 // Draw the screen
-                renderScreen();
-                // Get some input
-                intCodeProcessorService.setCpuInputValue(0L);
+                if (DISPLAY_ENABLED) {
+                    renderScreen();
+                }
+                // Set the joystick input; try to follow the ball.
+                // If it's to our left, move left.
+                // If it's to our right, move right.
+                // If it's directly above us, stay put.
+                long ballToPaddleDirection = Math.round(Math.signum(ballX - paddleX));  // has to be long because the CPU wants that.
+                intCodeProcessorService.setCpuInputValue(ballToPaddleDirection);
                 intCodeProcessorService.executeNext();  // and execute the instruction
             }
         }
-        // Return the total number of BLOCK tiles onscreen
+        // Return the final score
         /** DEBUG **/
-        // render the screen
-        renderScreen();
-        return countTilesOfType(BLOCK);
+        return score;
     }
 
 
