@@ -54,14 +54,14 @@ public class HullPaintingService {
 //            The program uses input instructions to access the robot's camera:
 //            provide 0 if the robot is over a black panel
 //            or 1 if the robot is over a white panel.
-            executeToNextInput();
+            intCodeProcessorService.executeToNextInput();
             sendColorToInput();
 
 //            Then, the program will output two values:
 //            First, it will output a value indicating the color to paint
 //            the panel the robot is over: 0 means to paint the panel black,
 //            and 1 means to paint the panel white.
-            executeToNextOutput();
+            intCodeProcessorService.executeToNextOutput();
             // Now we can read what color we should paint, and do the painting
             paintPanelFromOutput();
 
@@ -71,7 +71,7 @@ public class HullPaintingService {
 //            After the robot turns, it should always
 //            move forward exactly one panel. The robot starts facing up.
             // Now we've done the painting, so run to the next output...
-            executeToNextOutput();
+            intCodeProcessorService.executeToNextOutput();
             // then turn & move the robot.
             turnAndMove();
         }
@@ -109,20 +109,6 @@ public class HullPaintingService {
             }
             // when we're done with the line, print it
             System.out.println(line);
-        }
-    }
-
-    private void executeToNextInput() {
-        while (!intCodeProcessorService.isWaitingForInput() &&
-                !intCodeProcessorService.isHalted()) {
-            intCodeProcessorService.executeNext();
-        }
-    }
-
-    private void executeToNextOutput() {
-        while (!intCodeProcessorService.isOutputReady()
-                && !intCodeProcessorService.isHalted()) {
-            intCodeProcessorService.executeNext();
         }
     }
 

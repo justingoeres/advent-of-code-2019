@@ -5,8 +5,8 @@ import java.io.FileReader;
 import java.util.ArrayList;
 
 public class DayXXService {
-    private final String XX = "02";
-    private final String DEFAULT_INPUTS_PATH = "data/day" + XX + "/input.txt";
+    private final String DAY = "##";
+    private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
 
     private ArrayList<Integer> inputList = new ArrayList<>();
 

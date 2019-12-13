@@ -1,28 +1,28 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
+import org.jgoeres.adventofcode2019.Day13.RunDay13;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DayXXTest {
-    static String DAY = "XX";
+public class Day13Test {
+    static String DAY = "13";
 
     @Test
-    public void DayXXA() {
+    public void Day13A() {
         int result = 0;
         try {
-            result = RunDayXX.problemXXA();
+            result = RunDay13.problem13A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(213, result);
     }
 
     @Test
-    public void DayXXB() {
+    public void Day13B() {
         int result = 0;
         try {
-            result = RunDayXX.problemXXB();
+            result = RunDay13.problem13B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

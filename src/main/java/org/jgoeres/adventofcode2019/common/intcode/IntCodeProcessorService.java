@@ -22,6 +22,19 @@ public class IntCodeProcessorService {
         return cpu.executeNext();
     }
 
+    public void executeToNextInput() {
+        while (!isWaitingForInput() &&
+                !isHalted()) {
+            executeNext();
+        }
+    }
+
+    public void executeToNextOutput() {
+        while (!isOutputReady()
+                && !isHalted()) {
+            executeNext();
+        }
+    }
 
     public void setValueAtPosition(Long position, Long value) {
         cpu.setValueAtPosition(position, value);
