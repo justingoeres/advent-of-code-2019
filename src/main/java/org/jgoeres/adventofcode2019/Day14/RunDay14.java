@@ -5,7 +5,7 @@ public abstract class RunDay14 {
 
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
-    static Day14Service day14Service = new Day14Service();
+    static ReactionService reactionService = new ReactionService();
 
     public static int problem14A() {
         // Day 14A
