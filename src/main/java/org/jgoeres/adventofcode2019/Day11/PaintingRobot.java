@@ -7,7 +7,7 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 import static org.jgoeres.adventofcode2019.common.Direction.UP;
 
 public class PaintingRobot {
-    private XYPoint location;
+    protected XYPoint location;
     private Direction facing;
 
     public PaintingRobot(XYPoint location) {

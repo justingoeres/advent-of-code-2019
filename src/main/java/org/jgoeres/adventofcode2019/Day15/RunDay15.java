@@ -12,7 +12,7 @@ public abstract class RunDay15 {
         System.out.println("=== DAY " + DAY + "A ===");
 
         int result = 0;
-
+        repairService.explore();
         System.out.println("Day " + DAY + "A: Answer = " + result);
 
 //        Day 15A: Answer =
