@@ -14,13 +14,14 @@ public abstract class RunDay15 {
         int result = 0;
         try {
             repairService.explore();
+            result = repairService.getOxygenDistance();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("Day " + DAY + "A: Answer = " + result);
-
-//        Day 15A: Answer =
-//        Time elapsed:	xxx ms
+        System.out.println("Day " + DAY + "A: Distance from origin to oxygen system = " + result);
+//        Day 15A: Distance from origin to oxygen system = 380
+//        Time elapsed:	474 ms
 
         return result;
     }

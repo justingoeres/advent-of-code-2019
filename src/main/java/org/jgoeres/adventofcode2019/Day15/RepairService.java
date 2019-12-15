@@ -1,17 +1,16 @@
 package org.jgoeres.adventofcode2019.Day15;
 
-import org.jgoeres.adventofcode2019.Day11.Color;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
 import java.util.*;
 
-import static org.jgoeres.adventofcode2019.Day15.Direction.*;
 import static org.jgoeres.adventofcode2019.Day15.Location.*;
 
 public class RepairService extends IntCodeProcessorService {
     private final String DAY = "15";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
+    private final boolean DISPLAY = false;
 
     // TODO: Robot inherits from PaintingRobot for now because it has movement built in; generalize this later
     private final XYPoint ORIGIN = new XYPoint(0, 0);
@@ -22,6 +21,9 @@ public class RepairService extends IntCodeProcessorService {
     Deque<Direction> exploreTrail = new LinkedList<>();
     HashSet<XYPoint> pointsToExplore = new HashSet<>();
     HashSet<XYPoint> pointsExplored = new HashSet<>();
+    HashMap<XYPoint, Integer> distancesFromOrigin = new HashMap<>();
+
+    XYPoint oxygenXY;
 
     public RepairService() {
         inputFile = DEFAULT_INPUTS_PATH;
@@ -48,16 +50,19 @@ public class RepairService extends IntCodeProcessorService {
         pointsExplored.add(ORIGIN);
         pointsToExplore.clear();
         pointsToExplore.add(ORIGIN);
+        distancesFromOrigin.clear();
+        distancesFromOrigin.put(ORIGIN, 0);
     }
 
     public void explore() {
+        int distanceFromOrigin = 0;
+
         // Run the robot all over the map
         while (true) {
             // At current point R
             // Check all four directions NESW from here
             // For each one
             for (Direction direction : Direction.values()) {
-                //      Is the target point already in the exploreQueue?
                 // Check if the point in question is unexplored.
                 XYPoint pointToExplore = robot.getRelativeLocation(direction);
                 if (pointsToExplore.contains(pointToExplore)) {
@@ -76,7 +81,7 @@ public class RepairService extends IntCodeProcessorService {
             }
 
             // Next, try to process the explore queue
-            if(exploreTrail.isEmpty()) {
+            if (exploreTrail.isEmpty()) {
                 /** If the trail is empty, we're done! **/
                 break;
             }
@@ -87,6 +92,8 @@ public class RepairService extends IntCodeProcessorService {
                 // If this point has already been explored,
                 // then we're backtracking and we know this spot is open
                 moveRobot(moveToTry);
+                // Update our distance to whatever the distance was to this point before
+                distanceFromOrigin = distancesFromOrigin.get(targetPoint);
                 // but since we're backtracking, don't ALSO add a new bracktracking step. Just finish
             } else {
                 //  Try to move in that direction
@@ -98,19 +105,23 @@ public class RepairService extends IntCodeProcessorService {
                     //  Was the move successful?
                     //      If yes, add the OPPOSITE move to the explore queue AT THE FRONT
                     exploreTrail.addFirst(moveToTry.opposite());
+                    // Also update our distance – we've just moved one step further from the origin
+                    distanceFromOrigin++;
+                    distancesFromOrigin.put(targetPoint, distanceFromOrigin);
                 }
                 //      If no, do nothing – we've mapped that target so loop and do the next queue item
             }
 
             /** DEBUG **/
-            printAreaMap();
-            System.out.println();
+            if (DISPLAY) {
+                if (DISPLAY) {
+                    printAreaMap();
+                    System.out.println(robot.getLocation() + "\t" + distanceFromOrigin);
+                    System.out.println();
+                }
+            }
         }
-
-        System.out.println("DONE!");
-
     }
-
 
     public boolean moveRobot(Direction direction) {
         // Tries to move the robot, returns TRUE if the move succeeded.
@@ -157,6 +168,8 @@ public class RepairService extends IntCodeProcessorService {
                 return true;    // robot moved
             case 2:
                 // OXYGEN / successful move
+                // We found the oxygen!
+                oxygenXY = targetLocation;
                 // The move was successful; mark this point as empty and move the robot there
                 // Add the target point to the area map
                 areaMap.put(targetLocation, OXYGEN);
@@ -177,6 +190,10 @@ public class RepairService extends IntCodeProcessorService {
             // We've never been here.
             return UNKNOWN;
         }
+    }
+
+    public int getOxygenDistance() {
+        return distancesFromOrigin.get(oxygenXY);
     }
 
     public void printAreaMap() {
@@ -206,7 +223,8 @@ public class RepairService extends IntCodeProcessorService {
                 Character locationChar;
                 switch (locationType) {
                     case EMPTY:
-                        locationChar = '.';
+//                        locationChar = '.';
+                        locationChar = ' ';
                         // If the robot is here,print it instead of empty
                         if (ORIGIN.equals(new XYPoint(x, y))) locationChar = 'X';
                         if (robot.getLocation().equals(new XYPoint(x, y))) locationChar = 'R';
