@@ -123,6 +123,66 @@ public class RepairService extends IntCodeProcessorService {
         }
     }
 
+    public int fillWithOxygen() {
+        // return the number of minutes it takes to fill
+        int minutesElapsed = 0;
+        // Start with the oxygen source from Part A
+        HashSet<XYPoint> sources = new HashSet<>();
+        sources.add(oxygenXY);
+
+        while (true) {
+            // Go until we stop :)
+            // Get all the non-oxygen points surrounding the source(s)
+            HashSet<XYPoint> nextSources = new HashSet<>();
+            for (XYPoint source : sources) {
+                for (Direction direction : Direction.values()) {
+                    // Check each point adjacent to this source
+                    XYPoint pointToCheck = getRelativeStep(source, direction);
+                    // Is this point empty?
+                    if (areaMap.get(pointToCheck) == EMPTY) {
+                        // Then fill it with oxygen and add it to the source list for next time
+                        areaMap.put(pointToCheck, OXYGEN);
+                        nextSources.add(pointToCheck);
+                        // Otherwise it's a wall or filled with oxygen already, so ignore it.
+                    }
+                }
+            }
+            // Now that we've filled all these sources and identified the next ones,
+            // Switch in the next list!
+            sources = nextSources;
+
+            if (nextSources.isEmpty()) {
+                // If there ARE no next sources, we're done!
+                break;
+            }
+
+            // Increment the timer
+            minutesElapsed++;
+
+            if (DISPLAY) {
+                printAreaMap();
+                System.out.println("ELAPSED TIME:\t" + minutesElapsed);
+            }
+        }
+        return minutesElapsed;  // return the elapsed time
+    }
+
+    private XYPoint getRelativeStep(XYPoint p, Direction direction) {
+        int numSteps = 1;
+        switch (direction) {
+            case NORTH:
+                return (new XYPoint(p.getX(), p.getY() + numSteps));
+            case EAST:
+                return (new XYPoint(p.getX() + numSteps, p.getY()));
+            case SOUTH:
+                return (new XYPoint(p.getX(), p.getY() - numSteps));
+            case WEST:
+                return (new XYPoint(p.getX() - numSteps, p.getY()));
+        }
+        return null;
+    }
+
+
     public boolean moveRobot(Direction direction) {
         // Tries to move the robot, returns TRUE if the move succeeded.
         /**

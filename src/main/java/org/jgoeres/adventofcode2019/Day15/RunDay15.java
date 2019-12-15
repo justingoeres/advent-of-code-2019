@@ -30,12 +30,13 @@ public abstract class RunDay15 {
         // Day 15B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        int result = 0;
+        // Continue with the system from Part A (do NOT reset).
+        int result = repairService.fillWithOxygen();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Minutes required to fill with oxygen = " + result);
 
-//        Day 15B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 15B: Minutes required to fill with oxygen = 410
+//        Time elapsed:	7 ms
 
         return result;
     }

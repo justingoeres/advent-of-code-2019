@@ -114,3 +114,7 @@ So, in this example, all locations contain oxygen after 4 minutes.
 
 Use the repair droid to get a complete map of the area. How many minutes will it take to fill with oxygen?
 
+Your puzzle answer was 410.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
