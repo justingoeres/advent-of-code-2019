@@ -4,7 +4,7 @@ import org.jgoeres.adventofcode2019.Day11.Color;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
-import java.util.HashMap;
+import java.util.*;
 
 import static org.jgoeres.adventofcode2019.Day15.Direction.*;
 import static org.jgoeres.adventofcode2019.Day15.Location.*;
@@ -18,6 +18,10 @@ public class RepairService extends IntCodeProcessorService {
     private RepairRobot robot;
     // areaMap maps xy locations to whatever is at that location (wall, empty, oxygen system)
     private HashMap<XYPoint, Location> areaMap = new HashMap<>();
+
+    Deque<Direction> exploreTrail = new LinkedList<>();
+    HashSet<XYPoint> pointsToExplore = new HashSet<>();
+    HashSet<XYPoint> pointsExplored = new HashSet<>();
 
     public RepairService() {
         inputFile = DEFAULT_INPUTS_PATH;
@@ -39,31 +43,74 @@ public class RepairService extends IntCodeProcessorService {
         // Reset the map – the first spot is empty because that's where the robot starts
         areaMap.clear();
         areaMap.put(ORIGIN, EMPTY);
+        exploreTrail.clear();
+        pointsExplored.clear();
+        pointsExplored.add(ORIGIN);
+        pointsToExplore.clear();
+        pointsToExplore.add(ORIGIN);
     }
 
     public void explore() {
-        // Run the robot all over the map, finding all the walls.
-
-        // Solve it via the "follow the wall on the right" maze solving method
-
-
+        // Run the robot all over the map
         while (true) {
-            for (Direction direction : Direction.values()){
-            // Try to move north.
-            // If wall, try to move east.
-            // If wall, try to move south.
-            // If wall, try to move west.
-                if (moveRobot(direction)) {
-                    // Move was successful
-                    break;
+            // At current point R
+            // Check all four directions NESW from here
+            // For each one
+            for (Direction direction : Direction.values()) {
+                //      Is the target point already in the exploreQueue?
+                // Check if the point in question is unexplored.
+                XYPoint pointToExplore = robot.getRelativeLocation(direction);
+                if (pointsToExplore.contains(pointToExplore)) {
+                    //  If yes, skip it – we'll get to it eventually
+                } else {
+                    //  If no, then is that point already explored?
+                    if (pointsExplored.contains(pointToExplore)) {
+                        //  If yes, skip it – we've already been there
+                    } else {
+                        //  If no, add the point to the set of points to explore eventually
+                        pointsToExplore.add(pointToExplore);
+                        //  Also add the MOVE (NESW) to the roadmap
+                        exploreTrail.addFirst(direction);
+                    }
                 }
-                // else move was not successful; try the next direction
             }
+
+            // Next, try to process the explore queue
+            if(exploreTrail.isEmpty()) {
+                /** If the trail is empty, we're done! **/
+                break;
+            }
+            //  Get the top item from the queue (it will be a DIRECTION)
+            Direction moveToTry = exploreTrail.poll();
+            XYPoint targetPoint = robot.getRelativeLocation(moveToTry);
+            if (pointsExplored.contains(targetPoint)) {
+                // If this point has already been explored,
+                // then we're backtracking and we know this spot is open
+                moveRobot(moveToTry);
+                // but since we're backtracking, don't ALSO add a new bracktracking step. Just finish
+            } else {
+                //  Try to move in that direction
+                boolean moveSuccessful = moveRobot(moveToTry);
+                // Remove it from the list of points to explore
+                pointsToExplore.remove(targetPoint);
+                pointsExplored.add(targetPoint);
+                if (moveSuccessful) {
+                    //  Was the move successful?
+                    //      If yes, add the OPPOSITE move to the explore queue AT THE FRONT
+                    exploreTrail.addFirst(moveToTry.opposite());
+                }
+                //      If no, do nothing – we've mapped that target so loop and do the next queue item
+            }
+
             /** DEBUG **/
             printAreaMap();
             System.out.println();
         }
+
+        System.out.println("DONE!");
+
     }
+
 
     public boolean moveRobot(Direction direction) {
         // Tries to move the robot, returns TRUE if the move succeeded.
@@ -161,7 +208,8 @@ public class RepairService extends IntCodeProcessorService {
                     case EMPTY:
                         locationChar = '.';
                         // If the robot is here,print it instead of empty
-                        if (robot.getLocation().equals(new XYPoint(x,y))) locationChar = 'R';
+                        if (ORIGIN.equals(new XYPoint(x, y))) locationChar = 'X';
+                        if (robot.getLocation().equals(new XYPoint(x, y))) locationChar = 'R';
                         break;
                     case WALL:
                         locationChar = '#';
@@ -170,7 +218,7 @@ public class RepairService extends IntCodeProcessorService {
                         locationChar = 'O';
                         break;
                     default:
-                        locationChar = '?';
+                        locationChar = ' ';
                 }
                 // Add the character to this line
                 line += locationChar;
