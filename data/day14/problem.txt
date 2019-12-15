@@ -48,6 +48,7 @@ Here are some larger examples:
 7 DCFZ, 7 PSHF => 2 XJWVT
 165 ORE => 2 GPVTF
 3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT
+
 180697 ORE for 1 FUEL:
 
 2 VPVL, 7 FWMGM, 2 CXFTF, 11 MNCFX => 1 STKFG
@@ -83,3 +84,8 @@ Here are some larger examples:
 5 BHXH, 4 VRPVC => 5 LTCX
 
 Given the list of reactions in your puzzle input, what is the minimum amount of ORE required to produce exactly 1 FUEL?
+
+Your puzzle answer was 143173.
+
+The first half of this puzzle is complete! It provides one gold star: *
+

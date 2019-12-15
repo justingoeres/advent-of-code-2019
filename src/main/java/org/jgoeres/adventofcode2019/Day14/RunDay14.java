@@ -11,7 +11,8 @@ public abstract class RunDay14 {
         // Day 14A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = 0;
+        reactionService.manufacture("FUEL",1);
+        int result = reactionService.getOreCreated();
 
         System.out.println("Day " + DAY + "A: Answer = " + result);
 
