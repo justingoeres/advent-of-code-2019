@@ -12,96 +12,130 @@ public class Day14Test {
     public void Day14AExample1() {
         ReactionService reactionService = new ReactionService("data/day14/example1.txt");
 
-        int result = 0;
+        Long result = 0L;
         try {
-//            result = reactionService.calculateRequirements("ORE","FUEL");
-            reactionService.manufacture("FUEL",1);
+            reactionService.manufacture("FUEL", 1);
             result = reactionService.getOreCreated();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(31, result);
+        Assert.assertEquals(31L, (long) result);
     }
 
     @Test
     public void Day14AExample2() {
         ReactionService reactionService = new ReactionService("data/day14/example2.txt");
 
-        int result = 0;
+        Long result = 0L;
         try {
-//            result = reactionService.calculateRequirements("ORE","FUEL");
-            reactionService.manufacture("FUEL",1);
+            reactionService.manufacture("FUEL", 1);
             result = reactionService.getOreCreated();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(165, result);
+        Assert.assertEquals(165L, (long) result);
     }
 
     @Test
     public void Day14AExample3() {
         ReactionService reactionService = new ReactionService("data/day14/example3.txt");
 
-        int result = 0;
+        Long result = 0L;
         try {
-//            result = reactionService.calculateRequirements("ORE","FUEL");
-            reactionService.manufacture("FUEL",1);
+            reactionService.manufacture("FUEL", 1);
             result = reactionService.getOreCreated();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(13312, result);
+        Assert.assertEquals(13312L, (long) result);
     }
 
     @Test
     public void Day14AExample4() {
         ReactionService reactionService = new ReactionService("data/day14/example4.txt");
 
-        int result = 0;
+        Long result = 0L;
         try {
-//            result = reactionService.calculateRequirements("ORE","FUEL");
-            reactionService.manufacture("FUEL",1);
+            reactionService.manufacture("FUEL", 1);
             result = reactionService.getOreCreated();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(180697, result);
+        Assert.assertEquals(180697L, (long) result);
     }
 
     @Test
     public void Day14AExample5() {
         ReactionService reactionService = new ReactionService("data/day14/example5.txt");
 
-        int result = 0;
+        Long result = 0L;
         try {
-//            result = reactionService.calculateRequirements("ORE","FUEL");
-            reactionService.manufacture("FUEL",1);
+            reactionService.manufacture("FUEL", 1);
             result = reactionService.getOreCreated();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(2210736, result);
+        Assert.assertEquals(2210736L, (long) result);
     }
 
     @Test
     public void Day14A() {
-        int result = 0;
+        Long result = 0L;
         try {
             result = RunDay14.problem14A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(143173, result);
+        Assert.assertEquals(143173L, (long) result);
+    }
+
+    @Test
+    public void Day14BExample3() {
+        ReactionService reactionService = new ReactionService("data/day14/example3.txt");
+        final Long ONE_TRILLION = 1000000000000L;
+        Long result = 0L;
+        try {
+            result = reactionService.findMaxFuelForOre(ONE_TRILLION);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(82892753L, (long) result);
+    }
+
+    @Test
+    public void Day14BExample4() {
+        ReactionService reactionService = new ReactionService("data/day14/example4.txt");
+        final Long ONE_TRILLION = 1000000000000L;
+        Long result = 0L;
+        try {
+            result = reactionService.findMaxFuelForOre(ONE_TRILLION);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(5586022L, (long) result);
+    }
+
+    @Test
+    public void Day14BExample5() {
+        ReactionService reactionService = new ReactionService("data/day14/example5.txt");
+        final Long ONE_TRILLION = 1000000000000L;
+        Long result = 0L;
+        try {
+            result = reactionService.findMaxFuelForOre(ONE_TRILLION);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(460664L, (long) result);
     }
 
     @Test
     public void Day14B() {
-        int result = 0;
+        long result = 0;
         try {
             result = RunDay14.problem14B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(8845261L, result);
     }
 }

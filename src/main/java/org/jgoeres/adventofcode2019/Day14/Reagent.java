@@ -1,19 +1,19 @@
 package org.jgoeres.adventofcode2019.Day14;
 
 public class Reagent {
-    private int quantity;
+    private Long quantity;
     private String name;
 
-    public Reagent(int quantity, String name) {
+    public Reagent(Long quantity, String name) {
         this.quantity = quantity;
         this.name = name;
     }
 
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 

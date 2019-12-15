@@ -7,31 +7,32 @@ public abstract class RunDay14 {
 
     static ReactionService reactionService = new ReactionService();
 
-    public static int problem14A() {
+    public static Long problem14A() {
         // Day 14A
         System.out.println("=== DAY " + DAY + "A ===");
 
         reactionService.manufacture("FUEL",1);
-        int result = reactionService.getOreCreated();
+        Long result = reactionService.getOreCreated();
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
+        System.out.println("Day " + DAY + "A: Minimum ore to produce 1 fuel = " + result);
 
-//        Day 14A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 14A: Minimum ore to produce 1 fuel = 143173
+//        Time elapsed:	152 ms
 
         return result;
     }
 
-    public static int problem14B() {
+    public static long problem14B() {
         // Day 14B
         System.out.println("=== DAY " + DAY + "B ===");
+        final Long ONE_TRILLION = 1000000000000L;
 
-        int result = 0;
+        long result = reactionService.findMaxFuelForOre(ONE_TRILLION);
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: One trillion ore could produce " + result + " fuel.");
 
-//        Day 14B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 14B: One trillion ore could produce 8845260 fuel.
+//                Time elapsed:	83 ms
 
         return result;
     }
