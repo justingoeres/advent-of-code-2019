@@ -6,8 +6,11 @@ import java.util.HashMap;
 
 public class IntCodeProcessorService {
 
-    private String inputFile;
-    private CPU cpu;
+    protected String inputFile;
+    protected CPU cpu;
+
+    public IntCodeProcessorService() {
+    }
 
     public IntCodeProcessorService(String pathToFile) {
         inputFile = pathToFile;

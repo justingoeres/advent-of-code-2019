@@ -7,21 +7,22 @@ import java.util.HashMap;
 
 import static org.jgoeres.adventofcode2019.Day13.Tile.*;
 
-public class ArcadeService {
+public class ArcadeService extends IntCodeProcessorService {
     private final String DAY = "13";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
 
     private final boolean DISPLAY_ENABLED = false;
 
-    private IntCodeProcessorService intCodeProcessorService;
     private HashMap<XYPoint, Tile> screenArea = new HashMap<>();
 
     public ArcadeService() {
-        loadInputs(DEFAULT_INPUTS_PATH);
+        inputFile = DEFAULT_INPUTS_PATH;
+        cpu = loadInputs();
     }
 
     public ArcadeService(String pathToFile) {
-        loadInputs(pathToFile);
+        inputFile = pathToFile;
+        cpu = loadInputs();
     }
 
 
@@ -29,22 +30,22 @@ public class ArcadeService {
         // run the robot program until the game ends
         // The arcade cabinet runs Intcode software like the game the Elves sent (your puzzle input).
         // It has a primitive screen capable of drawing square tiles on a grid.
-        while (!intCodeProcessorService.isHalted()) {
+        while (!isHalted()) {
             // Run until we halt
 
             // The software draws tiles to the screen with output instructions: every three output instructions
             // specify the x position (distance from the left), y position (distance from the top), and tile id.
-            intCodeProcessorService.executeToNextOutput();
+            executeToNextOutput();
             // Read the x position
-            int tileX = intCodeProcessorService.getProgramOutput().intValue();
+            int tileX = getProgramOutput().intValue();
 
-            intCodeProcessorService.executeToNextOutput();
+            executeToNextOutput();
             // Read the y position
-            int tileY = intCodeProcessorService.getProgramOutput().intValue();
+            int tileY = getProgramOutput().intValue();
 
-            intCodeProcessorService.executeToNextOutput();
+            executeToNextOutput();
             // Read the tile glyph
-            int tileGlyphInt = intCodeProcessorService.getProgramOutput().intValue();
+            int tileGlyphInt = getProgramOutput().intValue();
             Tile tileGlyph = Tile.get(tileGlyphInt);
 
             // Put it together in tile data
@@ -68,25 +69,25 @@ public class ArcadeService {
         int ballX = 0;
         int paddleX = 0;
         int score = 0;
-        while (!intCodeProcessorService.isHalted()) {
+        while (!isHalted()) {
 //            Run until we halt
-            if (!intCodeProcessorService.isWaitingForInput()) { // If we're NOT waiting for input
+            if (!isWaitingForInput()) { // If we're NOT waiting for input
                 // The software draws tiles to the screen with output instructions: every three output instructions
                 // specify the x position (distance from the left), y position (distance from the top), and tile id.
-                intCodeProcessorService.executeToNextOutput();
+                executeToNextOutput();
                 // Read the x position
-                int tileX = intCodeProcessorService.getProgramOutput().intValue();
+                int tileX = getProgramOutput().intValue();
 
-                intCodeProcessorService.executeToNextOutput();
+                executeToNextOutput();
                 // Read the y position
-                int tileY = intCodeProcessorService.getProgramOutput().intValue();
+                int tileY = getProgramOutput().intValue();
 
-                intCodeProcessorService.executeToNextOutput();
+                executeToNextOutput();
                 // Read the tile glyph (or player score)
-                int tileGlyphInt = intCodeProcessorService.getProgramOutput().intValue();
+                int tileGlyphInt = getProgramOutput().intValue();
 
                 // If the processor halts somewhere in the instructions above, bail out.
-                if (intCodeProcessorService.isHalted()) break;
+                if (isHalted()) break;
 
                 // When three output instructions specify X=-1, Y=0, the third output instruction is not a tile;
                 // the value instead specifies the new score to show in the segment display
@@ -127,8 +128,8 @@ public class ArcadeService {
                 // If it's to our right, move right.
                 // If it's directly above us, stay put.
                 long ballToPaddleDirection = Math.round(Math.signum(ballX - paddleX));  // has to be long because the CPU wants that.
-                intCodeProcessorService.setCpuInputValue(ballToPaddleDirection);
-                intCodeProcessorService.executeNext();  // and execute the instruction
+                setCpuInputValue(ballToPaddleDirection);
+                executeNext();  // and execute the instruction
             }
         }
         // Return the final score
@@ -141,7 +142,7 @@ public class ArcadeService {
 //        Memory address 0 represents the number of quarters that have been inserted;
 //        set it to 2 to play for free.
         long free = freePlay ? 2L : 0L;
-        intCodeProcessorService.setValueAtPosition(0L, free);
+        setValueAtPosition(0L, free);
     }
 
     private void putTileOnScreen(TileData tileData) {
@@ -201,13 +202,9 @@ public class ArcadeService {
         }
     }
 
+    @Override
     public void reset() {
-        intCodeProcessorService.reset();
+        super.reset();
         screenArea.clear();
-    }
-
-
-    private void loadInputs(String pathToFile) {
-        intCodeProcessorService = new IntCodeProcessorService(pathToFile);
     }
 }
