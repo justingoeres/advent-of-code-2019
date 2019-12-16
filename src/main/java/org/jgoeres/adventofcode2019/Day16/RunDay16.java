@@ -5,18 +5,18 @@ public abstract class RunDay16 {
 
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
-    static FFTService FFTService = new FFTService();
+    static FFTService fftService = new FFTService();
 
     public static int problem16A() {
         // Day 16A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = 0;
+        int result = fftService.calculateFFT(100);
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
+        System.out.println("Day " + DAY + "A: First 8 digits after 100 phases = " + result);
 
-//        Day 16A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 16A: First 8 digits after 100 phases = 94960436
+//        Time elapsed:	381 ms
 
         return result;
     }
