@@ -6,12 +6,14 @@ public abstract class RunDay16 {
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
     static FFTService fftService = new FFTService();
+    static final boolean PART_A = false;
+    static final boolean PART_B = true;
 
     public static int problem16A() {
         // Day 16A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = fftService.calculateFFT(100);
+        int result = fftService.calculateFFT(100, PART_A);
 
         System.out.println("Day " + DAY + "A: First 8 digits after 100 phases = " + result);
 

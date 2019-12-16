@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 public class Day16Test {
     static String DAY = "16";
+    final boolean PART_A = false;
+    final boolean PART_B = true;
 
     @Test
     public void testCalculateElement() {
@@ -29,7 +31,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example1.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(4);
+            result = fftService.calculateFFT(4, PART_A);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -41,7 +43,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example2.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100);
+            result = fftService.calculateFFT(100, PART_A);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -53,7 +55,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example3.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100);
+            result = fftService.calculateFFT(100, PART_A);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -65,7 +67,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example4.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100);
+            result = fftService.calculateFFT(100, PART_A);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -82,6 +84,19 @@ public class Day16Test {
         }
         Assert.assertEquals(94960436, result);
     }
+
+    @Test
+    public void testDay16BExample5() {
+        FFTService fftService = new FFTService("data/day16/example5.txt");
+        int result = 0;
+        try {
+            result = fftService.calculateFFTPartB(100, PART_B);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(84462026, result);
+    }
+
 
     @Test
     public void Day16B() {
