@@ -13,7 +13,7 @@ public abstract class RunDay16 {
         // Day 16A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = fftService.calculateFFT(100, PART_A);
+        int result = fftService.calculateFFT(100);
 
         System.out.println("Day " + DAY + "A: First 8 digits after 100 phases = " + result);
 
@@ -27,12 +27,13 @@ public abstract class RunDay16 {
         // Day 16B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        int result = 0;
+        int result = fftService.calculateFFTPartB(100);;
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
 
-//        Day 16B: Answer =
-//        Time elapsed:	xxx ms
+        System.out.println("Day " + DAY + "B: Eight-digit message = " + result);
+
+//        Day 16B: Eight-digit message = 57762756
+//        Time elapsed:	2561 ms
 
         return result;
     }

@@ -31,7 +31,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example1.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(4, PART_A);
+            result = fftService.calculateFFT(4);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -43,7 +43,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example2.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100, PART_A);
+            result = fftService.calculateFFT(100);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -55,7 +55,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example3.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100, PART_A);
+            result = fftService.calculateFFT(100);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -67,7 +67,7 @@ public class Day16Test {
         FFTService fftService = new FFTService("data/day16/example4.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFT(100, PART_A);
+            result = fftService.calculateFFT(100);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -85,18 +85,45 @@ public class Day16Test {
         Assert.assertEquals(94960436, result);
     }
 
+
+
     @Test
     public void testDay16BExample5() {
         FFTService fftService = new FFTService("data/day16/example5.txt");
         int result = 0;
         try {
-            result = fftService.calculateFFTPartB(100, PART_B);
+//            result = fftService.calculateFFTPartB(100);
+            result = fftService.calculateFFTPartB(100);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(84462026, result);
     }
 
+
+    @Test
+    public void testDay16BExample6() {
+        FFTService fftService = new FFTService("data/day16/example6.txt");
+        int result = 0;
+        try {
+            result = fftService.calculateFFTPartB(100);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(78725270, result);
+    }
+
+    @Test
+    public void testDay16BExample7() {
+        FFTService fftService = new FFTService("data/day16/example7.txt");
+        int result = 0;
+        try {
+            result = fftService.calculateFFTPartB(100);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(53553731, result);
+    }
 
     @Test
     public void Day16B() {
@@ -106,6 +133,6 @@ public class Day16Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(410, result);
+        Assert.assertEquals(57762756, result);
     }
 }

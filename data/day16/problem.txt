@@ -85,4 +85,7 @@ Here is the eight-digit message in the final output list after 100 phases. The m
 *0308177*0884921959731165446850517 becomes 53553731.
 After repeating your input signal 10000 times and running 100 phases of FFT, what is the eight-digit message embedded in the final output list?
 
+Your puzzle answer was 57762756.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
 
