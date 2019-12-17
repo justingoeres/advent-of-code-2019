@@ -21,12 +21,12 @@ public class Day17Test {
 
     @Test
     public void Day17B() {
-        int result = 0;
+        Long result = 0L;
         try {
             result = RunDay17.problem17B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(997790L, (long) result);
     }
 }

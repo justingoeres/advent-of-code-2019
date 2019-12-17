@@ -22,6 +22,6 @@ public class MoveInstruction {
     @Override
     public String toString() {
         // e.g. "R8"
-        return rotation.getRotationString() + "," + distance;
+        return rotation.getRotationString() + distance;
     }
 }

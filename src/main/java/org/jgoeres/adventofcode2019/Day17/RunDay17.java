@@ -22,21 +22,20 @@ public abstract class RunDay17 {
         return result;
     }
 
-    public static int problem17B() {
+    public static Long problem17B() {
         // Day 17B
         System.out.println("=== DAY " + DAY + "B ===");
 
         scaffoldService = new ScaffoldService();
 
         scaffoldService.createScaffoldMap();
-        scaffoldService.printAreaMap();
         scaffoldService.explore();
-        int result = 0;
+        Long result = scaffoldService.collectSpaceDust();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Total space dust collected = " + result);
 
-//        Day 17B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 17B: Total space dust collected = 997790
+//        Time elapsed:	190 ms
 
         return result;
     }

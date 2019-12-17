@@ -115,3 +115,8 @@ Of course, the scaffolding outside your ship is much more complex.
 As the vacuum robot finds other robots and notifies them of the impending solar flare, it also can't help but leave them squeaky clean, collecting any space dust it finds. Once it finishes the programmed set of movements, assuming it hasn't drifted off into space, the cleaning robot will return to its docking station and report the amount of space dust it collected as a large, non-ASCII value in a single output instruction.
 
 After visiting every part of the scaffold at least once, how much dust does the vacuum robot report it has collected?
+
+Your puzzle answer was 997790.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+
