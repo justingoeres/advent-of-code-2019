@@ -1,24 +1,23 @@
 package org.jgoeres.adventofcode2019.Day17;
 
-import org.jgoeres.adventofcode2019.Day17.Day17Service;
-
 public abstract class RunDay17 {
     static String DAY = "17";
 
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
-    static Day17Service day17Service = new Day17Service();
+    static ScaffoldService scaffoldService = new ScaffoldService();
 
     public static int problem17A() {
         // Day 17A
         System.out.println("=== DAY " + DAY + "A ===");
-
         int result = 0;
+        scaffoldService.createScaffoldMap();
+        result = scaffoldService.calculateAlignmentParameters();
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
+        System.out.println("Day " + DAY + "A: Total of alignment parameters = " + result);
 
-//        Day 17A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 17A: Total of alignment parameters = 5948
+//        Time elapsed:	241 ms
 
         return result;
     }

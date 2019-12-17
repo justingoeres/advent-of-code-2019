@@ -15,6 +15,11 @@ public class PaintingRobot {
         this.facing = UP;   // Robot starts facing UP.
     }
 
+    public PaintingRobot(XYPoint location, Direction facing) {
+        this.location = location;
+        this.facing = facing;
+    }
+
     public void turnRobot(Rotation rotation) {
         facing = facing.rotate(rotation);
     }
