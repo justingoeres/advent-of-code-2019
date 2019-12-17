@@ -3,12 +3,14 @@ package org.jgoeres.adventofcode2019.Day17;
 import org.jgoeres.adventofcode2019.Day11.PaintingRobot;
 import org.jgoeres.adventofcode2019.common.Direction;
 import org.jgoeres.adventofcode2019.Day15.RepairRobot;
+import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.jgoeres.adventofcode2019.Day17.ScaffoldLocation.*;
@@ -16,29 +18,28 @@ import static org.jgoeres.adventofcode2019.common.Direction.DOWN;
 import static org.jgoeres.adventofcode2019.common.Direction.LEFT;
 import static org.jgoeres.adventofcode2019.common.Direction.RIGHT;
 import static org.jgoeres.adventofcode2019.common.Direction.UP;
+import static org.jgoeres.adventofcode2019.common.Rotation.CLOCKWISE;
+import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 
 public class ScaffoldService extends IntCodeProcessorService {
     private final String DAY = "17";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
-    private final boolean DISPLAY = false;
+    private final boolean DISPLAY = true;
 
-    // TODO: Robot use PaintingRobot for now because it has movement built in; generalize this later
     private final XYPoint ORIGIN = new XYPoint(0, 0);
-    private PaintingRobot robot;
+    private ScaffoldRobot robot;
     // areaMap maps xy locations to whatever is at that location (scaffold, empty)
     private HashMap<XYPoint, ScaffoldLocation> areaMap = new HashMap<>();
 
     private final char UP_CHAR = '^';
     private final char DOWN_CHAR = 'v';
-    private final char LEFT_CHAR = '>';
-    private final char RIGHT_CHAR = '<';
+    private final char LEFT_CHAR = '<';
+    private final char RIGHT_CHAR = '>';
 
 //    Deque<Direction> exploreTrail = new LinkedList<>();
 //    HashSet<XYPoint> pointsToExplore = new HashSet<>();
 //    HashSet<XYPoint> pointsExplored = new HashSet<>();
 //    HashMap<XYPoint, Integer> distancesFromOrigin = new HashMap<>();
-
-//    XYPoint oxygenXY;
 
     public ScaffoldService() {
         inputFile = DEFAULT_INPUTS_PATH;
@@ -56,10 +57,9 @@ public class ScaffoldService extends IntCodeProcessorService {
     public void reset() {
         super.reset();
         // Reset the robot to the origin
-        robot = new RepairRobot(ORIGIN);
+        robot = new ScaffoldRobot(ORIGIN);
         // Reset the map – the first spot is empty because that's where the robot starts
         areaMap.clear();
-        areaMap.put(ORIGIN, EMPTY);
 //        exploreTrail.clear();
 //        pointsExplored.clear();
 //        pointsExplored.add(ORIGIN);
@@ -128,7 +128,7 @@ public class ScaffoldService extends IntCodeProcessorService {
                             facing = RIGHT;
                             break;
                     }
-                    robot = new PaintingRobot(p, facing);
+                    robot = new ScaffoldRobot(p, facing);
                     // Other than the robot, this point on the map is empty
                     areaMap.put(p, EMPTY);
                     x++;
@@ -186,128 +186,98 @@ public class ScaffoldService extends IntCodeProcessorService {
         return intersections;
     }
 
-//    public void explore() {
-//        int distanceFromOrigin = 0;
-//
-//        // Run the robot all over the map
-//        while (true) {
-//            // At current point R
-//            // Check all four directions NESW from here
-//            // For each one
-//            for (Direction direction : Direction.values()) {
-//                // Check if the point in question is unexplored.
-//                XYPoint pointToExplore = robot.getRelativeLocation(direction);
-//                if (pointsToExplore.contains(pointToExplore)) {
-//                    //  If yes, skip it – we'll get to it eventually
-//                } else {
-//                    //  If no, then is that point already explored?
-//                    if (pointsExplored.contains(pointToExplore)) {
-//                        //  If yes, skip it – we've already been there
-//                    } else {
-//                        //  If no, add the point to the set of points to explore eventually
-//                        pointsToExplore.add(pointToExplore);
-//                        //  Also add the MOVE (NESW) to the roadmap
-//                        exploreTrail.addFirst(direction);
-//                    }
-//                }
-//            }
-//
-//            // Next, try to process the explore queue
-//            if (exploreTrail.isEmpty()) {
-//                /** If the trail is empty, we're done! **/
-//                break;
-//            }
-//            //  Get the top item from the queue (it will be a DIRECTION)
-//            Direction moveToTry = exploreTrail.poll();
-//            XYPoint targetPoint = robot.getRelativeLocation(moveToTry);
-//            if (pointsExplored.contains(targetPoint)) {
-//                // If this point has already been explored,
-//                // then we're backtracking and we know this spot is open
-//                moveRobot(moveToTry);
-//                // Update our distance to whatever the distance was to this point before
-//                distanceFromOrigin = distancesFromOrigin.get(targetPoint);
-//                // but since we're backtracking, don't ALSO add a new bracktracking step. Just finish
-//            } else {
-//                //  Try to move in that direction
-//                boolean moveSuccessful = moveRobot(moveToTry);
-//                // Remove it from the list of points to explore
-//                pointsToExplore.remove(targetPoint);
-//                pointsExplored.add(targetPoint);
-//                if (moveSuccessful) {
-//                    //  Was the move successful?
-//                    //      If yes, add the OPPOSITE move to the explore queue AT THE FRONT
-//                    exploreTrail.addFirst(moveToTry.opposite());
-//                    // Also update our distance – we've just moved one step further from the origin
-//                    distanceFromOrigin++;
-//                    distancesFromOrigin.put(targetPoint, distanceFromOrigin);
-//                }
-//                //      If no, do nothing – we've mapped that target so loop and do the next queue item
-//            }
-//
-//            /** DEBUG **/
-//            if (DISPLAY) {
-//                if (DISPLAY) {
-//                    printAreaMap();
-//                    System.out.println(robot.getLocation() + "\t" + distanceFromOrigin);
-//                    System.out.println();
-//                }
-//            }
-//        }
-//    }
+    public void explore() {
+        // Run the robot along all the pieces of the scaffold until we get to the end
+        // Record each step as we go, then output them.
+        // (We don't need the intcode processor for this, just our areaMap)
+        int distance = 0;
+        Rotation rotation = null;
+        ArrayList<MoveInstruction> moves = new ArrayList<>();
+        while (true) {
+            // Track our current move (in steps taken)
+            // Also track when we rotate
+            // When we DO rotate, store the PREVIOUS rotation and the length of the move
+            // for our records
 
-//    public int fillWithOxygen() {
-//        // return the number of minutes it takes to fill
-//        int minutesElapsed = 0;
-//        // Start with the oxygen source from Part A
-//        HashSet<XYPoint> sources = new HashSet<>();
-//        sources.add(oxygenXY);
-//
-//        while (true) {
-//            // Go until we stop :)
-//            // Get all the non-oxygen points surrounding the source(s)
-//            HashSet<XYPoint> nextSources = new HashSet<>();
-//            for (XYPoint source : sources) {
-//                for (Direction direction : Direction.values()) {
-//                    // Check each point adjacent to this source
-//                    XYPoint pointToCheck = getRelativeStep(source, direction);
-//                    // Is this point empty?
-//                    if (areaMap.get(pointToCheck) == EMPTY) {
-//                        // Then fill it with oxygen and add it to the source list for next time
-//                        areaMap.put(pointToCheck, OXYGEN);
-//                        nextSources.add(pointToCheck);
-//                        // Otherwise it's a wall or filled with oxygen already, so ignore it.
-//                    }
-//                }
-//            }
-//            // Now that we've filled all these sources and identified the next ones,
-//            // Switch in the next list!
-//            sources = nextSources;
-//
-//            if (nextSources.isEmpty()) {
-//                // If there ARE no next sources, we're done!
-//                break;
-//            }
-//
-//            // Increment the timer
-//            minutesElapsed++;
-//
-//            if (DISPLAY) {
-//                printAreaMap();
-//                System.out.println("ELAPSED TIME:\t" + minutesElapsed);
-//            }
-//        }
-//        return minutesElapsed;  // return the elapsed time
-//    }
+            // At current point P
+            // Check the point immediately ahead of us.
+            // If it's a scaffold or intersection, move there
+            if (aheadIsScaffold()) {
+                // If the point ahead is NOT EMPTY (i.e. it's either SCAFFOLD or INTERSECTION)
+                // Move there
+                robot.moveRobot(1);
+                distance++; // Track our distance
+            } else {
+                // If not, check the points on either side of us
+                // One of them will be a scaffold; turn toward it
+
+                // We're going to rotate, so our previous move is finished
+                if (rotation != null) {
+                    // Add the just-completed move to our moves list
+                    MoveInstruction moveInstruction = new MoveInstruction(rotation, distance);
+                    moves.add(moveInstruction);
+                }
+
+                // Now try to find the next place to go
+                rotation = rotateToScaffold(robot);
+
+                if (rotation != null) {
+                    // Reset our distance tracking and continue
+                    distance = 0;
+                } else {
+                    // we're done! Bail out
+                    break;
+                }
+            }
+            if (DISPLAY) {
+                printAreaMap();
+            }
+        }
+        /*** DEBUG ***/
+        // Print our moves list
+        String movesString = String.join(",", moves.toString());
+        System.out.println(movesString);
+    }
+
+
+    public Rotation rotateToScaffold(PaintingRobot robot) {
+        // Rotates the robot left & right to find which point is the next SCAFFOLD or INTERSECTION.
+        // Returns the direction it rotated.
+
+        // Check left
+        robot.turnRobot(COUNTERCLOCKWISE);
+        if (aheadIsScaffold()) return COUNTERCLOCKWISE;
+
+        // Check right (rotate twice to get over there)
+        robot.turnRobot(CLOCKWISE);
+        robot.turnRobot(CLOCKWISE);
+        if (aheadIsScaffold()) return CLOCKWISE;
+
+        // We should only get here at the end of the scaffold, when we have nowhere to turn
+        return null;
+    }
+
+    private boolean aheadIsScaffold() {
+        XYPoint pAhead = getRelativeStep(robot.getLocation(), robot.getFacing());
+        if (areaMap.containsKey(pAhead) && !areaMap.get(pAhead).equals(EMPTY)) {
+            // Point ahead is NOT EMPTY, so is SCAFFOLD OR INTERSECTION
+            return true;
+        } else {
+            // point ahead is EMPTY or something else we can't drive on
+            return false;
+        }
+    }
+
 
     private XYPoint getRelativeStep(XYPoint p, Direction direction) {
         int numSteps = 1;
         switch (direction) {
             case UP:
-                return (new XYPoint(p.getX(), p.getY() + numSteps));
+                return (new XYPoint(p.getX(), p.getY() - numSteps));
             case RIGHT:
                 return (new XYPoint(p.getX() + numSteps, p.getY()));
             case DOWN:
-                return (new XYPoint(p.getX(), p.getY() - numSteps));
+                return (new XYPoint(p.getX(), p.getY() + numSteps));
             case LEFT:
                 return (new XYPoint(p.getX() - numSteps, p.getY()));
         }

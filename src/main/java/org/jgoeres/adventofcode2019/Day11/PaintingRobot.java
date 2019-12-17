@@ -4,6 +4,8 @@ import org.jgoeres.adventofcode2019.common.Direction;
 import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
+import java.util.Set;
+
 import static org.jgoeres.adventofcode2019.common.Direction.UP;
 
 public class PaintingRobot {

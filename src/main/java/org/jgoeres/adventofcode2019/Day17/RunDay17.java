@@ -26,6 +26,11 @@ public abstract class RunDay17 {
         // Day 17B
         System.out.println("=== DAY " + DAY + "B ===");
 
+        scaffoldService = new ScaffoldService();
+
+        scaffoldService.createScaffoldMap();
+        scaffoldService.printAreaMap();
+        scaffoldService.explore();
         int result = 0;
 
         System.out.println("Day " + DAY + "B: Answer = " + result);

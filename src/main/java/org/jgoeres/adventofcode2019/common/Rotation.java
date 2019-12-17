@@ -5,8 +5,8 @@ import java.util.Map;
 
 public enum Rotation
 {
-    CLOCKWISE("CW"),
-    COUNTERCLOCKWISE("CCW");
+    CLOCKWISE("R"),
+    COUNTERCLOCKWISE("L");
 
     private final String rotationString;
 
