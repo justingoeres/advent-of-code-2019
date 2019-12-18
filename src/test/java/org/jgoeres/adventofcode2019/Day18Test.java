@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.Day18.Day18Service;
+import org.jgoeres.adventofcode2019.Day18.VaultService;
 import org.jgoeres.adventofcode2019.Day18.RunDay18;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,10 +10,11 @@ public class Day18Test {
 
     @Test
     public void testDay18AExample1() {
-        Day18Service day18Service = new Day18Service("data/day18/example1.txt");
+        VaultService vaultService = new VaultService("data/day18/example1.txt");
         int result = 0;
         try {
 //            result = day18Service();
+            vaultService.enumerateAllRoutes();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -22,10 +23,25 @@ public class Day18Test {
 
     @Test
     public void testDay18AExample2() {
-        Day18Service day18Service = new Day18Service("data/day18/example2.txt");
+        VaultService vaultService = new VaultService("data/day18/example2.txt");
         int result = 0;
         try {
 //            result = day18Service();
+            vaultService.enumerateAllRoutes();
+            vaultService.explore();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(0, result);
+    }
+
+    @Test
+    public void testDay18AInput() {
+        VaultService vaultService = new VaultService("data/day18/input.txt");
+        int result = 0;
+        try {
+//            result = day18Service();
+            vaultService.enumerateAllRoutes();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

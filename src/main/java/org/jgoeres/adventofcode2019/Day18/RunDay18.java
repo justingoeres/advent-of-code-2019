@@ -5,7 +5,7 @@ public abstract class RunDay18 {
 
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
-    static Day18Service day18Service = new Day18Service();
+    static VaultService vaultService = new VaultService();
 
     public static int problem18A() {
         // Day 18A

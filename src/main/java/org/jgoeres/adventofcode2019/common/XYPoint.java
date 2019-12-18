@@ -31,6 +31,24 @@ public class XYPoint {
         this.y = y;
     }
 
+    public XYPoint getRelativeLocation(DirectionURDL directionURDL) {
+        return getRelativeLocation(1, directionURDL);
+    }
+
+    public XYPoint getRelativeLocation(int numSteps, DirectionURDL directionURDL) {
+        switch (directionURDL) {
+            case UP:
+                return (new XYPoint(getX(), getY() + numSteps));
+            case RIGHT:
+                return (new XYPoint(getX() + numSteps, getY()));
+            case DOWN:
+                return (new XYPoint(getX(), getY() - numSteps));
+            case LEFT:
+                return (new XYPoint(getX() - numSteps, getY()));
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return (getX() + ", " + getY());
