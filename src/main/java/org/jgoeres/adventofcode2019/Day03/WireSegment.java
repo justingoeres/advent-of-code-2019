@@ -1,16 +1,16 @@
 package org.jgoeres.adventofcode2019.Day03;
 
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
 public class WireSegment {
-    private Direction direction;
+    private DirectionURDL directionURDL;
     private Integer length;
     private XYPoint p1;
     private XYPoint p2;
 
-    public WireSegment(Direction direction, Integer length, XYPoint p1) {
-        this.direction = direction;
+    public WireSegment(DirectionURDL directionURDL, Integer length, XYPoint p1) {
+        this.directionURDL = directionURDL;
         this.length = length;
 
         this.p1 = p1;
@@ -21,7 +21,7 @@ public class WireSegment {
     private XYPoint calculateP2() {
         int x = 0;
         int y = 0;
-        switch (direction) {
+        switch (directionURDL) {
             case UP:
                 x = p1.getX();
                 y = p1.getY() + length;
@@ -42,8 +42,8 @@ public class WireSegment {
         return new XYPoint(x, y);
     }
 
-    public Direction getDirection() {
-        return direction;
+    public DirectionURDL getDirectionURDL() {
+        return directionURDL;
     }
 
     public Integer getLength() {

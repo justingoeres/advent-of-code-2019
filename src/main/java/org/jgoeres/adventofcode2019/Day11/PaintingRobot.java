@@ -1,23 +1,21 @@
 package org.jgoeres.adventofcode2019.Day11;
 
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
-import java.util.Set;
-
-import static org.jgoeres.adventofcode2019.common.Direction.UP;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.UP;
 
 public class PaintingRobot {
     protected XYPoint location;
-    private Direction facing;
+    private DirectionURDL facing;
 
     public PaintingRobot(XYPoint location) {
         this.location = location;
         this.facing = UP;   // Robot starts facing UP.
     }
 
-    public PaintingRobot(XYPoint location, Direction facing) {
+    public PaintingRobot(XYPoint location, DirectionURDL facing) {
         this.location = location;
         this.facing = facing;
     }
@@ -52,7 +50,7 @@ public class PaintingRobot {
         return location;
     }
 
-    public Direction getFacing() {
+    public DirectionURDL getFacing() {
         return facing;
     }
 }

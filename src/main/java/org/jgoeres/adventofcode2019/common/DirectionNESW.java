@@ -1,6 +1,4 @@
-package org.jgoeres.adventofcode2019.Day15;
-
-import org.jgoeres.adventofcode2019.common.Rotation;
+package org.jgoeres.adventofcode2019.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +6,7 @@ import java.util.Map;
 import static org.jgoeres.adventofcode2019.common.Rotation.CLOCKWISE;
 import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 
-public enum Direction {
+public enum DirectionNESW {
     NORTH(1L),
     EAST(4L),
     SOUTH(2L),
@@ -19,21 +17,21 @@ public enum Direction {
     //****** Reverse Lookup Implementation************//
 
     //Lookup table
-    private static final Map<Long, Direction> lookup = new HashMap<Long, Direction>();
+    private static final Map<Long, DirectionNESW> lookup = new HashMap<Long, DirectionNESW>();
 
     //Populate the lookup table on loading time
     static {
-        for (Direction dir : Direction.values()) {
+        for (DirectionNESW dir : DirectionNESW.values()) {
             lookup.put(dir.getDirectionInt(), dir);
         }
     }
 
     //This method can be used for reverse lookup purpose
-    public static Direction get(String directionString) {
+    public static DirectionNESW get(String directionString) {
         return lookup.get(directionString);
     }
 
-    Direction(Long directionInt) {
+    DirectionNESW(Long directionInt) {
         this.directionInt = directionInt;
     }
 
@@ -41,7 +39,7 @@ public enum Direction {
         return directionInt;
     }
 
-    public Direction opposite(){
+    public DirectionNESW opposite(){
         switch (this) {
             case NORTH:
                 return SOUTH;
@@ -55,7 +53,7 @@ public enum Direction {
         return null;
     }
 
-    public Direction rotate(Rotation rotation) {
+    public DirectionNESW rotate(Rotation rotation) {
         int newDirection = this.ordinal();
         if (rotation == CLOCKWISE) {
             newDirection += 1;
@@ -71,6 +69,6 @@ public enum Direction {
                 newDirection += this.values().length;
             }
         }
-        return Direction.values()[newDirection];
+        return DirectionNESW.values()[newDirection];
     }
 }

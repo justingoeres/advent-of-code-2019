@@ -6,7 +6,7 @@ import java.util.Map;
 import static org.jgoeres.adventofcode2019.common.Rotation.CLOCKWISE;
 import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 
-public enum Direction {
+public enum DirectionURDL {
     UP("U"),
     RIGHT("R"),
     DOWN("D"),
@@ -17,21 +17,21 @@ public enum Direction {
     //****** Reverse Lookup Implementation************//
 
     //Lookup table
-    private static final Map<String, Direction> lookup = new HashMap<>();
+    private static final Map<String, DirectionURDL> lookup = new HashMap<>();
 
     //Populate the lookup table on loading time
     static {
-        for (Direction dir : Direction.values()) {
+        for (DirectionURDL dir : DirectionURDL.values()) {
             lookup.put(dir.getDirectionString(), dir);
         }
     }
 
     //This method can be used for reverse lookup purpose
-    public static Direction get(String directionString) {
+    public static DirectionURDL get(String directionString) {
         return lookup.get(directionString);
     }
 
-    Direction(String directionString) {
+    DirectionURDL(String directionString) {
         this.directionString = directionString;
     }
 
@@ -39,9 +39,9 @@ public enum Direction {
         return directionString;
     }
 
-    public Direction rotate(Rotation rotation) {
+    public DirectionURDL rotate(Rotation rotation) {
         int newDirection = this.ordinal();
-        Direction newDirectionEnum = null;
+        DirectionURDL newDirectionURDLEnum = null;
         if (rotation == CLOCKWISE) {
             newDirection += 1;
             if (newDirection >= this.values().length) {
@@ -56,6 +56,6 @@ public enum Direction {
                 newDirection += this.values().length;
             }
         }
-        return Direction.values()[newDirection];
+        return DirectionURDL.values()[newDirection];
     }
 }

@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode2019.Day03;
 
 import com.google.common.collect.Range;
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;
@@ -117,13 +117,13 @@ public class WireService {
                     if (matcher.find()) {
                         // Parse out each junction into a direction and a distance.
                         String directionString = matcher.group(1);
-                        Direction direction = Direction.get(directionString);
+                        DirectionURDL directionURDL = DirectionURDL.get(directionString);
                         Integer distance = Integer.parseInt(matcher.group(2));
 
 //                        System.out.println(matcher.group(0) + "\t" + direction + "\t" + distance);
 
                         // Create this wire segment
-                        WireSegment wireSegment = new WireSegment(direction, distance, p1);
+                        WireSegment wireSegment = new WireSegment(directionURDL, distance, p1);
 
                         // Add it to the segment list of the current wire
                         wireSegments.add(wireSegment);
@@ -262,7 +262,7 @@ public class WireService {
         Range<Integer> segmentRange = rangeFromWireSegment(wireSegment);
         // Does this segment contain the target point?
         boolean segmentContainsPoint = false;
-        switch (wireSegment.getDirection()) {
+        switch (wireSegment.getDirectionURDL()) {
             case UP:
             case DOWN:
                 // Apply the range to the y-coord of the point
@@ -288,7 +288,7 @@ public class WireService {
     private Range<Integer> rangeFromWireSegment(WireSegment wireSegment) {
         int endpt1 = 0;
         int endpt2 = 0;
-        switch (wireSegment.getDirection()) {
+        switch (wireSegment.getDirectionURDL()) {
             case UP:
             case DOWN:
                 // Use the Y-coords of the segment to make the range

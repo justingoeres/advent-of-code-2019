@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode2019.Day17;
 
 import org.jgoeres.adventofcode2019.Day11.PaintingRobot;
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
 public class ScaffoldRobot extends PaintingRobot {
@@ -10,7 +10,7 @@ public class ScaffoldRobot extends PaintingRobot {
         super(location);
     }
 
-    public ScaffoldRobot(XYPoint location, Direction facing) {
+    public ScaffoldRobot(XYPoint location, DirectionURDL facing) {
         super(location, facing);
     }
 

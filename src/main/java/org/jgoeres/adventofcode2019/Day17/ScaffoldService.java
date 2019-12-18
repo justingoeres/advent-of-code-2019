@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode2019.Day17;
 
 import org.jgoeres.adventofcode2019.Day11.PaintingRobot;
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
@@ -12,10 +12,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.jgoeres.adventofcode2019.Day17.ScaffoldLocation.*;
-import static org.jgoeres.adventofcode2019.common.Direction.DOWN;
-import static org.jgoeres.adventofcode2019.common.Direction.LEFT;
-import static org.jgoeres.adventofcode2019.common.Direction.RIGHT;
-import static org.jgoeres.adventofcode2019.common.Direction.UP;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.DOWN;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.LEFT;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.RIGHT;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.UP;
 import static org.jgoeres.adventofcode2019.common.Rotation.CLOCKWISE;
 import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 
@@ -103,7 +103,7 @@ public class ScaffoldService extends IntCodeProcessorService {
                 } else {
                     // This IS the robot, so update the robot's position and
                     // its facing direction
-                    Direction facing;
+                    DirectionURDL facing;
                     switch (mapChar) {
                         case UP_CHAR:
                         default:
@@ -154,14 +154,14 @@ public class ScaffoldService extends IntCodeProcessorService {
         Set<XYPoint> intersections = new HashSet<>();
         // Iterate over the points of the scaffold and find the ones that are bordered by
         // scaffold on all four sides. Those are intersections
-        ArrayList<XYPoint> relativeLocations = new ArrayList<>(Direction.values().length);
-        final Direction[] allDirections = Direction.values();
+        ArrayList<XYPoint> relativeLocations = new ArrayList<>(DirectionURDL.values().length);
+        final DirectionURDL[] allDirectionURDLS = DirectionURDL.values();
         for (XYPoint p : scaffoldMap.keySet()) {
             boolean isIntersection = true;
             relativeLocations.clear();
-            for (Direction direction : allDirections) {
+            for (DirectionURDL directionURDL : allDirectionURDLS) {
                 // Check each of the 4 points from p (up, down, left, right)
-                XYPoint pRelative = getRelativeStep(p, direction);
+                XYPoint pRelative = getRelativeStep(p, directionURDL);
                 // If any
                 if (!areaMap.containsKey(pRelative)) {
                     isIntersection = false;
@@ -325,9 +325,9 @@ public class ScaffoldService extends IntCodeProcessorService {
     }
 
 
-    private XYPoint getRelativeStep(XYPoint p, Direction direction) {
+    private XYPoint getRelativeStep(XYPoint p, DirectionURDL directionURDL) {
         int numSteps = 1;
-        switch (direction) {
+        switch (directionURDL) {
             case UP:
                 return (new XYPoint(p.getX(), p.getY() - numSteps));
             case RIGHT:

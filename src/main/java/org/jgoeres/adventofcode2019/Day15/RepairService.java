@@ -1,5 +1,6 @@
 package org.jgoeres.adventofcode2019.Day15;
 
+import org.jgoeres.adventofcode2019.common.DirectionNESW;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
@@ -18,7 +19,7 @@ public class RepairService extends IntCodeProcessorService {
     // areaMap maps xy locations to whatever is at that location (wall, empty, oxygen system)
     private HashMap<XYPoint, Location> areaMap = new HashMap<>();
 
-    Deque<Direction> exploreTrail = new LinkedList<>();
+    Deque<DirectionNESW> exploreTrail = new LinkedList<>();
     HashSet<XYPoint> pointsToExplore = new HashSet<>();
     HashSet<XYPoint> pointsExplored = new HashSet<>();
     HashMap<XYPoint, Integer> distancesFromOrigin = new HashMap<>();
@@ -62,9 +63,9 @@ public class RepairService extends IntCodeProcessorService {
             // At current point R
             // Check all four directions NESW from here
             // For each one
-            for (Direction direction : Direction.values()) {
+            for (DirectionNESW directionNESW : DirectionNESW.values()) {
                 // Check if the point in question is unexplored.
-                XYPoint pointToExplore = robot.getRelativeLocation(direction);
+                XYPoint pointToExplore = robot.getRelativeLocation(directionNESW);
                 if (pointsToExplore.contains(pointToExplore)) {
                     //  If yes, skip it – we'll get to it eventually
                 } else {
@@ -75,7 +76,7 @@ public class RepairService extends IntCodeProcessorService {
                         //  If no, add the point to the set of points to explore eventually
                         pointsToExplore.add(pointToExplore);
                         //  Also add the MOVE (NESW) to the roadmap
-                        exploreTrail.addFirst(direction);
+                        exploreTrail.addFirst(directionNESW);
                     }
                 }
             }
@@ -86,7 +87,7 @@ public class RepairService extends IntCodeProcessorService {
                 break;
             }
             //  Get the top item from the queue (it will be a DIRECTION)
-            Direction moveToTry = exploreTrail.poll();
+            DirectionNESW moveToTry = exploreTrail.poll();
             XYPoint targetPoint = robot.getRelativeLocation(moveToTry);
             if (pointsExplored.contains(targetPoint)) {
                 // If this point has already been explored,
@@ -135,9 +136,9 @@ public class RepairService extends IntCodeProcessorService {
             // Get all the non-oxygen points surrounding the source(s)
             HashSet<XYPoint> nextSources = new HashSet<>();
             for (XYPoint source : sources) {
-                for (Direction direction : Direction.values()) {
+                for (DirectionNESW directionNESW : DirectionNESW.values()) {
                     // Check each point adjacent to this source
-                    XYPoint pointToCheck = getRelativeStep(source, direction);
+                    XYPoint pointToCheck = getRelativeStep(source, directionNESW);
                     // Is this point empty?
                     if (areaMap.get(pointToCheck) == EMPTY) {
                         // Then fill it with oxygen and add it to the source list for next time
@@ -167,9 +168,9 @@ public class RepairService extends IntCodeProcessorService {
         return minutesElapsed;  // return the elapsed time
     }
 
-    private XYPoint getRelativeStep(XYPoint p, Direction direction) {
+    private XYPoint getRelativeStep(XYPoint p, DirectionNESW directionNESW) {
         int numSteps = 1;
-        switch (direction) {
+        switch (directionNESW) {
             case NORTH:
                 return (new XYPoint(p.getX(), p.getY() + numSteps));
             case EAST:
@@ -183,7 +184,7 @@ public class RepairService extends IntCodeProcessorService {
     }
 
 
-    public boolean moveRobot(Direction direction) {
+    public boolean moveRobot(DirectionNESW directionNESW) {
         // Tries to move the robot, returns TRUE if the move succeeded.
         /**
          * The remote control program executes the following steps in a loop forever:
@@ -197,8 +198,8 @@ public class RepairService extends IntCodeProcessorService {
         executeToNextInput();
 
         // Give the CPU our move instruction
-        setCpuInputValue(direction.getDirectionInt());
-        XYPoint targetLocation = robot.getRelativeLocation(direction);
+        setCpuInputValue(directionNESW.getDirectionInt());
+        XYPoint targetLocation = robot.getRelativeLocation(directionNESW);
 
         // Next, let the program run until it tells us the result of the move command
         executeToNextOutput();
@@ -224,7 +225,7 @@ public class RepairService extends IntCodeProcessorService {
                 // Add the target point to the area map
                 areaMap.put(targetLocation, EMPTY);
                 // Move the robot
-                robot.stepRobot(direction);
+                robot.stepRobot(directionNESW);
                 return true;    // robot moved
             case 2:
                 // OXYGEN / successful move
@@ -234,7 +235,7 @@ public class RepairService extends IntCodeProcessorService {
                 // Add the target point to the area map
                 areaMap.put(targetLocation, OXYGEN);
                 // Move the robot
-                robot.stepRobot(direction);
+                robot.stepRobot(directionNESW);
                 return true;    // robot moved
         }
         // We should never get here but if we do, just say the robot didn't move

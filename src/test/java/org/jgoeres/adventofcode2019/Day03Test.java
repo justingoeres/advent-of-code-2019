@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
-import org.jgoeres.adventofcode2019.common.Direction;
+import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.Day03.RunDay03;
 import org.jgoeres.adventofcode2019.Day03.WireSegment;
 import org.jgoeres.adventofcode2019.Day03.WireService;
@@ -19,8 +19,8 @@ public class Day03Test {
     public void TestVerticalSegmentOverlap() {
         XYPoint origin = new XYPoint(0, 0);
         XYPoint otherSegment = new XYPoint(0, 15);
-        WireSegment w1 = new WireSegment(Direction.UP, 10, origin);
-        WireSegment w2 = new WireSegment(Direction.DOWN, 10, otherSegment);
+        WireSegment w1 = new WireSegment(DirectionURDL.UP, 10, origin);
+        WireSegment w2 = new WireSegment(DirectionURDL.DOWN, 10, otherSegment);
 
         XYPoint intersection = wireService.findIntersection(w1, w2);
 
@@ -32,8 +32,8 @@ public class Day03Test {
     public void TestVerticalSegmentNonOverlap() {
         XYPoint origin = new XYPoint(1, 0);
         XYPoint otherSegment = new XYPoint(0, 15);
-        WireSegment w1 = new WireSegment(Direction.UP, 10, origin);
-        WireSegment w2 = new WireSegment(Direction.DOWN, 10, otherSegment);
+        WireSegment w1 = new WireSegment(DirectionURDL.UP, 10, origin);
+        WireSegment w2 = new WireSegment(DirectionURDL.DOWN, 10, otherSegment);
 
         XYPoint intersection = wireService.findIntersection(w1, w2);
 
@@ -45,8 +45,8 @@ public class Day03Test {
     public void TestHorizontalSegmentOverlap() {
         XYPoint origin = new XYPoint(0, 0);
         XYPoint otherSegment = new XYPoint(-15, 0);
-        WireSegment w1 = new WireSegment(Direction.LEFT, 10, origin);
-        WireSegment w2 = new WireSegment(Direction.RIGHT, 10, otherSegment);
+        WireSegment w1 = new WireSegment(DirectionURDL.LEFT, 10, origin);
+        WireSegment w2 = new WireSegment(DirectionURDL.RIGHT, 10, otherSegment);
 
         XYPoint intersection = wireService.findIntersection(w1, w2);
 
@@ -58,8 +58,8 @@ public class Day03Test {
     public void TestHorizontalSegmentNonOverlap() {
         XYPoint origin = new XYPoint(0, 0);
         XYPoint otherSegment = new XYPoint(-15, 1);
-        WireSegment w1 = new WireSegment(Direction.LEFT, 10, origin);
-        WireSegment w2 = new WireSegment(Direction.RIGHT, 10, otherSegment);
+        WireSegment w1 = new WireSegment(DirectionURDL.LEFT, 10, origin);
+        WireSegment w2 = new WireSegment(DirectionURDL.RIGHT, 10, otherSegment);
 
         XYPoint intersection = wireService.findIntersection(w1, w2);
 
@@ -70,9 +70,9 @@ public class Day03Test {
     @Test
     public void TestOrthogonalSegmentOverlap() {
         XYPoint hOrigin = new XYPoint(5, 3);
-        WireSegment hSegment = new WireSegment(Direction.LEFT, 10, hOrigin);
+        WireSegment hSegment = new WireSegment(DirectionURDL.LEFT, 10, hOrigin);
         XYPoint vOrigin = new XYPoint(-1, 6);
-        WireSegment vSegment = new WireSegment(Direction.DOWN, 10, vOrigin);
+        WireSegment vSegment = new WireSegment(DirectionURDL.DOWN, 10, vOrigin);
 
         XYPoint intersection = wireService.findIntersection(hSegment, vSegment);
 
@@ -83,9 +83,9 @@ public class Day03Test {
     @Test
     public void TestOrthogonalSegmentNonOverlap() {
         XYPoint hOrigin = new XYPoint(10, 3);
-        WireSegment hSegment = new WireSegment(Direction.RIGHT, 10, hOrigin);
+        WireSegment hSegment = new WireSegment(DirectionURDL.RIGHT, 10, hOrigin);
         XYPoint vOrigin = new XYPoint(-1, 6);
-        WireSegment vSegment = new WireSegment(Direction.DOWN, 10, vOrigin);
+        WireSegment vSegment = new WireSegment(DirectionURDL.DOWN, 10, vOrigin);
 
         XYPoint intersection = wireService.findIntersection(hSegment, vSegment);
 
