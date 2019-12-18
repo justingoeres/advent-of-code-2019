@@ -3,6 +3,7 @@ package org.jgoeres.adventofcode2019.Day15;
 import org.jgoeres.adventofcode2019.common.DirectionNESW;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
+import org.jgoeres.adventofcode2019.common.robot.RobotNESW;
 
 import java.util.*;
 
@@ -13,9 +14,8 @@ public class RepairService extends IntCodeProcessorService {
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
     private final boolean DISPLAY = false;
 
-    // TODO: Robot inherits from PaintingRobot for now because it has movement built in; generalize this later
     private final XYPoint ORIGIN = new XYPoint(0, 0);
-    private RepairRobot robot;
+    private RobotNESW repairRobot;
     // areaMap maps xy locations to whatever is at that location (wall, empty, oxygen system)
     private HashMap<XYPoint, Location> areaMap = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class RepairService extends IntCodeProcessorService {
     public void reset() {
         super.reset();
         // Reset the robot to the origin
-        robot = new RepairRobot(ORIGIN);
+        repairRobot = new RobotNESW(ORIGIN);
         // Reset the map – the first spot is empty because that's where the robot starts
         areaMap.clear();
         areaMap.put(ORIGIN, EMPTY);
@@ -65,7 +65,7 @@ public class RepairService extends IntCodeProcessorService {
             // For each one
             for (DirectionNESW directionNESW : DirectionNESW.values()) {
                 // Check if the point in question is unexplored.
-                XYPoint pointToExplore = robot.getRelativeLocation(directionNESW);
+                XYPoint pointToExplore = repairRobot.getRelativeLocation(directionNESW);
                 if (pointsToExplore.contains(pointToExplore)) {
                     //  If yes, skip it – we'll get to it eventually
                 } else {
@@ -88,7 +88,7 @@ public class RepairService extends IntCodeProcessorService {
             }
             //  Get the top item from the queue (it will be a DIRECTION)
             DirectionNESW moveToTry = exploreTrail.poll();
-            XYPoint targetPoint = robot.getRelativeLocation(moveToTry);
+            XYPoint targetPoint = repairRobot.getRelativeLocation(moveToTry);
             if (pointsExplored.contains(targetPoint)) {
                 // If this point has already been explored,
                 // then we're backtracking and we know this spot is open
@@ -117,7 +117,7 @@ public class RepairService extends IntCodeProcessorService {
             if (DISPLAY) {
                 if (DISPLAY) {
                     printAreaMap();
-                    System.out.println(robot.getLocation() + "\t" + distanceFromOrigin);
+                    System.out.println(repairRobot.getLocation() + "\t" + distanceFromOrigin);
                     System.out.println();
                 }
             }
@@ -199,7 +199,7 @@ public class RepairService extends IntCodeProcessorService {
 
         // Give the CPU our move instruction
         setCpuInputValue(directionNESW.getDirectionInt());
-        XYPoint targetLocation = robot.getRelativeLocation(directionNESW);
+        XYPoint targetLocation = repairRobot.getRelativeLocation(directionNESW);
 
         // Next, let the program run until it tells us the result of the move command
         executeToNextOutput();
@@ -225,7 +225,7 @@ public class RepairService extends IntCodeProcessorService {
                 // Add the target point to the area map
                 areaMap.put(targetLocation, EMPTY);
                 // Move the robot
-                robot.stepRobot(directionNESW);
+                repairRobot.stepRobot(directionNESW);
                 return true;    // robot moved
             case 2:
                 // OXYGEN / successful move
@@ -235,7 +235,7 @@ public class RepairService extends IntCodeProcessorService {
                 // Add the target point to the area map
                 areaMap.put(targetLocation, OXYGEN);
                 // Move the robot
-                robot.stepRobot(directionNESW);
+                repairRobot.stepRobot(directionNESW);
                 return true;    // robot moved
         }
         // We should never get here but if we do, just say the robot didn't move
@@ -288,7 +288,7 @@ public class RepairService extends IntCodeProcessorService {
                         locationChar = ' ';
                         // If the robot is here,print it instead of empty
                         if (ORIGIN.equals(new XYPoint(x, y))) locationChar = 'X';
-                        if (robot.getLocation().equals(new XYPoint(x, y))) locationChar = 'R';
+                        if (repairRobot.getLocation().equals(new XYPoint(x, y))) locationChar = 'R';
                         break;
                     case WALL:
                         locationChar = '#';

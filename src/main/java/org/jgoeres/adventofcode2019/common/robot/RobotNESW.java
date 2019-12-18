@@ -1,17 +1,29 @@
-package org.jgoeres.adventofcode2019.Day15;
+package org.jgoeres.adventofcode2019.common.robot;
 
-import org.jgoeres.adventofcode2019.Day11.PaintingRobot;
 import org.jgoeres.adventofcode2019.common.DirectionNESW;
+import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
-public class RepairRobot extends PaintingRobot {
-    public RepairRobot(XYPoint location) {
+public class RobotNESW extends AbstractRobot {
+    private DirectionNESW facing;
+
+    public RobotNESW(XYPoint location) {
         super(location);
+    }
+
+    public RobotNESW(XYPoint location, DirectionNESW facing) {
+        super(location);
+        this.facing = facing;
     }
 
     public void stepRobot(DirectionNESW directionNESW) {
         int DEFAULT_DISTANCE = 1;
         moveRobot(DEFAULT_DISTANCE, directionNESW);
+    }
+
+    @Override
+    public void moveRobot(int numSteps) {
+        moveRobot(numSteps, facing);
     }
 
     public void moveRobot(int numSteps, DirectionNESW directionNESW) {
@@ -47,5 +59,10 @@ public class RepairRobot extends PaintingRobot {
                 return (new XYPoint(location.getX() - numSteps, location.getY()));
         }
         return null;
+    }
+
+    @Override
+    public void turnRobot(Rotation rotation) {
+
     }
 }

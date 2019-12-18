@@ -1,6 +1,6 @@
 package org.jgoeres.adventofcode2019.Day17;
 
-import org.jgoeres.adventofcode2019.Day11.PaintingRobot;
+import org.jgoeres.adventofcode2019.common.robot.RobotURDL;
 import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
@@ -25,7 +25,7 @@ public class ScaffoldService extends IntCodeProcessorService {
     private final boolean DISPLAY = false;
 
     private final XYPoint ORIGIN = new XYPoint(0, 0);
-    private ScaffoldRobot robot;
+    private RobotURDL robot;
     // areaMap maps xy locations to whatever is at that location (scaffold, empty)
     private HashMap<XYPoint, ScaffoldLocation> areaMap = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class ScaffoldService extends IntCodeProcessorService {
     public void reset() {
         super.reset();
         // Reset the robot to the origin
-        robot = new ScaffoldRobot(ORIGIN);
+        robot = new RobotURDL(ORIGIN);
         // Reset the map – the first spot is empty because that's where the robot starts
         areaMap.clear();
     }
@@ -119,7 +119,7 @@ public class ScaffoldService extends IntCodeProcessorService {
                             facing = RIGHT;
                             break;
                     }
-                    robot = new ScaffoldRobot(p, facing);
+                    robot = new RobotURDL(p, facing);
                     // Other than the robot, this point on the map is empty
                     areaMap.put(p, EMPTY);
                     x++;
@@ -296,7 +296,7 @@ public class ScaffoldService extends IntCodeProcessorService {
     }
 
 
-    public Rotation rotateToScaffold(PaintingRobot robot) {
+    public Rotation rotateToScaffold(RobotURDL robot) {
         // Rotates the robot left & right to find which point is the next SCAFFOLD or INTERSECTION.
         // Returns the direction it rotated.
 

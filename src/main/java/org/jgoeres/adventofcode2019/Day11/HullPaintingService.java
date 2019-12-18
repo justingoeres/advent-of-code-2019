@@ -3,13 +3,12 @@ package org.jgoeres.adventofcode2019.Day11;
 import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
+import org.jgoeres.adventofcode2019.common.robot.RobotURDL;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.jgoeres.adventofcode2019.Day11.Color.BLACK;
 import static org.jgoeres.adventofcode2019.Day11.Color.WHITE;
-import static org.jgoeres.adventofcode2019.common.AoCMath.ORIGIN;
 import static org.jgoeres.adventofcode2019.common.Rotation.CLOCKWISE;
 import static org.jgoeres.adventofcode2019.common.Rotation.COUNTERCLOCKWISE;
 
@@ -21,7 +20,7 @@ public class HullPaintingService {
     private final String EMPTY = "";
 
     private IntCodeProcessorService intCodeProcessorService;
-    private PaintingRobot robot;
+    private RobotURDL paintingRobot;
     private HashMap<XYPoint, Color> hullArea;
 
     public HullPaintingService() {
@@ -37,13 +36,13 @@ public class HullPaintingService {
 
     public void reset() {
         intCodeProcessorService.reset();
-        robot = new PaintingRobot(new XYPoint(0, 0));
+        paintingRobot = new RobotURDL(new XYPoint(0, 0));
         hullArea = new HashMap<>();
     }
 
     public void reset(Color startColor) {
         reset();
-        hullArea.put(robot.getLocation(), startColor);
+        hullArea.put(paintingRobot.getLocation(), startColor);
     }
 
     public int paintTheHull() {
@@ -113,7 +112,7 @@ public class HullPaintingService {
     }
 
     private void sendColorToInput() {
-        XYPoint location = robot.getLocation();
+        XYPoint location = paintingRobot.getLocation();
         Color panelColor = readPanelColor(location);
         // Convert panelColor to long for input
         long longPanelColor = panelColor.getIntColor();
@@ -122,7 +121,7 @@ public class HullPaintingService {
     }
 
     private void paintPanelFromOutput() {
-        XYPoint panelLocation = new XYPoint(robot.getLocation().getX(), robot.getLocation().getY());
+        XYPoint panelLocation = new XYPoint(paintingRobot.getLocation().getX(), paintingRobot.getLocation().getY());
         long longPanelColor = intCodeProcessorService.getProgramOutput();
         Color panelColor = (longPanelColor == 0L) ? BLACK : WHITE;
         paintPanel(panelLocation, panelColor);
@@ -148,8 +147,8 @@ public class HullPaintingService {
     private void turnAndMove() {
         long rotationLong = intCodeProcessorService.getProgramOutput();
         Rotation rotation = (rotationLong == 0L) ? COUNTERCLOCKWISE : CLOCKWISE;
-        robot.turnRobot(rotation);
-        robot.stepRobot();
+        paintingRobot.turnRobot(rotation);
+        paintingRobot.stepRobot();
     }
 
     private void loadInputs(String pathToFile) {

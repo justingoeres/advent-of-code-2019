@@ -1,56 +1,35 @@
 package org.jgoeres.adventofcode2019.Day11;
 
 import org.jgoeres.adventofcode2019.common.DirectionURDL;
-import org.jgoeres.adventofcode2019.common.Rotation;
 import org.jgoeres.adventofcode2019.common.XYPoint;
+import org.jgoeres.adventofcode2019.common.robot.RobotURDL;
 
-import static org.jgoeres.adventofcode2019.common.DirectionURDL.UP;
-
-public class PaintingRobot {
-    protected XYPoint location;
-    private DirectionURDL facing;
-
+public class PaintingRobot extends RobotURDL {
     public PaintingRobot(XYPoint location) {
-        this.location = location;
-        this.facing = UP;   // Robot starts facing UP.
+        super(location);
     }
 
     public PaintingRobot(XYPoint location, DirectionURDL facing) {
-        this.location = location;
-        this.facing = facing;
+        super(location, facing);
     }
 
-    public void turnRobot(Rotation rotation) {
-        facing = facing.rotate(rotation);
-    }
-
-    public void stepRobot() {
-        int DEFAULT_DISTANCE = 1;
-        moveRobot(DEFAULT_DISTANCE);
-    }
-
+    @Override
     public void moveRobot(int numSteps) {
-        switch (facing) {
+        switch (getFacing()) {
             case UP:
+                // positive-Y is UP
                 location.setY(location.getY() + numSteps);
                 break;
             case RIGHT:
                 location.setX(location.getX() + numSteps);
                 break;
             case DOWN:
+                // negative-Y is DOWN
                 location.setY(location.getY() - numSteps);
                 break;
             case LEFT:
                 location.setX(location.getX() - numSteps);
                 break;
         }
-    }
-
-    public XYPoint getLocation() {
-        return location;
-    }
-
-    public DirectionURDL getFacing() {
-        return facing;
     }
 }
