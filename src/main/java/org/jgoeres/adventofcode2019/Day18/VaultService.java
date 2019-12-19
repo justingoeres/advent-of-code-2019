@@ -73,6 +73,7 @@ public class VaultService {
         ArrayList<Journey> completedJourneys = new ArrayList<>();
 
         while (!activeJourneys.isEmpty()) {
+            System.out.println("Active Journeys:\t" + activeJourneys.size());
             // Process all active journeys, continue until there are no more journeys left
             for (Journey journey : activeJourneys) {
                 // Find all the keys we can reach from this journey's current position
