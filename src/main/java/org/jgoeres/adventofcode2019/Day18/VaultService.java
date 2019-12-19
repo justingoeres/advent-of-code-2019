@@ -349,14 +349,11 @@ public class VaultService {
 
         @Override
         public boolean equals(Object o) {
-
             if (o == this) return true;
             if (!(o instanceof Journey)) {
                 return false;
             }
-
             Journey journey = (Journey) o;
-
             return journey.keysCollected.equals(keysCollected) &&
                     journey.currentLocation == currentLocation;
         }
@@ -435,7 +432,7 @@ public class VaultService {
             return 0;
         }
     }
-    
+
     class JourneyLeastKeysCollectedComparator implements Comparator<Journey> {
         // Overriding compare()method of Comparator
         // Sort Journeys so ones with more keys collected come first
@@ -470,7 +467,7 @@ public class VaultService {
 
     class JourneyLeastKeysCollectedThenDistanceComparator implements Comparator<Journey> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so ones with more keys collected come first
+        // Sort Journeys so ones with fewer keys and then less distance come first
         public int compare(Journey j1, Journey j2) {
             if (j1.keysCollected.size() > j2.keysCollected.size()) {
                 return 1;
