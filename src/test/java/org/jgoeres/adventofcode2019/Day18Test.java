@@ -17,8 +17,9 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            ArrayList<VaultService.Journey> journeys = vaultService.explore();
-            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            VaultService.Journey shortestJourney = vaultService.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -32,8 +33,9 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            ArrayList<VaultService.Journey> journeys = vaultService.explore();
-            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            VaultService.Journey shortestJourney = vaultService.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -47,8 +49,9 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            ArrayList<VaultService.Journey> journeys = vaultService.explore();
-            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            VaultService.Journey shortestJourney = vaultService.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -62,8 +65,9 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            ArrayList<VaultService.Journey> journeys = vaultService.explore();
-            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            VaultService.Journey shortestJourney = vaultService.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -77,8 +81,9 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            ArrayList<VaultService.Journey> journeys = vaultService.explore();
-            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            VaultService.Journey shortestJourney = vaultService.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -92,6 +97,8 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
+            VaultService.Journey shortestJourney = vaultService.explore();
+            result = shortestJourney.getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

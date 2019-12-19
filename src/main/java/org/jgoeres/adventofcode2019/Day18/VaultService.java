@@ -6,9 +6,11 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 public class VaultService {
     private final String DAY = "18";
@@ -52,7 +54,7 @@ public class VaultService {
         }
     }
 
-    public ArrayList<Journey> explore() {
+    public Journey explore() {
         // By the time we call this, we have a set of all the key-to-key routes and their requirements
         HashSet<Character> keysCollected = new HashSet<>();
 
@@ -72,43 +74,83 @@ public class VaultService {
         ArrayList<Journey> nextActiveJourneys = new ArrayList<>();
         ArrayList<Journey> completedJourneys = new ArrayList<>();
 
-        while (!activeJourneys.isEmpty()) {
-            System.out.println("Active Journeys:\t" + activeJourneys.size());
-            // Process all active journeys, continue until there are no more journeys left
-            for (Journey journey : activeJourneys) {
-                // Find all the keys we can reach from this journey's current position
-                // (i.e. all routes for which we have all requirements)
-                HashMap<Character, RouteData> reachableRoutes = findReachableRoutes(journey.getCurrentLocation(), journey.getKeysCollected());
+        // Keep the active Journeys in a priority queue, sorted so the *shortest journey* is at the top
+//        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyDistanceComparator());
+//        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyKeysCollectedComparator());
+        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyKeysCollectedThenDistanceComparator());
+        activeJourneyQueue.add(firstJourney);
+        Journey shortestJourney = infiniteJourney();    // Initialize the first shortest journey to a super long one
 
-                if (reachableRoutes.size() == 0) {
-                    // If there are no reachable routes from here, this journey is over!
-                    completedJourneys.add(journey);
-                }
-                // For each reachable route, spawn a new journey based on the current one
-                for (Map.Entry<Character, RouteData> reachable : reachableRoutes.entrySet()) {
-                    /*** DEBUG ***/
-//                    System.out.println("Reachable from " + journey.getCurrentLocation() + ":\t" + reachable.getKey() + " at distance of " + reachable.getValue().getDistance());
-                    // Add up the new distance
-                    Integer newDistance = journey.getTotalDistance() + reachable.getValue().getDistance();
-                    // Duplicate the keys collected list in the new journey
-                    HashSet<Character> newKeysCollected = new HashSet<>();
-                    newKeysCollected.addAll(journey.getKeysCollected());
-                    Character newLocation = reachable.getKey();
-                    // Add the new key we're just now picking up
-                    newKeysCollected.add(Character.toUpperCase(newLocation));
-                    Journey newJourney = new Journey(newLocation, newKeysCollected, newDistance);
-                    // Add the new journey to the active list
-                    nextActiveJourneys.add(newJourney);
+        //        while (!activeJourneys.isEmpty()) {
+        int i = 0;
+        while (!activeJourneyQueue.isEmpty()) {
+//            System.out.println("Active Journeys:\t" + activeJourneys.size());
+//            System.out.println("Active Journeys:\t" + activeJourneyQueue.size());
+            // Process all active journeys, continue until there are no more journeys left
+            //          for (Journey journey : activeJourneys) {
+            /*** DEBUG ***/
+            if (i % 10000 == 0) {
+                System.out.println("Journeys checked:\t" + i + "\tcurrent queue:\t" + activeJourneyQueue.size());
+            }
+
+            Journey journey = activeJourneyQueue.poll();
+//            System.out.println(journey);
+            // Find all the keys we can reach from this journey's current position
+            // (i.e. all routes for which we have all requirements)
+            HashMap<Character, RouteData> reachableRoutes = findReachableRoutes(journey.getCurrentLocation(), journey.getKeysCollected());
+
+            if (reachableRoutes.size() == 0) {
+                // If there are no reachable routes from here, this journey is over!
+                // Compare this to our shortest known journey.
+                // If this one is shorter, it's the new shortest!
+                /*** DEBUG ***/
+                System.out.println("COMPLETE:\t" + journey);
+                if (shortestJourney != null) {
+                    Integer shortestDistance = shortestJourney.getTotalDistance();
+                    Integer newDistance = journey.getTotalDistance();
+                    if (newDistance < shortestDistance) {
+                        /*** DEBUG ***/
+                        System.out.println("---new shortest journey:\t" + journey.getTotalDistance());
+                        shortestJourney = journey;
+                    }
+                } else {
+                    // If this is our first completed journey, it's the shortest by default
+                    shortestJourney = journey;
                 }
             }
+            // For each reachable route, spawn a new journey based on the current one
+            for (Map.Entry<Character, RouteData> reachable : reachableRoutes.entrySet()) {
+                /*** DEBUG ***/
+//                System.out.println("Reachable from " + journey.getCurrentLocation() + ":\t" + reachable.getKey() + " at distance of " + reachable.getValue().getDistance());
+                // Add up the new distance
+                Integer newDistance = journey.getTotalDistance() + reachable.getValue().getDistance();
+                // Duplicate the keys collected list in the new journey
+                HashSet<Character> newKeysCollected = new HashSet<>();
+                newKeysCollected.addAll(journey.getKeysCollected());
+                Character newLocation = reachable.getKey();
+                // Add the new key we're just now picking up
+                newKeysCollected.add(Character.toUpperCase(newLocation));
+                Journey newJourney = new Journey(newLocation, newKeysCollected, newDistance);
+                // Add the new journey to the active list
+//                    nextActiveJourneys.add(newJourney);
+                // Add this new journey to the active queue
+                // but only if it's still shorter than shortest known
+                if (newJourney.getTotalDistance() < shortestJourney.getTotalDistance()) {
+                    activeJourneyQueue.add(newJourney);
+                } else {
+//                    System.out.println("Too long, dropping:\t" + newJourney);
+                }
+            }
+            //       }
             // Switch the new list of active journeys in for the next iteration
             ArrayList<Journey> tempJourneys = activeJourneys;
             activeJourneys = nextActiveJourneys;
             nextActiveJourneys = tempJourneys;
             // Clear the list we just processed, so we don't have to allocate this new every time.
             nextActiveJourneys.clear();
+            i++;
         }
-        return completedJourneys;
+        return shortestJourney;
     }
 
     private HashMap<Character, RouteData> findReachableRoutes(Character currentGlyph, HashSet<Character> keysCollected) {
@@ -353,6 +395,12 @@ public class VaultService {
         }
     }
 
+    private Journey infiniteJourney() {
+        Journey infiniteJourney = new Journey();
+        infiniteJourney.setTotalDistance(Integer.MAX_VALUE);
+        return infiniteJourney;
+    }
+
 
     class RouteData {
         Integer distance;
@@ -420,6 +468,55 @@ public class VaultService {
 
         public Character getCurrentLocation() {
             return currentLocation;
+        }
+
+        @Override
+        public String toString() {
+            return "Point '" + currentLocation + "', Distance: " + totalDistance + ", Keys: " + keysCollected.size() + " " + keysCollected;
+        }
+    }
+
+    class JourneyDistanceComparator implements Comparator<Journey> {
+        // Overriding compare()method of Comparator
+        // Sort Journeys so shorter ones come first
+        public int compare(Journey j1, Journey j2) {
+            if (j1.totalDistance > j2.totalDistance)
+                return 1;
+            else if (j1.totalDistance < j2.totalDistance)
+                return -1;
+            return 0;
+        }
+    }
+
+    class JourneyKeysCollectedComparator implements Comparator<Journey> {
+        // Overriding compare()method of Comparator
+        // Sort Journeys so ones with more keys collected come first
+        public int compare(Journey j1, Journey j2) {
+            if (j1.keysCollected.size() < j2.keysCollected.size())
+                return 1;
+            else if (j1.keysCollected.size() > j2.keysCollected.size())
+                return -1;
+            return 0;
+        }
+    }
+
+    class JourneyKeysCollectedThenDistanceComparator implements Comparator<Journey> {
+        // Overriding compare()method of Comparator
+        // Sort Journeys so ones with more keys collected come first
+        public int compare(Journey j1, Journey j2) {
+            if (j1.keysCollected.size() < j2.keysCollected.size()) {
+                return 1;
+            } else if (j1.keysCollected.size() > j2.keysCollected.size()) {
+                return -1;
+            } else {
+                // Keys collected is equal, so sort on distance (shorter first)
+                if (j1.totalDistance > j2.totalDistance) {
+                    return 1;
+                } else if (j1.totalDistance < j2.totalDistance) {
+                    return -1;
+                }
+            }
+            return 0;
         }
     }
 }
