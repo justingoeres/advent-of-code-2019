@@ -5,6 +5,8 @@ import org.jgoeres.adventofcode2019.Day18.RunDay18;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 public class Day18Test {
     static String DAY = "18";
 
@@ -15,10 +17,12 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
+            ArrayList<VaultService.Journey> journeys = vaultService.explore();
+            result = vaultService.findShortestJourney(journeys).getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(8, result);
     }
 
     @Test
@@ -28,11 +32,57 @@ public class Day18Test {
         try {
 //            result = day18Service();
             vaultService.enumerateAllRoutes();
-            vaultService.explore();
+            ArrayList<VaultService.Journey> journeys = vaultService.explore();
+            result = vaultService.findShortestJourney(journeys).getTotalDistance();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(86, result);
+    }
+
+    @Test
+    public void testDay18AExample3() {
+        VaultService vaultService = new VaultService("data/day18/example3.txt");
+        int result = 0;
+        try {
+//            result = day18Service();
+            vaultService.enumerateAllRoutes();
+            ArrayList<VaultService.Journey> journeys = vaultService.explore();
+            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(132, result);
+    }
+
+    @Test
+    public void testDay18AExample4() {
+        VaultService vaultService = new VaultService("data/day18/example4.txt");
+        int result = 0;
+        try {
+//            result = day18Service();
+            vaultService.enumerateAllRoutes();
+            ArrayList<VaultService.Journey> journeys = vaultService.explore();
+            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(136, result);
+    }
+
+    @Test
+    public void testDay18AExample5() {
+        VaultService vaultService = new VaultService("data/day18/example5.txt");
+        int result = 0;
+        try {
+//            result = day18Service();
+            vaultService.enumerateAllRoutes();
+            ArrayList<VaultService.Journey> journeys = vaultService.explore();
+            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(81, result);
     }
 
     @Test
