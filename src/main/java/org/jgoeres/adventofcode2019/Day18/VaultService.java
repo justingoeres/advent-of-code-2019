@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class VaultService {
@@ -30,6 +31,7 @@ public class VaultService {
 
     private XYPoint entrance = null;
 
+    private final HashMap<Journey, Integer> shortestJourneys = new HashMap<>();
 
     public VaultService() {
         init();
@@ -68,26 +70,14 @@ public class VaultService {
         Journey firstJourney = new Journey(areaMap.get(entrance));
         firstJourney.getKeysCollected().add(ENTRANCE);  // Add the entrance 'key' so we don't keep going back there
 
-        ArrayList<Journey> activeJourneys = new ArrayList<>();
-        activeJourneys.add(firstJourney);
-
-        ArrayList<Journey> nextActiveJourneys = new ArrayList<>();
-        ArrayList<Journey> completedJourneys = new ArrayList<>();
-
-        // Keep the active Journeys in a priority queue, sorted so the *shortest journey* is at the top
-//        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyDistanceComparator());
-//        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyKeysCollectedComparator());
-        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyKeysCollectedThenDistanceComparator());
+        // Keep the active Journeys in a priority queue, sorted so the *shortest journey with the fewest keys* is at the top
+        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyLeastKeysCollectedThenDistanceComparator());
         activeJourneyQueue.add(firstJourney);
         Journey shortestJourney = infiniteJourney();    // Initialize the first shortest journey to a super long one
 
-        //        while (!activeJourneys.isEmpty()) {
         int i = 0;
         while (!activeJourneyQueue.isEmpty()) {
-//            System.out.println("Active Journeys:\t" + activeJourneys.size());
-//            System.out.println("Active Journeys:\t" + activeJourneyQueue.size());
             // Process all active journeys, continue until there are no more journeys left
-            //          for (Journey journey : activeJourneys) {
             /*** DEBUG ***/
             if (i % 10000 == 0) {
                 System.out.println("Journeys checked:\t" + i + "\tcurrent queue:\t" + activeJourneyQueue.size());
@@ -131,23 +121,28 @@ public class VaultService {
                 // Add the new key we're just now picking up
                 newKeysCollected.add(Character.toUpperCase(newLocation));
                 Journey newJourney = new Journey(newLocation, newKeysCollected, newDistance);
-                // Add the new journey to the active list
-//                    nextActiveJourneys.add(newJourney);
-                // Add this new journey to the active queue
-                // but only if it's still shorter than shortest known
-                if (newJourney.getTotalDistance() < shortestJourney.getTotalDistance()) {
+                // Add this new journey to the active queue...
+                // If it's shorter than any equivalent journey
+                if (!shortestJourneys.containsKey(newJourney)) {
+                    // If we haven't seen this journey before
+                    // then this is by definition the shortest. Add it.
+                    shortestJourneys.put(newJourney, newJourney.getTotalDistance());
+                    // and add it to the active journeys queue
                     activeJourneyQueue.add(newJourney);
                 } else {
-//                    System.out.println("Too long, dropping:\t" + newJourney);
+                    // Get the distance of the shortest-so-far version of this journey
+                    Integer shortestDistance = shortestJourneys.get(newJourney);
+                    if (newJourney.getTotalDistance() < shortestDistance) {
+                        // If this is a new shortest distance
+                        // replace this entry in the map
+                        shortestJourneys.put(newJourney, newJourney.getTotalDistance());
+                        // and add it to the active journeys queue
+                        activeJourneyQueue.add(newJourney);
+                    }
                 }
+                // otherwise this is neither a new journey, nor is it the shortest version of itself
+                // so just drop it.
             }
-            //       }
-            // Switch the new list of active journeys in for the next iteration
-            ArrayList<Journey> tempJourneys = activeJourneys;
-            activeJourneys = nextActiveJourneys;
-            nextActiveJourneys = tempJourneys;
-            // Clear the list we just processed, so we don't have to allocate this new every time.
-            nextActiveJourneys.clear();
             i++;
         }
         return shortestJourney;
@@ -172,85 +167,6 @@ public class VaultService {
             }
         }
         return reachableRoutes;
-    }
-
-    public Journey findShortestJourney(ArrayList<Journey> journeys) {
-        int minDistance = Integer.MAX_VALUE;
-        Journey minJourney = null;
-        for (Journey journey : journeys) {
-            if (journey.getTotalDistance() < minDistance) {
-                minDistance = journey.totalDistance;
-                minJourney = journey;
-            }
-        }
-        return minJourney;
-    }
-
-    private Character nextDestinationFromRoute(Character currentGlyph, String routeName) {
-        Character destinationGlyph;
-
-        Character p1Name = routeName.charAt(0);
-        Character p2Name = routeName.charAt(1);
-
-        // The next point we're going to is the one in the route name that DOESN'T match our current one.
-        if (currentGlyph.equals(p1Name)) {
-            destinationGlyph = p2Name;
-        } else {
-            destinationGlyph = p1Name;
-        }
-        return destinationGlyph;
-    }
-
-//    private String findShortestRoute(Character fromGlyph, HashSet<Character> keysCollected) {
-//        int minDistance = Integer.MAX_VALUE;
-//
-//        String shortestRouteName = null;
-//        for (Map.Entry<Character, HashMap<Character, RouteData>> route : routes.entrySet()) {
-//            // Does this route involve our key?
-//            if (route.getKey().equals(fromGlyph)) {
-//                // Do we meet the requirements?
-//                boolean requirementsMet = true;
-//                for (Character requirement : route.getValue().getRequirements())
-//                    if (!keysCollected.contains(Character.toLowerCase(requirement))) {
-//                        // If we DON'T have a key we need
-//                        requirementsMet = false;
-//                        // quit looking on this route
-//                        break;
-//                    }
-//                if (requirementsMet) {
-//                    // If we DO meet the requirements
-//                    // Is it the shortest we've found so far?
-//                    if (route.getValue().getDistance() < minDistance) {
-//                        shortestRouteName = route.getKey();
-//                        minDistance = route.getValue().getDistance();
-//                    }
-//                }
-//            }
-//        }
-//        return shortestRouteName;
-//    }
-
-    // TODO: Remove this – we don't want to remove routes anymore
-    private void removeMatchingRoutes(Character endpoint) {
-        HashSet<Character> toRemove = new HashSet<>();
-        for (Map.Entry<Character, HashMap<Character, RouteData>> route : routes.entrySet()) {
-            if (route.getKey().equals(endpoint)) {
-                // if this route matches the endpoint we're trying to remove
-                // mark it for removal
-                toRemove.add(route.getKey());
-            }
-        }
-        for (Character routeName : toRemove) {
-            routes.remove(routeName);
-        }
-
-    }
-
-    private boolean isRouteKnown(Character keyName1, Character keyName2) {
-        // Check if this pair of keys is a known route, in either direction
-        String routeName = keyName1.toString() + keyName2.toString();
-        String routeNameBackward = keyName2.toString() + keyName1.toString();
-        return routes.containsKey(routeName) || routes.containsKey(routeNameBackward);
     }
 
     public HashMap<Character, HashMap<Character, RouteData>> enumerateRoutes(XYPoint p) {
@@ -327,7 +243,6 @@ public class VaultService {
     private RouteData emptyRoute() {
         return new RouteData(0, new HashSet<>());
     }
-
 
     private void init() {
         routes.clear();
@@ -425,6 +340,27 @@ public class VaultService {
         private HashSet<Character> keysCollected;
         private Integer totalDistance;
 
+        @Override
+        public int hashCode() {
+            // Two journeys are "equal" based on their current location & keysCollected
+            // NOT based on their distance
+            return Objects.hash(currentLocation);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+
+            if (o == this) return true;
+            if (!(o instanceof Journey)) {
+                return false;
+            }
+
+            Journey journey = (Journey) o;
+
+            return journey.keysCollected.equals(keysCollected) &&
+                    journey.currentLocation == currentLocation;
+        }
+
         public Journey() {
             keysCollected = new HashSet<>();
             totalDistance = 0;
@@ -499,6 +435,18 @@ public class VaultService {
             return 0;
         }
     }
+    
+    class JourneyLeastKeysCollectedComparator implements Comparator<Journey> {
+        // Overriding compare()method of Comparator
+        // Sort Journeys so ones with more keys collected come first
+        public int compare(Journey j1, Journey j2) {
+            if (j1.keysCollected.size() > j2.keysCollected.size())
+                return 1;
+            else if (j1.keysCollected.size() < j2.keysCollected.size())
+                return -1;
+            return 0;
+        }
+    }
 
     class JourneyKeysCollectedThenDistanceComparator implements Comparator<Journey> {
         // Overriding compare()method of Comparator
@@ -507,6 +455,26 @@ public class VaultService {
             if (j1.keysCollected.size() < j2.keysCollected.size()) {
                 return 1;
             } else if (j1.keysCollected.size() > j2.keysCollected.size()) {
+                return -1;
+            } else {
+                // Keys collected is equal, so sort on distance (shorter first)
+                if (j1.totalDistance > j2.totalDistance) {
+                    return 1;
+                } else if (j1.totalDistance < j2.totalDistance) {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+    }
+
+    class JourneyLeastKeysCollectedThenDistanceComparator implements Comparator<Journey> {
+        // Overriding compare()method of Comparator
+        // Sort Journeys so ones with more keys collected come first
+        public int compare(Journey j1, Journey j2) {
+            if (j1.keysCollected.size() > j2.keysCollected.size()) {
+                return 1;
+            } else if (j1.keysCollected.size() < j2.keysCollected.size()) {
                 return -1;
             } else {
                 // Keys collected is equal, so sort on distance (shorter first)
