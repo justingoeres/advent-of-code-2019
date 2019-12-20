@@ -19,7 +19,6 @@ public class VaultServicePartB {
 
     private static final Character WALL = '#';
     private static final Character EMPTY = '.';
-    private static final Character ENTRANCE = '@';
     private static final String ENTRANCES = "1234";
 
     private final HashMap<Character, XYPoint> keys = new HashMap<>();
@@ -59,12 +58,6 @@ public class VaultServicePartB {
 
     public SystemStateB explore() {
 //        // By the time we call this, we have a set of all the key-to-key routes and their requirements
-//        HashSet<Character> keysCollected = new HashSet<>();
-//
-//        // Start at the entrance, and find the shortest route
-//        // for which we meet all the requirements
-//        XYPoint current = new XYPoint(entrance.getX(), entrance.getY());
-//        int totalDistance = 0;
 
         // Start by creating an initial state with the robots at the entrances
         // It has zero distance and no keys collected
@@ -217,25 +210,22 @@ public class VaultServicePartB {
                 // finding the valid (and unexplored) steps from
                 // here, and setting them up to explore next
 
-                Character explorerGlyph = areaMap.getFromQuadrant(q, explorer);// TODO: THIS IS A PLACEHOLDER
+                Character explorerGlyph = areaMap.getFromQuadrant(q, explorer);
                 int explorerDistance = explorers.get(explorer).getDistance();
                 HashSet<Character> currentRequirements = explorers.get(explorer).getRequirements();
 
                 // If this point is a key, record it as a Route from
                 // start (p) to here
                 if (keys.containsKey(explorerGlyph) && !explorer.equals(p)) {
-//                    if (!isRouteKnown(explorerGlyph, source)) {
                     RouteData routeData = new RouteData(explorerDistance, currentRequirements);
-//                        String routeName = areaMap.get(p).toString() + areaMap.get(explorer).toString();
                     // Put the new route into p -> explorer -> routedata
                     routes.get(source).put(explorerGlyph, routeData);
                     // Also put in the reverse route while we're here
                     routes.get(explorerGlyph).put(source, routeData);
-//                    }
                 }
                 // If this point is a door, record it as a requirement on the current Route
                 if (doors.containsKey(explorerGlyph)) {
-                    currentRequirements.add(areaMap.getFromQuadrant(q, explorer)); // TODO: THIS IS A PLACEHOLDER
+                    currentRequirements.add(areaMap.getFromQuadrant(q, explorer));
                 }
 
                 for (DirectionURDL direction : DirectionURDL.values()) {
@@ -374,30 +364,11 @@ public class VaultServicePartB {
             keysCollected = new HashSet<>();
             totalDistance = 0;
         }
-//
-//        public SystemStateB(Character robot1, Character robot2, Character robot3, Character robot4) {
-//            this.robot1 = robot1;
-//            this.robot2 = robot2;
-//            this.robot3 = robot3;
-//            this.robot4 = robot4;
-//            keysCollected = new HashSet<>();
-//            totalDistance = 0;
-//        }
-
-        public SystemStateB(ArrayList<Character> robots) {
-            this.robots = (ArrayList<Character>) robots.clone();
-            keysCollected = new HashSet<>();
-            totalDistance = 0;
-        }
 
         public SystemStateB(String robotsString) {
             for (int i = 0; i < robotsString.length(); i++) {
                 robots.add(robotsString.charAt(i));
             }
-//            robot1 = robotsString.charAt(0);
-//            robot2 = robotsString.charAt(1);
-//            robot3 = robotsString.charAt(2);
-//            robot4 = robotsString.charAt(3);
             keysCollected = new HashSet<>();
             totalDistance = 0;
         }
@@ -456,29 +427,6 @@ public class VaultServicePartB {
         public ArrayList<Character> getRobots() {
             return robots;
         }
-
-//        public ArrayList<Character> getAllLocations() {
-//            ArrayList<Character> allLocations = new ArrayList<>();
-//            allLocations.add(robot1);
-//            allLocations.add(robot2);
-//            allLocations.add(robot3);
-//            allLocations.add(robot4);
-//            return allLocations;
-//        }
-
-//        public Character getCurrentLocation(Robot robot) {
-//            switch (robot) {
-//                case ROBOT_1:
-//                    return robot1;
-//                case ROBOT_2:
-//                    return robot2;
-//                case ROBOT_3:
-//                    return robot3;
-//                case ROBOT_4:
-//                    return robot4;
-//            }
-//            return null;
-//        }
 
         @Override
         public String toString() {
