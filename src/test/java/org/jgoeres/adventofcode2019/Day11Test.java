@@ -1,7 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
 import org.jgoeres.adventofcode2019.Day11.RunDay11;
-import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 import org.junit.Assert;
 import org.junit.Test;

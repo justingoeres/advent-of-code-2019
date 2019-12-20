@@ -1,7 +1,6 @@
 package org.jgoeres.adventofcode2019;
 
 import org.jgoeres.adventofcode2019.Day17.RunDay17;
-import org.jgoeres.adventofcode2019.DayXX.RunDayXX;
 import org.junit.Assert;
 import org.junit.Test;
 

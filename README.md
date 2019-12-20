@@ -20,3 +20,4 @@
 |  17       |   Set and Forget                      |   IntCode Processor (scaffold navigation)
 |  18       |   Many-Worlds Interpretation          |   Tractor beam, maze with keys & doors
 |  19       |   Tractor Beam                        |   IntCode Processor (tractor beam search)
+|  20       |   Donut Maze                          |   Maze exploration on a torus, with portals
