@@ -7,8 +7,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
-import static org.jgoeres.adventofcode2019.Day18.Quadrant.UPPER_LEFT;
 import static org.jgoeres.adventofcode2019.Day18.Quadrant.findQuadrant;
+import org.jgoeres.adventofcode2019.Day18.VaultServicePartB;
 
 public class VaultServicePartB {
     private final String DAY = "18";
