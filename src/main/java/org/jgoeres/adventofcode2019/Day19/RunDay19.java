@@ -13,10 +13,13 @@ public abstract class RunDay19 {
 
         int result = 0;
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
+        tractorBeamService.createTractorBeamMap();
+//        tractorBeamService.printAreaMap();
+        result = tractorBeamService.getTractorBeamSize();
 
-//        Day 19A: Answer =
-//        Time elapsed:	xxx ms
+        System.out.println("Day " + DAY + "A: Tractor beam area = " + result);
+//        Day 19A: Tractor beam area = 118
+//        Time elapsed:	723 ms
 
         return result;
     }

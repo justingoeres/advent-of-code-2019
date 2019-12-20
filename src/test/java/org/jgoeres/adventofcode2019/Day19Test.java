@@ -15,7 +15,7 @@ public class Day19Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(118, result);
     }
 
     @Test
