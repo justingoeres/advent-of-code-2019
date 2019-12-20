@@ -29,12 +29,11 @@ public abstract class RunDay18 {
         System.out.println("=== DAY " + DAY + "B ===");
 
         int result = 0;
-        VaultServicePartB vaultServicePartB = new VaultServicePartB("data/day18/input2.txt");
         vaultServicePartB.enumerateAllRoutes();
         VaultServicePartB.SystemStateB shortestState = vaultServicePartB.explore();
         result = shortestState.getTotalDistance();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Fewest steps to collect all keys = " + result);
 
 //        Day 18B: Fewest steps to collect all keys = 1540
 //        Time elapsed:	147302 ms
