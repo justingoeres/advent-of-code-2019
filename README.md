@@ -14,3 +14,8 @@
 |  11       |   Space Police                        |   IntCode Processor (robot control)
 |  12       |   The N-Body Problem                  |   XYZPoints, gravity
 |  13       |   Care Package                        |   IntCode Processor (arcade cabinet)
+|  14       |   Space Stoichiometry                 |   Chemical reactions to make ORE -> FUEL
+|  15       |   Oxygen System                       |   Navigate maze to find oxygen
+|  16       |   Flawed Frequency Transmission       |   Partial sums of input signal
+|  17       |   Set and Forget                      |   IntCode Processor (scaffold navigation)
+|  18       |   Many-Worlds Interpretation          |   Tractor beam, maze with keys & doors
