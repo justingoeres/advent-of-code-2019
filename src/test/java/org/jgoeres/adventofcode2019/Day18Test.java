@@ -1,11 +1,13 @@
 package org.jgoeres.adventofcode2019;
 
+import com.google.common.collect.Range;
 import org.jgoeres.adventofcode2019.Day18.VaultService;
 import org.jgoeres.adventofcode2019.Day18.RunDay18;
+import org.jgoeres.adventofcode2019.Day18.VaultServicePartB;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import static org.jgoeres.adventofcode2019.Day18.Quadrant.*;
 
 public class Day18Test {
     static String DAY = "18";
@@ -114,6 +116,37 @@ public class Day18Test {
             System.out.println(e.getMessage());
         }
         Assert.assertEquals(4520, result);
+    }
+
+    @Test
+    public void testDay18BExample1() {
+        // Hack the quadrant enum sizes
+        Range xRange1 = Range.closed(1, 2);
+        Range yRange1 = Range.closed(1, 2);
+        Range xRange2 = Range.closed(4, 5);
+        Range yRange2 = Range.closed(4, 5);
+        UPPER_LEFT.setxRange(xRange1);
+        UPPER_LEFT.setyRange(yRange1);
+        UPPER_RIGHT.setxRange(xRange2);
+        UPPER_RIGHT.setyRange(yRange1);
+        LOWER_LEFT.setxRange(xRange1);
+        LOWER_LEFT.setyRange(yRange2);
+        LOWER_RIGHT.setxRange(xRange2);
+        LOWER_RIGHT.setyRange(yRange2);
+        int result = 0;
+        try {
+            VaultServicePartB vaultServicePartB = new VaultServicePartB("data/day18/exampleB1.txt");
+            vaultServicePartB.enumerateAllRoutes();
+            VaultServicePartB.SystemStateB shortestState = vaultServicePartB.explore();
+            result = shortestState.getTotalDistance();
+//            result = day18Service();
+//            VaultService.Journey shortestJourney = vaultServicePartB.explore();
+//            result = vaultService.findShortestJourney(journeys).getTotalDistance();
+//            result = shortestJourney.getTotalDistance();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(8, result);
     }
 
     @Test

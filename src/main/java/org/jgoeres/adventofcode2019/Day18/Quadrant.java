@@ -46,4 +46,12 @@ public enum Quadrant {
         // If point p is in no quadrant, return null
         return null;
     }
+
+    public void setxRange(Range xRange) {
+        this.xRange = xRange;
+    }
+
+    public void setyRange(Range yRange) {
+        this.yRange = yRange;
+    }
 }

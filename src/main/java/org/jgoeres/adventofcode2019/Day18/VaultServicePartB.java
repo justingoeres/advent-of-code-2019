@@ -5,12 +5,7 @@ import org.jgoeres.adventofcode2019.common.XYPoint;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import static org.jgoeres.adventofcode2019.Day18.Quadrant.UPPER_LEFT;
 import static org.jgoeres.adventofcode2019.Day18.Quadrant.findQuadrant;
@@ -34,7 +29,7 @@ public class VaultServicePartB {
 
     private XYPoint entrance = null;
 
-    private final HashMap<Journey, Integer> shortestJourneys = new HashMap<>();
+    private final HashMap<SystemStateB, Integer> shortestSystemStateBs = new HashMap<>();
 
     public VaultServicePartB() {
         init();
@@ -62,114 +57,137 @@ public class VaultServicePartB {
         }
     }
 
-    public Journey explore() {
-        // By the time we call this, we have a set of all the key-to-key routes and their requirements
-        HashSet<Character> keysCollected = new HashSet<>();
+    public SystemStateB explore() {
+//        // By the time we call this, we have a set of all the key-to-key routes and their requirements
+//        HashSet<Character> keysCollected = new HashSet<>();
+//
+//        // Start at the entrance, and find the shortest route
+//        // for which we meet all the requirements
+//        XYPoint current = new XYPoint(entrance.getX(), entrance.getY());
+//        int totalDistance = 0;
 
-        // Start at the entrance, and find the shortest route
-        // for which we meet all the requirements
-        XYPoint current = new XYPoint(entrance.getX(), entrance.getY());
-        int totalDistance = 0;
-
-        // Start by creating one journey at the entrance
+        // Start by creating an initial state with the robots at the entrances
         // It has zero distance and no keys collected
-        Journey firstJourney = new Journey(areaMap.getFromQuadrant(UPPER_LEFT, entrance));   // TODO: THIS IS A PLACEHOLDER
-        firstJourney.getKeysCollected().add(ENTRANCE);  // Add the entrance 'key' so we don't keep going back there
+        SystemStateB firstSystemStateB = new SystemStateB(ENTRANCES);
+        for (Character entrance : ENTRANCES.toCharArray()) {
+            firstSystemStateB.getKeysCollected().add(entrance);  // Add the entrance 'key' so we don't keep going back there
+        }
 
-        // Keep the active Journeys in a priority queue, sorted so the *shortest journey with the fewest keys* is at the top
-        PriorityQueue<Journey> activeJourneyQueue = new PriorityQueue<>(new JourneyLeastKeysCollectedThenDistanceComparator());
-        activeJourneyQueue.add(firstJourney);
-        Journey shortestJourney = infiniteJourney();    // Initialize the first shortest journey to a super long one
+        // Keep the active SystemStateBs in a priority queue, sorted so the *shortest systemStateB with the fewest keys* is at the top
+        PriorityQueue<SystemStateB> activeSystemStateBQueue = new PriorityQueue<>(new SystemStateBLeastKeysCollectedThenDistanceComparator());
+        activeSystemStateBQueue.add(firstSystemStateB);
+        SystemStateB shortestSystemStateB = infiniteSystemStateB();    // Initialize the first shortest systemStateB to a super long one
 
         int i = 0;
-        while (!activeJourneyQueue.isEmpty()) {
-            // Process all active journeys, continue until there are no more journeys left
+        while (!activeSystemStateBQueue.isEmpty()) {
+            // Process all active systemStateBs, continue until there are no more systemStateBs left
             /*** DEBUG ***/
             if (i % 10000 == 0) {
-                System.out.println("Journeys checked:\t" + i + "\tcurrent queue:\t" + activeJourneyQueue.size());
+                System.out.println("SystemStateBs checked:\t" + i + "\tcurrent queue:\t" + activeSystemStateBQueue.size());
             }
 
-            Journey journey = activeJourneyQueue.poll();
-//            System.out.println(journey);
-            // Find all the keys we can reach from this journey's current position
+            SystemStateB systemStateB = activeSystemStateBQueue.poll();
+//            System.out.println(systemStateB);
+            // Find all the keys we can reach from this systemStateB's current position
             // (i.e. all routes for which we have all requirements)
-            HashMap<Character, RouteData> reachableRoutes = findReachableRoutes(journey.getCurrentLocation(), journey.getKeysCollected());
+            HashMap<Character, RouteData> reachableRoutes = findReachableRoutes(systemStateB.getRobots(), systemStateB.getKeysCollected());
 
             if (reachableRoutes.size() == 0) {
-                // If there are no reachable routes from here, this journey is over!
-                // Compare this to our shortest known journey.
+                // If there are no reachable routes from here, this systemStateB is over!
+                // Compare this to our shortest known systemStateB.
                 // If this one is shorter, it's the new shortest!
                 /*** DEBUG ***/
-                System.out.println("COMPLETE:\t" + journey);
-                if (shortestJourney != null) {
-                    Integer shortestDistance = shortestJourney.getTotalDistance();
-                    Integer newDistance = journey.getTotalDistance();
+                System.out.println("COMPLETE:\t" + systemStateB);
+                if (shortestSystemStateB != null) {
+                    Integer shortestDistance = shortestSystemStateB.getTotalDistance();
+                    Integer newDistance = systemStateB.getTotalDistance();
                     if (newDistance < shortestDistance) {
                         /*** DEBUG ***/
-                        System.out.println("---new shortest journey:\t" + journey.getTotalDistance());
-                        shortestJourney = journey;
+                        System.out.println("---new shortest systemStateB:\t" + systemStateB.getTotalDistance());
+                        shortestSystemStateB = systemStateB;
                     }
                 } else {
-                    // If this is our first completed journey, it's the shortest by default
-                    shortestJourney = journey;
+                    // If this is our first completed systemStateB, it's the shortest by default
+                    shortestSystemStateB = systemStateB;
                 }
             }
-            // For each reachable route, spawn a new journey based on the current one
+            // For each reachable route, spawn a new systemStateB based on the current one
             for (Map.Entry<Character, RouteData> reachable : reachableRoutes.entrySet()) {
                 /*** DEBUG ***/
-//                System.out.println("Reachable from " + journey.getCurrentLocation() + ":\t" + reachable.getKey() + " at distance of " + reachable.getValue().getDistance());
+//                System.out.println("Reachable from " + systemStateB.getCurrentLocation() + ":\t" + reachable.getKey() + " at distance of " + reachable.getValue().getDistance());
                 // Add up the new distance
-                Integer newDistance = journey.getTotalDistance() + reachable.getValue().getDistance();
-                // Duplicate the keys collected list in the new journey
+                Integer newDistance = systemStateB.getTotalDistance() + reachable.getValue().getDistance();
+                // Duplicate the keys collected list in the new systemStateB
                 HashSet<Character> newKeysCollected = new HashSet<>();
-                newKeysCollected.addAll(journey.getKeysCollected());
+                newKeysCollected.addAll(systemStateB.getKeysCollected());
                 Character newLocation = reachable.getKey();
+                Quadrant q = areaMap.getQuadrantFromChar(newLocation);
+
+
+                ArrayList<Character> newRobots = (ArrayList<Character>) systemStateB.robots.clone();
+                switch(q) {
+                    case UPPER_LEFT:
+                        newRobots.set(0,newLocation);
+                        break;
+                    case UPPER_RIGHT:
+                        newRobots.set(1,newLocation);
+                        break;
+                    case LOWER_LEFT:
+                        newRobots.set(2,newLocation);
+                        break;
+                    case LOWER_RIGHT:
+                        newRobots.set(3,newLocation);
+                        break;
+                }
+
                 // Add the new key we're just now picking up
                 newKeysCollected.add(Character.toUpperCase(newLocation));
-                Journey newJourney = new Journey(newLocation, newKeysCollected, newDistance);
-                // Add this new journey to the active queue...
-                // If it's shorter than any equivalent journey
-                if (!shortestJourneys.containsKey(newJourney)) {
-                    // If we haven't seen this journey before
+                SystemStateB newSystemStateB = new SystemStateB(newRobots, newKeysCollected, newDistance);
+                // Add this new systemStateB to the active queue...
+                // If it's shorter than any equivalent systemStateB
+                if (!shortestSystemStateBs.containsKey(newSystemStateB)) {
+                    // If we haven't seen this systemStateB before
                     // then this is by definition the shortest. Add it.
-                    shortestJourneys.put(newJourney, newJourney.getTotalDistance());
-                    // and add it to the active journeys queue
-                    activeJourneyQueue.add(newJourney);
+                    shortestSystemStateBs.put(newSystemStateB, newSystemStateB.getTotalDistance());
+                    // and add it to the active systemStateBs queue
+                    activeSystemStateBQueue.add(newSystemStateB);
                 } else {
-                    // Get the distance of the shortest-so-far version of this journey
-                    Integer shortestDistance = shortestJourneys.get(newJourney);
-                    if (newJourney.getTotalDistance() < shortestDistance) {
+                    // Get the distance of the shortest-so-far version of this systemStateB
+                    Integer shortestDistance = shortestSystemStateBs.get(newSystemStateB);
+                    if (newSystemStateB.getTotalDistance() < shortestDistance) {
                         // If this is a new shortest distance
                         // replace this entry in the map
-                        shortestJourneys.put(newJourney, newJourney.getTotalDistance());
-                        // and add it to the active journeys queue
-                        activeJourneyQueue.add(newJourney);
+                        shortestSystemStateBs.put(newSystemStateB, newSystemStateB.getTotalDistance());
+                        // and add it to the active systemStateBs queue
+                        activeSystemStateBQueue.add(newSystemStateB);
                     }
                 }
-                // otherwise this is neither a new journey, nor is it the shortest version of itself
+                // otherwise this is neither a new systemStateB, nor is it the shortest version of itself
                 // so just drop it.
             }
             i++;
         }
-        return shortestJourney;
+        return shortestSystemStateB;
     }
 
-    private HashMap<Character, RouteData> findReachableRoutes(Character currentGlyph, HashSet<Character> keysCollected) {
+    private HashMap<Character, RouteData> findReachableRoutes(ArrayList<Character> robotLocations, HashSet<Character> keysCollected) {
         HashMap<Character, RouteData> reachableRoutes = new HashMap<>();
-        // 1. Get all the routes with currentGlyph as their source
-        HashMap<Character, RouteData> potentialRoutes = routes.get(currentGlyph);
+        for (Character robot : robotLocations) {
+            // 1. Get all the routes with currentGlyph as their source
+            HashMap<Character, RouteData> potentialRoutes = routes.get(robot);
 
-        // 2. Check all those routes and find the ones whose requirements are satisfied. They are "reachable"
-        for (Map.Entry<Character, RouteData> endpoint : potentialRoutes.entrySet()) {
-            boolean someKeysCollected = !keysCollected.isEmpty();
-            boolean noRequirements = endpoint.getValue().getRequirements().isEmpty();
-            boolean notAlreadyVisited = !keysCollected.contains(Character.toUpperCase(endpoint.getKey()));
-            boolean requirementsMet = notAlreadyVisited &&
-                    (noRequirements ||
-                            (someKeysCollected && keysCollected.containsAll(endpoint.getValue().getRequirements())));
-            if (requirementsMet) {
-                // Add this endpoint to the set of reachables
-                reachableRoutes.put(endpoint.getKey(), endpoint.getValue());
+            // 2. Check all those routes and find the ones whose requirements are satisfied. They are "reachable"
+            for (Map.Entry<Character, RouteData> endpoint : potentialRoutes.entrySet()) {
+                boolean someKeysCollected = !keysCollected.isEmpty();
+                boolean noRequirements = endpoint.getValue().getRequirements().isEmpty();
+                boolean notAlreadyVisited = !keysCollected.contains(Character.toUpperCase(endpoint.getKey()));
+                boolean requirementsMet = notAlreadyVisited &&
+                        (noRequirements ||
+                                (someKeysCollected && keysCollected.containsAll(endpoint.getValue().getRequirements())));
+                if (requirementsMet) {
+                    // Add this endpoint to the set of reachables
+                    reachableRoutes.put(endpoint.getKey(), endpoint.getValue());
+                }
             }
         }
         return reachableRoutes;
@@ -223,7 +241,7 @@ public class VaultServicePartB {
                 for (DirectionURDL direction : DirectionURDL.values()) {
                     XYPoint p2 = explorer.getRelativeLocation(direction);
                     // Is this a valid point to move to?
-                    boolean valid = q.inQuadrant(p2);    // TODO: THIS IS A PLACEHOLDER
+                    boolean valid = areaMap.getQuadrantMap(q).containsKey(p2);
                     // Have we already explored it?
                     boolean explored = pointsExplored.containsKey(p2);
                     // If it is valid and NOT explored
@@ -320,10 +338,10 @@ public class VaultServicePartB {
         }
     }
 
-    private Journey infiniteJourney() {
-        Journey infiniteJourney = new Journey();
-        infiniteJourney.setTotalDistance(Integer.MAX_VALUE);
-        return infiniteJourney;
+    private SystemStateB infiniteSystemStateB() {
+        SystemStateB infiniteSystemStateB = new SystemStateB();
+        infiniteSystemStateB.setTotalDistance(Integer.MAX_VALUE);
+        return infiniteSystemStateB;
     }
 
 
@@ -345,44 +363,70 @@ public class VaultServicePartB {
         }
     }
 
-    public class Journey {
-        private Character currentLocation;
-        private HashSet<Character> keysCollected;
-        private Integer totalDistance;
+    public class SystemStateB {
+        ArrayList<Character> robots = new ArrayList<>();
+
+        Integer totalDistance;
+
+        HashSet<Character> keysCollected;   // shared among all robots
+
+        public SystemStateB() {
+            keysCollected = new HashSet<>();
+            totalDistance = 0;
+        }
+//
+//        public SystemStateB(Character robot1, Character robot2, Character robot3, Character robot4) {
+//            this.robot1 = robot1;
+//            this.robot2 = robot2;
+//            this.robot3 = robot3;
+//            this.robot4 = robot4;
+//            keysCollected = new HashSet<>();
+//            totalDistance = 0;
+//        }
+
+        public SystemStateB(ArrayList<Character> robots) {
+            this.robots = (ArrayList<Character>) robots.clone();
+            keysCollected = new HashSet<>();
+            totalDistance = 0;
+        }
+
+        public SystemStateB(String robotsString) {
+            for (int i = 0; i < robotsString.length(); i++) {
+                robots.add(robotsString.charAt(i));
+            }
+//            robot1 = robotsString.charAt(0);
+//            robot2 = robotsString.charAt(1);
+//            robot3 = robotsString.charAt(2);
+//            robot4 = robotsString.charAt(3);
+            keysCollected = new HashSet<>();
+            totalDistance = 0;
+        }
+
+        public SystemStateB(ArrayList<Character> robots, HashSet<Character> keysCollected, Integer totalDistance) {
+            this.robots = robots;
+            this.keysCollected = keysCollected;
+            this.totalDistance = totalDistance;
+        }
 
         @Override
         public int hashCode() {
-            // Two journeys are "equal" based on their current location & keysCollected
+            // Two states are "equal" based on their current robot locations & keysCollected
             // NOT based on their distance
-            return Objects.hash(currentLocation);
+            return Objects.hash(robots.get(0),
+                    robots.get(1),
+                    robots.get(2),
+                    robots.get(3));
         }
 
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
-            if (!(o instanceof Journey)) {
+            if (!(o instanceof SystemStateB)) {
                 return false;
             }
-            Journey journey = (Journey) o;
-            return journey.keysCollected.equals(keysCollected) &&
-                    journey.currentLocation == currentLocation;
-        }
-
-        public Journey() {
-            keysCollected = new HashSet<>();
-            totalDistance = 0;
-        }
-
-        public Journey(Character currentLocation) {
-            this.currentLocation = currentLocation;
-            keysCollected = new HashSet<>();
-            totalDistance = 0;
-        }
-
-        public Journey(Character currentLocation, HashSet<Character> keysCollected, Integer totalDistance) {
-            this.currentLocation = currentLocation;
-            this.keysCollected = keysCollected;
-            this.totalDistance = totalDistance;
+            SystemStateB systemStateB = (SystemStateB) o;
+            return (systemStateB.keysCollected.equals(keysCollected)
+                    && systemStateB.robots.equals(((SystemStateB) o).robots));
         }
 
         public void setTotalDistance(Integer totalDistance) {
@@ -409,20 +453,50 @@ public class VaultServicePartB {
             return totalDistance;
         }
 
-        public Character getCurrentLocation() {
-            return currentLocation;
+        public ArrayList<Character> getRobots() {
+            return robots;
         }
+
+//        public ArrayList<Character> getAllLocations() {
+//            ArrayList<Character> allLocations = new ArrayList<>();
+//            allLocations.add(robot1);
+//            allLocations.add(robot2);
+//            allLocations.add(robot3);
+//            allLocations.add(robot4);
+//            return allLocations;
+//        }
+
+//        public Character getCurrentLocation(Robot robot) {
+//            switch (robot) {
+//                case ROBOT_1:
+//                    return robot1;
+//                case ROBOT_2:
+//                    return robot2;
+//                case ROBOT_3:
+//                    return robot3;
+//                case ROBOT_4:
+//                    return robot4;
+//            }
+//            return null;
+//        }
 
         @Override
         public String toString() {
-            return "Point '" + currentLocation + "', Distance: " + totalDistance + ", Keys: " + keysCollected.size() + " " + keysCollected;
+            return "Robots: " + robots + ", Distance: " + totalDistance + ", Keys: " + keysCollected.size() + " " + keysCollected;
         }
     }
 
-    class JourneyDistanceComparator implements Comparator<Journey> {
+    enum Robot {
+        ROBOT_1,
+        ROBOT_2,
+        ROBOT_3,
+        ROBOT_4;
+    }
+
+    class SystemStateBDistanceComparator implements Comparator<SystemStateB> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so shorter ones come first
-        public int compare(Journey j1, Journey j2) {
+        // Sort SystemStateBs so shorter ones come first
+        public int compare(SystemStateB j1, SystemStateB j2) {
             if (j1.totalDistance > j2.totalDistance)
                 return 1;
             else if (j1.totalDistance < j2.totalDistance)
@@ -431,10 +505,10 @@ public class VaultServicePartB {
         }
     }
 
-    class JourneyKeysCollectedComparator implements Comparator<Journey> {
+    class SystemStateBKeysCollectedComparator implements Comparator<SystemStateB> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so ones with more keys collected come first
-        public int compare(Journey j1, Journey j2) {
+        // Sort SystemStateBs so ones with more keys collected come first
+        public int compare(SystemStateB j1, SystemStateB j2) {
             if (j1.keysCollected.size() < j2.keysCollected.size())
                 return 1;
             else if (j1.keysCollected.size() > j2.keysCollected.size())
@@ -443,10 +517,10 @@ public class VaultServicePartB {
         }
     }
 
-    class JourneyLeastKeysCollectedComparator implements Comparator<Journey> {
+    class SystemStateBLeastKeysCollectedComparator implements Comparator<SystemStateB> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so ones with more keys collected come first
-        public int compare(Journey j1, Journey j2) {
+        // Sort SystemStateBs so ones with more keys collected come first
+        public int compare(SystemStateB j1, SystemStateB j2) {
             if (j1.keysCollected.size() > j2.keysCollected.size())
                 return 1;
             else if (j1.keysCollected.size() < j2.keysCollected.size())
@@ -455,10 +529,10 @@ public class VaultServicePartB {
         }
     }
 
-    class JourneyKeysCollectedThenDistanceComparator implements Comparator<Journey> {
+    class SystemStateBKeysCollectedThenDistanceComparator implements Comparator<SystemStateB> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so ones with more keys collected come first
-        public int compare(Journey j1, Journey j2) {
+        // Sort SystemStateBs so ones with more keys collected come first
+        public int compare(SystemStateB j1, SystemStateB j2) {
             if (j1.keysCollected.size() < j2.keysCollected.size()) {
                 return 1;
             } else if (j1.keysCollected.size() > j2.keysCollected.size()) {
@@ -475,10 +549,10 @@ public class VaultServicePartB {
         }
     }
 
-    class JourneyLeastKeysCollectedThenDistanceComparator implements Comparator<Journey> {
+    class SystemStateBLeastKeysCollectedThenDistanceComparator implements Comparator<SystemStateB> {
         // Overriding compare()method of Comparator
-        // Sort Journeys so ones with fewer keys and then less distance come first
-        public int compare(Journey j1, Journey j2) {
+        // Sort SystemStateBs so ones with fewer keys and then less distance come first
+        public int compare(SystemStateB j1, SystemStateB j2) {
             if (j1.keysCollected.size() > j2.keysCollected.size()) {
                 return 1;
             } else if (j1.keysCollected.size() < j2.keysCollected.size()) {

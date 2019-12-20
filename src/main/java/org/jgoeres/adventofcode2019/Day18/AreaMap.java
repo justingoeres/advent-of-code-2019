@@ -39,6 +39,16 @@ public class AreaMap {
         return entrances.get(q);
     }
 
+    public Quadrant getQuadrantFromChar(Character c) {
+        for (Quadrant quadrant : Quadrant.values()) {
+            // Check each sub-map for the target point
+            // and return its quadrant
+            if (map.get(quadrant).containsValue(c))
+                return quadrant;
+        }
+        // If not quadrant matches this character, return null
+        return null;
+    }
 
     public boolean quadrantContainsPoint(Quadrant q, XYPoint p) {
         return map.get(q).containsKey(p);

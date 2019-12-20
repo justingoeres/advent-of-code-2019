@@ -38,11 +38,13 @@ public class XYPoint {
     public XYPoint getRelativeLocation(int numSteps, DirectionURDL directionURDL) {
         switch (directionURDL) {
             case UP:
-                return (new XYPoint(getX(), getY() + numSteps));
+                // Default negative-Y direction is UP
+                return (new XYPoint(getX(), getY() - numSteps));
             case RIGHT:
                 return (new XYPoint(getX() + numSteps, getY()));
             case DOWN:
-                return (new XYPoint(getX(), getY() - numSteps));
+                // Default positive-Y direction is DOWN
+                return (new XYPoint(getX(), getY() + numSteps));
             case LEFT:
                 return (new XYPoint(getX() - numSteps, getY()));
         }
