@@ -11,12 +11,12 @@ public abstract class RunDay20 {
         // Day 20A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = 0;
+        int result = donutMazeService.explore();
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
+        System.out.println("Day " + DAY + "A: Steps from AA to ZZ = " + result);
 
-//        Day 20A: Answer =
-//        Time elapsed:	xxx ms
+//        Day 20A: Steps from AA to ZZ = 602
+//        Time elapsed:	136 ms
 
         return result;
     }

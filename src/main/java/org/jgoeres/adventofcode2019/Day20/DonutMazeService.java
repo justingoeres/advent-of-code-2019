@@ -3,12 +3,12 @@ package org.jgoeres.adventofcode2019.Day20;
 import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.XYPoint;
 
-import javax.sound.sampled.Port;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class DonutMazeService {
     private final String DAY = "20";
@@ -39,6 +39,71 @@ public class DonutMazeService {
         loadInputs(pathToFile);
     }
 
+    public int explore() {
+        // We need to calculate the shortest path from AA to ZZ, using portals!
+        int distance = 0;
+
+        HashMap<XYPoint, Integer> distanceMap = new HashMap<>();
+        ArrayList<XYPoint> explorers = new ArrayList<>();
+        ArrayList<XYPoint> nextExplorers = new ArrayList<>();
+        ArrayList<XYPoint> temp = null;
+        explorers.add(startPoint);     // Start at the beginning
+
+        cleanAreaMap();
+
+        while (!distanceMap.containsKey(finishPoint)) {
+            // Go until we've reached the finish
+            distance++; // Increment distance for the new explorers
+            for (XYPoint p : explorers) {
+                distanceMap.put(p, distance);
+                // For each active explorer
+                // Get all the points we can step to from here
+                for (DirectionURDL direction : DirectionURDL.values()) {
+                    XYPoint q = p.getRelativeLocation(direction);
+                    if (areaMap.containsKey(q) || portals.containsKey(q)) {
+                        // If the target point is a valid move.
+                        // If it's a portal, dereference it
+                        if (portals.containsKey(q)) {
+                            q = portals.get(q); // Jump to the other endpoint
+                            // Then step out of the portal by finding the only valid move out of the far endpoint
+                            for (DirectionURDL portalDirection : DirectionURDL.values()) {
+                                XYPoint q1 = q.getRelativeLocation(portalDirection);
+                                if (areaMap.containsKey(q1)) {
+                                    // Found the valid exit (q1) so step to it
+                                    q = q1;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!distanceMap.containsKey(q)) {
+                            // And if we have NOT already been there
+                            // Add it to the explorers
+                            nextExplorers.add(q);
+                            distanceMap.put(q, distance);
+                        }
+                    }
+                }
+            }
+            // Switch in the new explorers list
+            temp = explorers;
+            explorers = nextExplorers;
+            nextExplorers = temp;
+            nextExplorers.clear();
+
+        }
+        return distance;
+    }
+
+    private void cleanAreaMap() {
+        // Remove all the portal letters from the areaMap, so we don't try to move to them.
+        Iterator<XYPoint> iterator = areaMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            XYPoint p = iterator.next();
+            if (portalCharacters.contains(areaMap.get(p))) {
+                iterator.remove();
+            }
+        }
+    }
 
     private void loadInputs(String pathToFile) {
         final Character EMPTY = '.';
@@ -131,7 +196,7 @@ public class DonutMazeService {
                                 // Is it the start or finish?
                                 if (portalName.equals(START)) {
                                     startPoint = connectionPoint;
-                                } else if (portalName.equals(FINISH)){
+                                } else if (portalName.equals(FINISH)) {
                                     finishPoint = connectionPoint;
                                 }
                                 // Then do we already know about one end of it?
@@ -153,7 +218,6 @@ public class DonutMazeService {
                     }
                 }
             }
-            //
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }

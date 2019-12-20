@@ -73,3 +73,7 @@ Here, AA has no direct path to ZZ, but it does connect to AS and CP. By passing 
 
 In your maze, how many steps does it take to get from the open tile marked AA to the open tile marked ZZ?
 
+Your puzzle answer was 602.
+
+The first half of this puzzle is complete! It provides one gold star: *
+

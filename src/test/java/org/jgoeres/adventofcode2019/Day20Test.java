@@ -14,12 +14,25 @@ public class Day20Test {
         DonutMazeService donutMazeService = new DonutMazeService("data/day20/example1.txt");
         int result = 0;
         try {
-//            result = RunDay20.problem20A();
+            result = donutMazeService.explore();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(23, result);
     }
+
+    @Test
+    public void Day20AExample2() {
+        DonutMazeService donutMazeService = new DonutMazeService("data/day20/example2.txt");
+        int result = 0;
+        try {
+            result = donutMazeService.explore();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(58, result);
+    }
+
 
     @Test
     public void Day20A() {
@@ -29,7 +42,7 @@ public class Day20Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(602, result);
     }
 
     @Test
