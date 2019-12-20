@@ -19,3 +19,4 @@
 |  16       |   Flawed Frequency Transmission       |   Partial sums of input signal
 |  17       |   Set and Forget                      |   IntCode Processor (scaffold navigation)
 |  18       |   Many-Worlds Interpretation          |   Tractor beam, maze with keys & doors
+|  19       |   Tractor Beam                        |   IntCode Processor (tractor beam search)

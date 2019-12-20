@@ -12,7 +12,6 @@ public abstract class RunDay19 {
         System.out.println("=== DAY " + DAY + "A ===");
 
         int result = 0;
-
         tractorBeamService.createTractorBeamMap();
 //        tractorBeamService.printAreaMap();
         result = tractorBeamService.getTractorBeamSize();
@@ -28,12 +27,11 @@ public abstract class RunDay19 {
         // Day 19B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        int result = 0;
+        int result = tractorBeamService.fitSantasShip();
+        System.out.println("Day " + DAY + "B: Closest fit for Santa's gigantic ship = " + result);
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
-
-//        Day 19B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 19B: Closest fit for Santa's gigantic ship = 18651593
+//        Time elapsed:	533 ms
 
         return result;
     }
