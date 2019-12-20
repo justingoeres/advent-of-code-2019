@@ -6,7 +6,6 @@ public abstract class RunDay18 {
     static String pathToInputs = "data/day" + DAY + "/input.txt";
 
     static VaultService vaultService = new VaultService();
-    static VaultServicePartB vaultServicePartB = new VaultServicePartB();
 
     public static int problem18A() {
         // Day 18A
@@ -25,6 +24,8 @@ public abstract class RunDay18 {
     }
 
     public static int problem18B() {
+        VaultServicePartB vaultServicePartB = new VaultServicePartB();
+
         // Day 18B
         System.out.println("=== DAY " + DAY + "B ===");
 
