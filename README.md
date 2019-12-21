@@ -21,3 +21,4 @@
 |  18       |   Many-Worlds Interpretation          |   Tractor beam, maze with keys & doors
 |  19       |   Tractor Beam                        |   IntCode Processor (tractor beam search)
 |  20       |   Donut Maze                          |   Maze exploration on a torus, with portals
+|  21       |   Springdroid Adventure               |   IntCode Processor (springscript program interpreter)

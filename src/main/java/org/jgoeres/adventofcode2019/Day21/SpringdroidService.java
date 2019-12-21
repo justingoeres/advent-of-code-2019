@@ -1,10 +1,6 @@
 package org.jgoeres.adventofcode2019.Day21;
 
-import org.jgoeres.adventofcode2019.common.XYPoint;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 public class SpringdroidService extends IntCodeProcessorService {
     private final String DAY = "21";
@@ -24,16 +20,7 @@ public class SpringdroidService extends IntCodeProcessorService {
         reset();
     }
 
-
     public void simpleWalkProgram() {
-        // The Intcode program expects ASCII inputs and outputs.
-        // It will begin by displaying a prompt; then, input the desired
-        // instructions one per line. End each line with a newline (ASCII code 10).
-        // When you have finished entering your program, provide the command WALK
-        // followed by a newline to instruct the springdroid to begin surveying the hull.
-
-        // If the springdroid falls into space, an ASCII rendering of the last moments
-        // of its life will be produced. In these, @ is the springdroid, # is hull, and . is empty space.
         runSpringScriptProgram("WALK");
     }
 
@@ -46,9 +33,11 @@ public class SpringdroidService extends IntCodeProcessorService {
 
         // If the springdroid falls into space, an ASCII rendering of the last moments
         // of its life will be produced. In these, @ is the springdroid, # is hull, and . is empty space.
-        enterInputString(program);
-        String buffer = "";
 
+        cpu.reset(); // reset before running the springscript
+
+        String buffer = "";
+        enterInputString(program);
         while (!isHalted()) {
             // Execute, accumulate output, and print it by line
             executeToNextOutput();

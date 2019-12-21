@@ -56,12 +56,24 @@ public abstract class RunDay21 {
         // Day 21B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        int result = 0;
+        String program = "NOT A T\n" +  // T = is A empty?
+                "NOT B J\n" +           // J = is B empty?
+                "OR J T\n" +            // T = is A or B empty?
+                "NOT C J\n" +           // J = is C empty?
+                "OR J T\n" +            // T = is (A or B empty) or C empty?
+                "AND D T\n" +           // T = is (A or B or C empty) and D ground
+                "AND C J\n" +            // J = is (C empty) and C ground?	// Idea is to safely reset J. C can't be empty in line 4 and ground here
+                "OR E J\n" +            // J = is E ground?		NOTE: J will already be true here if C is empty!
+                "OR H J\n" +            // J = is (E) or H ground?
+                "AND T J\n" +           // J = is (A or B or C empty) and D ground) AND (E or H ground)?
+                "RUN\n";
+        springdroidService.runSpringScriptProgram(program);
+        int result = springdroidService.getProgramOutput().intValue();
 
         System.out.println("Day " + DAY + "B: Answer = " + result);
 
-//        Day 21B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 21A: Hull damage reported = 19353692
+//        Time elapsed:	364 ms
 
         return result;
     }
