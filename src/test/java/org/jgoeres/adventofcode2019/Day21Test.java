@@ -1,25 +1,23 @@
 package org.jgoeres.adventofcode2019;
 
 import org.jgoeres.adventofcode2019.Day21.RunDay21;
-import org.jgoeres.adventofcode2019.Day21.SpringdroidService;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class Day21Test {
     static String DAY = "21";
 
-    @Test
-    public void Day21AWalkProgram() {
-        SpringdroidService springdroidService = new SpringdroidService();
-        int result = 0;
-        try {
-            springdroidService.runWalkProgram();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        Assert.assertEquals(0, result);
-    }
-
+//    @Test
+//    public void Day21ASimpleProgram() {
+//        SpringdroidService springdroidService = new SpringdroidService();
+//        int result = 0;
+//        try {
+//            springdroidService.simpleWalkProgram();
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//        }
+//        Assert.assertEquals(0, result);
+//    }
 
     @Test
     public void Day21A() {
@@ -29,7 +27,7 @@ public class Day21Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(19353692, result);
     }
 
     @Test

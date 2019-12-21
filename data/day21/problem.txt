@@ -80,3 +80,7 @@ However, if the springdroid successfully makes it across, it will use an output 
 
 Program the springdroid with logic that allows it to survey the hull without falling into space. What amount of hull damage does it report?
 
+Your puzzle answer was 19353692.
+
+The first half of this puzzle is complete! It provides one gold star: *
+
