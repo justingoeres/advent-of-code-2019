@@ -2,13 +2,14 @@ package org.jgoeres.adventofcode2019.Day20;
 
 import org.jgoeres.adventofcode2019.common.DirectionURDL;
 import org.jgoeres.adventofcode2019.common.XYPoint;
+import org.jgoeres.adventofcode2019.common.XYZPoint;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
+
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.DOWN;
+import static org.jgoeres.adventofcode2019.common.DirectionURDL.UP;
 
 public class DonutMazeService {
     private final String DAY = "20";
@@ -19,6 +20,7 @@ public class DonutMazeService {
     private final HashSet<XYPoint> maze = new HashSet<>();
     private HashMap<String, XYPoint> knownPortals = new HashMap<>();
     private HashMap<XYPoint, XYPoint> portals = new HashMap<>();
+    private HashMap<XYPoint, DirectionURDL> portalDirections = new HashMap<>();
     private final String START = "AA";
     private final String FINISH = "ZZ";
     XYPoint startPoint = null;
@@ -39,6 +41,67 @@ public class DonutMazeService {
         loadInputs(pathToFile);
     }
 
+    public int explore3d() {
+        // We need to calculate the shortest path from AA to ZZ, using recursive portals!
+        int distance = 0;
+        HashMap<XYZPoint, Integer> distanceMap3d = new HashMap<>();
+        ArrayList<XYZPoint> explorers = new ArrayList<>();
+        ArrayList<XYZPoint> nextExplorers = new ArrayList<>();
+        ArrayList<XYZPoint> temp;
+
+        XYZPoint startPoint3d = new XYZPoint(startPoint.getX(), startPoint.getY(), 0);
+        explorers.add(startPoint3d);     // Start at the beginning, on level 0
+
+        XYZPoint finishPoint3d = new XYZPoint(finishPoint.getX(), finishPoint.getY(), 0);
+
+        cleanAreaMap();
+
+        while (!distanceMap3d.containsKey(finishPoint3d)) {
+            // Go until we've reached the finish
+            distance++; // Increment distance for the new explorers
+            for (XYZPoint p : explorers) {
+                distanceMap3d.put(p, distance);
+                // For each active explorer
+                // Get all the points we can step to from here
+                for (DirectionURDL direction : DirectionURDL.values()) {
+                    XYPoint q = p.getRelativeLocation(direction);
+                    if (areaMap.containsKey(q) || portals.containsKey(q)) {
+                        // If the target point is a valid move.
+                        // If it's a portal, dereference it
+                        int portalInOut = 0;    // Assume this point is not a portal
+                        if (portals.containsKey(q)) {
+                            portalInOut = portalDirections.get(q) == UP ? -1 : 1; // Positive direction is DOWN, further into recursion
+                            q = portals.get(q); // Jump to the other endpoint
+                            // Then step out of the portal by finding the only valid move out of the far endpoint
+                            for (DirectionURDL portalDirection : DirectionURDL.values()) {
+                                XYPoint q1 = q.getRelativeLocation(portalDirection);
+                                if (areaMap.containsKey(q1)) {
+                                    // Found the valid exit (q1) so step to it
+                                    q = q1;
+                                    break;
+                                }
+                            }
+                        }
+                        // Transform the 2d step through the portal into a 3d location based on the portal going in (down) or out (up)
+                        XYZPoint q3d = new XYZPoint(q.getX(), q.getY(), p.getZ() + portalInOut);
+                        if (q3d.getZ() >= 0 && !distanceMap3d.containsKey(q3d)) {   // Z coordinate can never go above 0.
+                            // And if we have NOT already been there
+                            // Add it to the explorers
+                            nextExplorers.add(q3d);
+                            distanceMap3d.put(q3d, distance);
+                        }
+                    }
+                }
+            }
+            // Switch in the new explorers list
+            temp = explorers;
+            explorers = nextExplorers;
+            nextExplorers = temp;
+            nextExplorers.clear();
+        }
+        return distance;
+    }
+
     public int explore() {
         // We need to calculate the shortest path from AA to ZZ, using portals!
         int distance = 0;
@@ -46,7 +109,7 @@ public class DonutMazeService {
         HashMap<XYPoint, Integer> distanceMap = new HashMap<>();
         ArrayList<XYPoint> explorers = new ArrayList<>();
         ArrayList<XYPoint> nextExplorers = new ArrayList<>();
-        ArrayList<XYPoint> temp = null;
+        ArrayList<XYPoint> temp;
         explorers.add(startPoint);     // Start at the beginning
 
         cleanAreaMap();
@@ -89,7 +152,6 @@ public class DonutMazeService {
             explorers = nextExplorers;
             nextExplorers = temp;
             nextExplorers.clear();
-
         }
         return distance;
     }
@@ -216,6 +278,43 @@ public class DonutMazeService {
                             }
                         }
                     }
+                }
+            }
+
+            // Before we finish, figure out where the inner & outer edges are
+            int outerYTop = Integer.MAX_VALUE;
+            int outerYBottom = Integer.MIN_VALUE;
+            int outerXLeft = Integer.MAX_VALUE;
+            int outerXRight = Integer.MIN_VALUE;
+            for (XYPoint p : areaMap.keySet()) {
+                int pX = p.getX();
+                int pY = p.getY();
+                if (pY < outerYTop) {
+                    outerYTop = pY + 1;
+                } else if (pY > outerYBottom) {
+                    outerYBottom = pY - 1;
+                }
+
+                if (pX < outerXLeft) {
+                    outerXLeft = pX + 1;
+                } else if (pX > outerXRight) {
+                    outerXRight = pX - 1;
+                }
+            }
+
+            // Figure out which direction each portal goes
+            for (XYPoint portal : portals.keySet()) {
+                int portalX = portal.getX();
+                int portalY = portal.getY();
+                if (portalX == outerXLeft
+                        || portalX == outerXRight
+                        || portalY == outerYTop
+                        || portalY == outerYBottom) {
+                    // If this portal lies on any of the OUTER edges of the donut
+                    // It's an UP portal
+                    portalDirections.put(portal, UP);
+                } else {
+                    portalDirections.put(portal, DOWN);
                 }
             }
         } catch (Exception e) {
