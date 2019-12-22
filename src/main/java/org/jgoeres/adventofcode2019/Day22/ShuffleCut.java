@@ -12,8 +12,17 @@ public class ShuffleCut extends AbstractShuffle {
     public int newPositionOfCard(int currentPositionOfCard) {
         // Cutting moves N cards from the top of the deck to the bottom without changing their order.
         // In terms of the position of any given card, this means...
-        int newPos = (currentPositionOfCard + deckSize - cutSize) % deckSize;
+//        int newPos = (currentPositionOfCard + deckSize - cutSize) % deckSize;
+        int newPos = Math.floorMod(currentPositionOfCard + deckSize - cutSize, deckSize);
         return newPos;
+    }
+
+    @Override
+    public int oldPositionOfCard(int currentPositionOfCard) {
+        // Undoing a is the same as cutting the opposite way with the "other" part of the deck
+//        int oldPos = (currentPositionOfCard + cutSize) % deckSize;
+        int oldPos = Math.floorMod((currentPositionOfCard + cutSize), deckSize);
+        return oldPos;
     }
 
     @Override

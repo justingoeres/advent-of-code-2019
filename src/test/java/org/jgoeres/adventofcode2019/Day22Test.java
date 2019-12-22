@@ -43,6 +43,22 @@ public class Day22Test {
     }
 
     @Test
+    public void Day22BExample1() {
+        SpaceCardService spaceCardService = new SpaceCardService("data/day22/example1.txt", 10);
+        int[] finalCardPositions = {9, 2, 5, 8, 1, 4, 7, 0, 3, 6};
+        int deckSize = finalCardPositions.length;
+        try {
+            for (int finalCardPosition = 0; finalCardPosition < deckSize; finalCardPosition++) {
+                int originalCardPosition = spaceCardService.undoAllShuffles(finalCardPosition);
+//                System.out.println("Final position of card " + i + ":\t" + result);
+                Assert.assertEquals(finalCardPositions[finalCardPosition], originalCardPosition);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Test
     public void Day22B() {
         int result = 0;
         try {

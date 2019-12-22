@@ -3,6 +3,7 @@ package org.jgoeres.adventofcode2019.Day22;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,18 @@ public class SpaceCardService {
             currentCardPosition = shuffle.newPositionOfCard(currentCardPosition);
         }
         return currentCardPosition;
+    }
+
+    public int undoAllShuffles(int finalCardPosition) {
+        // Undo all the shuffles by un-applying them in reverse order
+        // Return the original position of the specified card
+        int previousCardPosition = finalCardPosition;
+        ListIterator iterator = shuffles.listIterator(shuffles.size());
+        while (iterator.hasPrevious()) {
+            Shuffle shuffleToUndo = (Shuffle) iterator.previous();
+            previousCardPosition = shuffleToUndo.oldPositionOfCard(previousCardPosition);
+        }
+        return previousCardPosition;
     }
 
     private void loadInputs(String pathToFile) {

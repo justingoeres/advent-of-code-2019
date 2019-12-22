@@ -15,6 +15,14 @@ public class ShuffleNewStack extends AbstractShuffle {
     }
 
     @Override
+    public int oldPositionOfCard(int currentPositionOfCard) {
+        // To undo a "new stack" shuffle is actually the same
+        // as doing it in the first place. New stack is symmetrical
+        int oldPos = newPositionOfCard(currentPositionOfCard);
+        return oldPos;
+    }
+
+    @Override
     public String toString() {
         return "deal into new stack";
     }
