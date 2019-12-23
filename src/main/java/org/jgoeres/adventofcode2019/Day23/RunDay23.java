@@ -7,49 +7,19 @@ public abstract class RunDay23 {
 
     static IntCodeNetworkService intCodeNetworkService = new IntCodeNetworkService();
 
-    public static int problem23A() {
+    public static Long problem23A() {
         // Day 23A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        // Robot
-        // The robot's jump distance is THREE tiles
+        Long finalPacketValue = intCodeNetworkService.runUntilPacketCatch();
+//        intCodeNetworkService.runSpringScriptProgram(program);
+//        int result = intCodeNetworkService.getProgramOutput().intValue();
 
-        // Registers
-        // A -> is ground One tile away? (immediately in front of robot)
-        // B -> is ground Two tiles away?
-        // C -> is ground Three tiles away?
-        // D -> is grount Four tiles away?
-        // T -> TEMP register (output)
-        // J -> JUMP IF TRUE (output)
+        System.out.println("Day " + DAY + "A: Value of packet sent to address 255 = " + finalPacketValue);
 
-        // Instructions
-        //  AND X Y
-        //  OR X Y
-        //  NOT X Y
-
-        // Execution
-        // Robot executes the script at every step
-        // and jumps if J is TRUE
-        String program = "NOT A T\n" +  // T = is A empty?
-                "NOT B J\n" +           // J = is B empty?
-                "OR J T\n" +            // T = is A or B empty?
-                "NOT C J\n" +           // J = is C empty?
-                "OR J T\n" +            // T = is C empty or (A or B empty)?
-                "AND D T\n" +           // T = is D ground AND (C or A or B empty)?
-                "AND T J\n" +           // JUMP = previous result
-                "NOT A T\n" +           // Again, is A empty?
-                "OR T J\n" +            // Previous result, or jump if A is empty since we die if we don't
-                "WALK\n";               // GO
-
-        intCodeNetworkService.runSpringScriptProgram(program);
-        int result = intCodeNetworkService.getProgramOutput().intValue();
-
-        System.out.println("Day " + DAY + "A: Hull damage reported = " + result);
-
-//        Day 23A: Hull damage reported = 19353692
-//        Time elapsed:	389 ms
-
-        return result;
+//        Day 23A: Value of packet sent to address 255 = 17541
+//        Time elapsed:	503 ms
+        return finalPacketValue;
     }
 
     public static int problem23B() {
@@ -67,7 +37,7 @@ public abstract class RunDay23 {
                 "OR H J\n" +            // J = is (E) or H ground?
                 "AND T J\n" +           // J = is (A or B or C empty) and D ground) AND (E or H ground)?
                 "RUN\n";
-        intCodeNetworkService.runSpringScriptProgram(program);
+//        intCodeNetworkService.runSpringScriptProgram(program);
         int result = intCodeNetworkService.getProgramOutput().intValue();
 
         System.out.println("Day " + DAY + "B: Answer = " + result);

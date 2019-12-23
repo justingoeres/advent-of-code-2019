@@ -9,10 +9,10 @@ public class CPU {
 
     long pc;
     Long relativeBase;
-    Queue<Long> inputQueue = new LinkedList<Long>();
-    HashMap<Long, Long> programCode;
+    protected Queue<Long> inputQueue = new LinkedList<Long>();
+    protected HashMap<Long, Long> programCode;
     HashMap<Long, Long> programCodeOriginal;
-    private Long lastOutput = 0L;
+    protected Long lastOutput = 0L;
 
 
     Instruction nextInstruction = null;
@@ -181,7 +181,7 @@ public class CPU {
         return true;
     }
 
-    private boolean input(Instruction instruction) {
+    protected boolean input(Instruction instruction) {
         // INPUT
         // Opcode 3 takes a single integer as input and saves
         // it to the position given by its only parameter.
@@ -201,7 +201,7 @@ public class CPU {
         return true;
     }
 
-    private boolean output(Instruction instruction) {
+    protected boolean output(Instruction instruction) {
         // OUTPUT
         // Opcode 4 outputs the value of its only parameter.
         // For example, the instruction 4,50 would output the
@@ -298,7 +298,7 @@ public class CPU {
         return false;
     }
 
-    private Long getArgValue(Instruction instruction, int index) {
+    protected Long getArgValue(Instruction instruction, int index) {
         ParamMode mode = instruction.getParam(index).getMode();
         Long arg = instruction.getParam(index).getValue();
         switch (mode) {
@@ -316,7 +316,7 @@ public class CPU {
 //        return value;
     }
 
-    private Long getOutputArgValue(Instruction instruction, int index) {
+    protected Long getOutputArgValue(Instruction instruction, int index) {
         ParamMode mode = instruction.getParam(index).getMode();
         Long arg = instruction.getParam(index).getValue();
         switch (mode) {
@@ -333,6 +333,10 @@ public class CPU {
     public Long getLastOutput() {
         outputReady = false;    // Set the flag that we've consumed this output.
         return lastOutput;
+    }
+
+    public HashMap<Long, Long> getProgramCodeOriginal() {
+        return programCodeOriginal;
     }
 
     public boolean isWaitingForInput() {

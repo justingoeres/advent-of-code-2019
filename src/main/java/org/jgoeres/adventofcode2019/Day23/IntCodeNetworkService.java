@@ -2,15 +2,23 @@ package org.jgoeres.adventofcode2019.Day23;
 
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+
 public class IntCodeNetworkService extends IntCodeProcessorService {
-    private final String DAY = "21";
+    private final String DAY = "23";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
-    private final Character BEAM = '#';
-    private final Character EMPTY = '.';
+
+    private HashMap<Integer, NetworkCPU> networkCPUHashMap = new HashMap<>();
+    private HashMap<Integer, Queue<Long>> networkIOMap = new HashMap<>();
+    private Queue<NetworkPacket> networkIOQueue = new LinkedList<>();
+    private Long finalPacketValue;
 
     public IntCodeNetworkService() {
         inputFile = DEFAULT_INPUTS_PATH;
         cpu = loadInputs();
+        makeCPUs(50);
         reset();
     }
 
@@ -18,52 +26,66 @@ public class IntCodeNetworkService extends IntCodeProcessorService {
         inputFile = pathToFile;
         cpu = loadInputs();
         reset();
+        makeCPUs(50);
     }
 
-    public void simpleWalkProgram() {
-        runSpringScriptProgram("WALK");
-    }
-
-    public void runSpringScriptProgram(String program) {
-        // The Intcode program expects ASCII inputs and outputs.
-        // It will begin by displaying a prompt; then, input the desired
-        // instructions one per line. End each line with a newline (ASCII code 10).
-        // When you have finished entering your program, provide the command WALK
-        // followed by a newline to instruct the springdroid to begin surveying the hull.
-
-        // If the springdroid falls into space, an ASCII rendering of the last moments
-        // of its life will be produced. In these, @ is the springdroid, # is hull, and . is empty space.
-
-        cpu.reset(); // reset before running the springscript
-
-        String buffer = "";
-        enterInputString(program);
-        while (!isHalted()) {
-            // Execute, accumulate output, and print it by line
-            executeToNextOutput();
-            char c = (char) getProgramOutput().longValue();
-            if (c != '\n') {
-                // If this char is NOT a linefeed
-                // Add it to the output buffer
-                buffer += c;
-            } else {
-                // If this char IS a linefeed
-                // Print the buffer and reset it
-                System.out.println(buffer);
-                buffer = "";
+    public Long runUntilPacketCatch() {
+        // Run until we catch a packet to addr 255
+        while (true) {
+            // First, process any pending network traffic
+            if (!processNetworkTraffic()) break;    // break when the network tells us to
+            // Then tick the timer for all CPUs.
+            for (NetworkCPU cpu : networkCPUHashMap.values()) {
+                cpu.executeNext();
             }
         }
+        return finalPacketValue;
     }
 
-    public void enterInputString(String input) {
-        final Character NEWLINE = '\n';
-        if (input.charAt(input.length() - 1) != NEWLINE) {
-            input += NEWLINE;   // Add a newline at the end if needed.
+    private boolean processNetworkTraffic() {
+        // Process all the pending network packets and route them to the
+        // correct CPU input queues
+        boolean keepGoing = true;
+        NetworkPacket nextPacket;
+        while ((nextPacket = networkIOQueue.poll()) != null) {
+            // Route the next packet to the correct CPU
+            // Unwrap the packet
+            Integer addr = nextPacket.getAddress();
+            Long X = nextPacket.getX();
+            Long Y = nextPacket.getY();
+            // Send the data
+            // by putting it in the input queue of the target computer
+            if (addr != 255) {
+                // Process the traffic normally
+                networkIOMap.get(addr).add(X);
+                networkIOMap.get(addr).add(Y);
+                // and keep going
+            } else {
+                // Stop on packet to address 255!
+                finalPacketValue = Y;
+                // and then tell the service to stop!
+                keepGoing = false;
+            }
         }
-        for (Character c : input.toCharArray()) {
-            executeToNextInput();   // Make sure we're actually waiting for input
-            setCpuInputValue((long) c);
-            executeNext();  // Execute the input instruction after entering
+        return keepGoing;
+    }
+
+    private void makeCPUs(int cpuCount) {
+        // The computers have network addresses 0 through 49;
+        // when each computer boots up, it will request its network address via a
+        // single input instruction. Be sure to give each computer a unique network address.
+        for (int i = 0; i < cpuCount; i++) {
+            // Make 50 CPUs, each with a copy of the "original" program code.
+            NetworkCPU networkCPU = new NetworkCPU(cpu.getProgramCodeOriginal());
+            networkCPUHashMap.put(i, networkCPU);
+            // Put its input queue into the IO map
+            networkIOMap.put(i, networkCPU.getInputQueue());
+            // Give the new CPU a network socket to output to
+            networkCPU.setNetworkIO(networkIOQueue);
+            // Supply the new CPU with its network address
+//            networkCPU.runToNextInput();
+            networkCPU.addToInputQueue((long) i);
+//            networkCPU.executeNext();
         }
     }
 }
