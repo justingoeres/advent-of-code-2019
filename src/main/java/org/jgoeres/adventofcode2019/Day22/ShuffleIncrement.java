@@ -3,22 +3,22 @@ package org.jgoeres.adventofcode2019.Day22;
 public class ShuffleIncrement extends AbstractShuffle {
     int incSize;
 
-    public ShuffleIncrement(int incSize, int deckSize) {
+    public ShuffleIncrement(int incSize, long deckSize) {
         this.incSize = incSize;
         this.deckSize = deckSize;
     }
 
     @Override
-    public int newPositionOfCard(int currentPositionOfCard) {
+    public long newPositionOfCard(long currentPositionOfCard) {
         // Dealing by an increment of incSize mean that
         // the new position of any card is given by...
 //        int newPos = (currentPositionOfCard * incSize) % deckSize;
-        int newPos = Math.floorMod(currentPositionOfCard * incSize, deckSize);
+        long newPos = Math.floorMod(currentPositionOfCard * incSize, deckSize);
         return newPos;
     }
 
     @Override
-    public int oldPositionOfCard(int currentPositionOfCard) {
+    public long oldPositionOfCard(long currentPositionOfCard) {
         // Undoing a deal by increment means that
         // the old position of a card is given by...
 //        int oldPos = (-1 * incSize * currentPositionOfCard) % deckSize;
@@ -39,14 +39,14 @@ public class ShuffleIncrement extends AbstractShuffle {
         //  (a * deckSize + new Pos) % incSize == 0;
         // Then
         //  oldPos = (a * deckSize + newPos) / incSize;
-        int rawCurrentPositionOfCard = 0;
+        long rawCurrentPositionOfCard = 0;
         for (int a = 0; a < incSize; a++) {
             rawCurrentPositionOfCard = a * deckSize + currentPositionOfCard;
             if ((rawCurrentPositionOfCard) % incSize == 0) {
                 break;
             }
         }
-        int oldPositionOfCard = rawCurrentPositionOfCard / incSize;
+        long oldPositionOfCard = rawCurrentPositionOfCard / incSize;
 
         return oldPositionOfCard;
     }

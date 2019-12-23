@@ -1,7 +1,7 @@
 package org.jgoeres.adventofcode2019.Day22;
 
 public interface Shuffle {
-    int newPositionOfCard(int currentPositionOfCard);
+    long newPositionOfCard(long currentPositionOfCard);
 
-    int oldPositionOfCard(int currentPositionOfCard);
+    long oldPositionOfCard(long currentPositionOfCard);
 }

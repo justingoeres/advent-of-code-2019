@@ -2,16 +2,19 @@ package org.jgoeres.adventofcode2019.Day22;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.math.BigInteger.ONE;
+
 public class SpaceCardService {
     private final String DAY = "22";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
-    private int deckSize;
-    private final int DEFAULT_DECK_SIZE = 10007;
+    private long deckSize;
+    private final long DEFAULT_DECK_SIZE = 10007;
 
     private ArrayList<Shuffle> shuffles = new ArrayList<>();
 
@@ -20,12 +23,17 @@ public class SpaceCardService {
         loadInputs(DEFAULT_INPUTS_PATH);
     }
 
+    public SpaceCardService(long deckSize) {
+        this.deckSize = deckSize;
+        loadInputs(DEFAULT_INPUTS_PATH);
+    }
+
     public SpaceCardService(String pathToFile, int deckSize) {
         this.deckSize = deckSize;
         loadInputs(pathToFile);
     }
 
-    public int doAllShuffles(int currentCardPosition) {
+    public long doAllShuffles(long currentCardPosition) {
         // Execute all the shuffles on the given card and return its final position
         for (Shuffle shuffle : shuffles) {
             currentCardPosition = shuffle.newPositionOfCard(currentCardPosition);
@@ -33,16 +41,46 @@ public class SpaceCardService {
         return currentCardPosition;
     }
 
-    public int undoAllShuffles(int finalCardPosition) {
+    public long undoAllShuffles(long finalCardPosition) {
         // Undo all the shuffles by un-applying them in reverse order
         // Return the original position of the specified card
-        int previousCardPosition = finalCardPosition;
+        long previousCardPosition = finalCardPosition;
         ListIterator iterator = shuffles.listIterator(shuffles.size());
         while (iterator.hasPrevious()) {
             Shuffle shuffleToUndo = (Shuffle) iterator.previous();
             previousCardPosition = shuffleToUndo.oldPositionOfCard(previousCardPosition);
         }
         return previousCardPosition;
+    }
+
+    public BigInteger redditSolution(Long currentCardPosition, Long numberOfShuffles) {
+        // Reference: https://www.reddit.com/r/adventofcode/comments/ee0rqi/2019_day_22_solutions/fbnifwk/
+        long x = currentCardPosition;
+        // Y = f(x) where f is the reversing function
+        long Y = undoAllShuffles(x); // reverse once
+        long Z = undoAllShuffles(Y);    // reverse twice
+        // A = (Y-Z) * modinv(X-Y+D, D) % D
+        // B = (Y-A*X) % D
+        // Convert everything to BigInteger so things don't blow up
+        BigInteger xBig = new BigInteger(String.valueOf(x));
+        BigInteger yBig = new BigInteger(String.valueOf(Y));
+        BigInteger zBig = new BigInteger(String.valueOf(Z));
+        BigInteger deckBig = new BigInteger(String.valueOf(deckSize));
+
+        BigInteger modInv = (xBig.subtract(yBig)).modInverse(deckBig);
+        BigInteger ABig = (yBig.subtract(zBig)).multiply(modInv).mod(deckBig);
+        BigInteger BBig = (yBig.subtract(ABig.multiply(xBig))).mod(deckBig);
+//        System.out.println(ABig.toString() + "\t" + BBig.toString());
+
+//        n = 101741582076661
+//       print((pow(A, n, D)*X + (pow(A, n, D)-1) * modinv(A-1, D) * B) % D)
+
+        BigInteger nBig = new BigInteger(numberOfShuffles.toString());
+        BigInteger result = ((ABig.modPow(nBig, deckBig).multiply(xBig))
+                .add((ABig.modPow(nBig, deckBig).subtract(ONE))
+                        .multiply(ABig.subtract(ONE).modInverse(deckBig)).multiply(BBig))).mod(deckBig);
+//        System.out.println(result);
+        return result;
     }
 
     private void loadInputs(String pathToFile) {
@@ -56,7 +94,6 @@ public class SpaceCardService {
             //  cut -135
             //  deal with increment 38
             //  deal into new stack
-            Integer nextInt = 0;
             while ((line = br.readLine()) != null) {
                 Matcher mCut = pCut.matcher(line);
                 Matcher mDealWithIncrement = pDealWithIncrement.matcher(line);
@@ -75,7 +112,6 @@ public class SpaceCardService {
                 }
                 shuffles.add(newShuffle);
             }
-
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }

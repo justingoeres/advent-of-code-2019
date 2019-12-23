@@ -1,5 +1,9 @@
 package org.jgoeres.adventofcode2019.Day22;
 
+import java.math.BigInteger;
+
+import static java.math.BigInteger.ZERO;
+
 public abstract class RunDay22 {
     static String DAY = "22";
 
@@ -7,11 +11,11 @@ public abstract class RunDay22 {
 
     static SpaceCardService spaceCardService = new SpaceCardService();
 
-    public static int problem22A() {
+    public static long problem22A() {
         // Day 22A
         System.out.println("=== DAY " + DAY + "A ===");
 
-        int result = spaceCardService.doAllShuffles(2019);
+        long result = spaceCardService.doAllShuffles(2019);
 
         System.out.println("Day " + DAY + "A: Position of card 2019 after all shuffles = " + result);
 
@@ -21,15 +25,21 @@ public abstract class RunDay22 {
         return result;
     }
 
-    public static int problem22B() {
+    public static BigInteger problem22B() {
         // Day 22B
         System.out.println("=== DAY " + DAY + "B ===");
+        long DECK_SIZE = 119315717514047L;
+        long NUM_OF_SHUFFLES = 101741582076661L;
+        long FINAL_CARD_POSITION = 2020L;
 
-        int result = 0;
+        BigInteger result = ZERO;
+        SpaceCardService spaceCardService = new SpaceCardService(DECK_SIZE);
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        result = spaceCardService.redditSolution(FINAL_CARD_POSITION, NUM_OF_SHUFFLES);    // How long does it take card 0 to get back to position 0?
 
-//        Day 22B: Answer =
+        System.out.println("Day " + DAY + "B: Original position of card in final position 2020 = " + result);
+
+//        Day 22B: Original position of card in final position 2020 = 1041334417227
 //        Time elapsed:	xxx ms
 
         return result;
