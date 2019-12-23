@@ -15,8 +15,8 @@ public class CPU {
     protected Long lastOutput = 0L;
 
 
-    Instruction nextInstruction = null;
-    private boolean waitingForInput = false;
+    protected Instruction nextInstruction = null;
+    protected boolean waitingForInput = false;
     private boolean outputReady = false;
     private boolean halted = false;
 
@@ -38,7 +38,7 @@ public class CPU {
     }
 
     // Create a map of OpCodes to functors that implement them
-    private HashMap<OpCode, IOpCode> opCodeFunctorMap() {
+    protected HashMap<OpCode, IOpCode> opCodeFunctorMap() {
         HashMap<OpCode, IOpCode> map = new HashMap<>();
 
         // Day 2

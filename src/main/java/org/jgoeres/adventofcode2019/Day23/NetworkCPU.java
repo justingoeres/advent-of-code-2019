@@ -26,6 +26,14 @@ public class NetworkCPU extends CPU {
     }
 
     @Override
+    public boolean executeNext() {
+        // Override the generic executeNext so it doesn't block while waiting for input
+        nextInstruction = decodeInstruction();
+        boolean keepGoing = opCodeFunctorMap().get(nextInstruction.getOpCode()).execute(nextInstruction);
+        return keepGoing;
+    }
+
+    @Override
     protected boolean input(Instruction instruction) {
         // INPUT
         // To receive a packet from another computer, the NIC will use an input instruction.
@@ -40,6 +48,9 @@ public class NetworkCPU extends CPU {
         if ((inputValue = inputQueue.poll()) == null) {
             // If the incoming packet queue is empty, provide -1.
             inputValue = -1L;
+            waitingForInput = true;
+        } else {
+            waitingForInput = false;
         }
         // Whatever the input value is, stick it in the specified location
         programCode.put(val1, inputValue);
