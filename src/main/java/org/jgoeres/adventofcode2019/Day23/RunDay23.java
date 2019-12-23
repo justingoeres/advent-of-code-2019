@@ -14,8 +14,6 @@ public abstract class RunDay23 {
         System.out.println("=== DAY " + DAY + "A ===");
 
         Long finalPacketValue = intCodeNetworkService.runUntilPacketCatch();
-//        intCodeNetworkService.runSpringScriptProgram(program);
-//        int result = intCodeNetworkService.getProgramOutput().intValue();
 
         System.out.println("Day " + DAY + "A: Value of packet sent to address 255 = " + finalPacketValue);
 
@@ -24,19 +22,21 @@ public abstract class RunDay23 {
         return finalPacketValue;
     }
 
-    public static int problem23B() {
+    public static Long problem23B() {
+        IntCodeNetworkService intCodeNetworkServicePartB = new IntCodeNetworkService();
+
         // Day 23B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        intCodeNetworkService.setProblemPart(PART_B);
-        int result = intCodeNetworkService.getProgramOutput().intValue();
+        intCodeNetworkServicePartB.setProblemPart(PART_B);
+        Long finalPacketValue = intCodeNetworkServicePartB.runUntilPacketCatch();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Value of first NAT packet sent twice consecutively = " + finalPacketValue);
 
-//        Day 23A: Hull damage reported = 19353692
-//        Time elapsed:	364 ms
+//        Day 23B: Value of first NAT packet sent twice consecutively = 12415
+//        Time elapsed:	3780 ms
 
-        return result;
+        return finalPacketValue;
     }
 
 }

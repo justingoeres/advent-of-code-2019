@@ -30,3 +30,7 @@ Once the network is idle, the NAT sends only the last packet it received to addr
 
 Monitor packets released to the computer at address 0 by the NAT. What is the first Y value delivered by the NAT to the computer at address 0 twice in a row?
 
+Your puzzle answer was 12415.
+
+Both parts of this puzzle are complete! They provide two gold stars: **
+

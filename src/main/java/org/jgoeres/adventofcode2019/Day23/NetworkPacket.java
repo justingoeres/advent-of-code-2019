@@ -15,6 +15,10 @@ public class NetworkPacket {
         this.address = address;
     }
 
+    public void setAddress(Integer address) {
+        this.address = address;
+    }
+
     public void setX(long x) {
         this.X = x;
     }

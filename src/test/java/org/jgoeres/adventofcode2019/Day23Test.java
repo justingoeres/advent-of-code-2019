@@ -20,12 +20,12 @@ public class Day23Test {
 
     @Test
     public void Day23B() {
-        int result = 0;
+        Long result = 0L;
         try {
             result = RunDay23.problem23B();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(12415, result.intValue());
     }
 }
