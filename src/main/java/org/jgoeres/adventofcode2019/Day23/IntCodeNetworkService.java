@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import static org.jgoeres.adventofcode2019.Day23.IntCodeNetworkService.ProblemPart.PART_A;
+
 public class IntCodeNetworkService extends IntCodeProcessorService {
     private final String DAY = "23";
     private final String DEFAULT_INPUTS_PATH = "data/day" + DAY + "/input.txt";
@@ -14,12 +16,20 @@ public class IntCodeNetworkService extends IntCodeProcessorService {
     private HashMap<Integer, Queue<Long>> networkIOMap = new HashMap<>();
     private Queue<NetworkPacket> networkIOQueue = new LinkedList<>();
     private Long finalPacketValue;
+    private Long NATvalue;
+
+    enum ProblemPart {
+        PART_A,
+        PART_B;
+    }
+
+    private ProblemPart problemPart = PART_A;  // Part A by default
 
     public IntCodeNetworkService() {
         inputFile = DEFAULT_INPUTS_PATH;
         cpu = loadInputs();
         makeCPUs(50);
-        reset();
+//        reset();
     }
 
     public IntCodeNetworkService(String pathToFile) {
@@ -42,6 +52,10 @@ public class IntCodeNetworkService extends IntCodeProcessorService {
         return finalPacketValue;
     }
 
+    public void setProblemPart(ProblemPart problemPart) {
+        this.problemPart = problemPart;
+    }
+
     private boolean processNetworkTraffic() {
         // Process all the pending network packets and route them to the
         // correct CPU input queues
@@ -62,12 +76,25 @@ public class IntCodeNetworkService extends IntCodeProcessorService {
                 // and keep going
             } else {
                 // Stop on packet to address 255!
-                finalPacketValue = Y;
-                // and then tell the service to stop!
-                keepGoing = false;
+//                finalPacketValue = Y;
+//                keepGoing = false;
+                keepGoing = processNAT(Y);
             }
         }
         return keepGoing;
+    }
+
+    private boolean processNAT(Long packetValue) {
+        switch (problemPart) {
+            case PART_A:
+                // No NAT in Part A
+                finalPacketValue = packetValue;
+                // and then tell the service to stop!
+                return false;
+            case PART_B:
+                return true;
+        }
+        return true;
     }
 
     private void makeCPUs(int cpuCount) {
@@ -87,5 +114,15 @@ public class IntCodeNetworkService extends IntCodeProcessorService {
             networkCPU.addToInputQueue((long) i);
 //            networkCPU.executeNext();
         }
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        // Reset all the CPUs
+        for (NetworkCPU networkCPU : networkCPUHashMap.values()) {
+            networkCPU.reset();
+        }
+        NATvalue = null;
     }
 }
