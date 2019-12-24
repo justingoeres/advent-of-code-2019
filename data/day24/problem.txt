@@ -56,3 +56,7 @@ To calculate the biodiversity rating for this layout, consider each tile left-to
 
 What is the biodiversity rating for the first layout that appears twice?
 
+Your puzzle answer was 32506911.
+
+The first half of this puzzle is complete! It provides one gold star: *
+

@@ -29,7 +29,7 @@ public class Day24Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(32506911, result);
     }
 
     @Test

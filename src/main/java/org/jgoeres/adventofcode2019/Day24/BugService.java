@@ -19,8 +19,9 @@ public class BugService {
     private Area nextBugArea;
     private Area temp;
     private ArrayList<Cell> adjacentCells = new ArrayList<>();
-    private HashSet<Area> history = new HashSet<>();
+    private HashSet<Integer> history = new HashSet<>();
     private int generationCount = 0;
+    private final boolean DISPLAY = false;
 
     public BugService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -32,9 +33,15 @@ public class BugService {
 
     public int runUntilDuplicate() {
         // Run until we find a duplicate generation.
-        while (!calculateNextGeneration()) ;
+        int bioDiversity;
+        while (true) {
+            calculateNextGeneration();
+            bioDiversity = calculateBioDiversity();
+            // Add the new biodiversity score to the history, but bail out if it's a duplicate
+            if (!history.add(bioDiversity)) break;
+        }
+        return bioDiversity;
         // Return its biodiversity score
-        return calculateBioDiversity();
     }
 
     public void runNGenerations(int numGenerations) {
@@ -43,7 +50,7 @@ public class BugService {
         }
     }
 
-    public boolean calculateNextGeneration() {
+    public void calculateNextGeneration() {
         // Calculate the next generation for each cell.
         for (int y = 0; y < AREA_SIZE; y++) {
             for (int x = 0; x < AREA_SIZE; x++) {
@@ -52,22 +59,20 @@ public class BugService {
             }
         }
         /*** DEBUG ***/
-        generationCount++;
-        System.out.println("After " + generationCount + " minutes:");
-        printBugArea();
-
-        // Add to the history
-        boolean seenBefore = (!history.add(new Area(AREA_SIZE,nextBugArea.getAreaMap())));
+        if (DISPLAY) {
+            generationCount++;
+            System.out.println("After " + generationCount + " minutes:");
+            printBugArea();
+        }
 
         // Switch the nextArea in as current
         temp = bugArea;
         bugArea = nextBugArea;
         nextBugArea = temp;
 
-        return seenBefore;
+        return;
     }
 
-    //    public Cell calculateNextCellGeneration(int x, int y) {
     public Cell calculateNextCellGeneration(int x, int y) {
         // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
         // An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
@@ -154,13 +159,14 @@ public class BugService {
             }
             bugArea = new Area(AREA_SIZE, initialSystemState);
             nextBugArea = new Area(AREA_SIZE, initialSystemState);
-            history.add(bugArea);
+            history.add(calculateBioDiversity());
 
             /*** DEBUG ***/
-            // print initial state
-            System.out.println("Initial state:");
-            printBugArea();
-
+            if (DISPLAY) {
+                // print initial state
+                System.out.println("Initial state:");
+                printBugArea();
+            }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());
         }
