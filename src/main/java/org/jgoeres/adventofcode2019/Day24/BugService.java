@@ -7,8 +7,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import static org.jgoeres.adventofcode2019.Day24.Cell.BUG;
-import static org.jgoeres.adventofcode2019.Day24.Cell.EMPTY;
+import static org.jgoeres.adventofcode2019.Day24.Cell.*;
 
 public class BugService {
     private final String DAY = "24";
@@ -18,7 +17,6 @@ public class BugService {
     private Area bugArea;
     private Area nextBugArea;
     private Area temp;
-    private ArrayList<Cell> adjacentCells = new ArrayList<>();
     private HashSet<Integer> history = new HashSet<>();
     private int generationCount = 0;
     private final boolean DISPLAY = false;
@@ -79,21 +77,18 @@ public class BugService {
         // Otherwise, a bug or empty space remains the same.
 
         Cell currentCell = bugArea.getAtLocation(x, y);
-        adjacentCells.clear();  // clear the list so we can populate it
-        // Check all for directions
-        int[] dP = {-1, 1};
-        for (int dp : dP) {
-            // left & right
-            adjacentCells.add(bugArea.getAtLocation(x + dp, y));
-        }
-        for (int dp : dP) {
-            // up & down
-            adjacentCells.add(bugArea.getAtLocation(x, y + dp));
-        }
+
+        ArrayList<Cell> adjacentCells = bugArea.getAdjacentCells(x, y);
+
+
         // Having gotten all the adjacent cells, figure out the current cell's next generation
         Cell nextCell = currentCell;    // by default, the cell remains what it is
         int bugCount = 0;
         switch (currentCell) {
+            case RECURSION:
+                // Recursion cells stay as recursion
+                nextCell = RECURSION;
+                break;
             case BUG:
                 // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
                 for (Cell cell : adjacentCells) {
@@ -157,10 +152,17 @@ public class BugService {
                 // read all lines into one long string
                 initialSystemState += line;
             }
-            bugArea = new Area(AREA_SIZE, initialSystemState);
-            nextBugArea = new Area(AREA_SIZE, initialSystemState);
-            history.add(calculateBioDiversity());
-
+            if (!initialSystemState.contains(RECURSION.getCharacter().toString())) {
+                // If the input does NOT contain a recursive cell
+                bugArea = new Area(AREA_SIZE, initialSystemState);
+                nextBugArea = new Area(AREA_SIZE, initialSystemState);
+                history.add(calculateBioDiversity());
+            } else {
+                // We have recursion so create a recursive area
+                // Create the area with no neighbors
+                bugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
+                nextBugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
+            }
             /*** DEBUG ***/
             if (DISPLAY) {
                 // print initial state

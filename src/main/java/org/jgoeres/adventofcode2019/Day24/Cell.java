@@ -5,7 +5,8 @@ import java.util.Map;
 
 public enum Cell {
     EMPTY('.'),
-    BUG('#');
+    BUG('#'),
+    RECURSION('?');
 
     private Character character;
 

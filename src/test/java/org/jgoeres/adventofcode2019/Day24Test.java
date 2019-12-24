@@ -33,6 +33,19 @@ public class Day24Test {
     }
 
     @Test
+    public void Day24BExample1() {
+        BugService bugService = new BugService("data/day24/example1PartB.txt");
+        int result = 0;
+        try {
+//            bugService.runNGenerations(4);
+            bugService.runNGenerations(10);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        Assert.assertEquals(2129920, result);
+    }
+
+    @Test
     public void Day24B() {
         int result = 0;
         try {

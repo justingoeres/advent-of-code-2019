@@ -13,6 +13,12 @@ public class Area {
 
     public Area(Integer areaSize) {
         this.areaSize = areaSize;
+        // Fill the new area with 'empty'
+        for (int y = 0; y < areaSize; y++) {
+            for (int x = 0; x < areaSize; x++) {
+                areaMap.add(EMPTY);
+            }
+        }
     }
 
     public Area(Integer areaSize, String areaString) {
@@ -29,6 +35,21 @@ public class Area {
 
     public ArrayList<Cell> getAreaMap() {
         return areaMap;
+    }
+
+    public ArrayList<Cell> getAdjacentCells(int x, int y) {
+        ArrayList<Cell> adjacentCells = new ArrayList<>();
+        // Check all for directions
+        int[] dP = {-1, 1};
+        for (int dp : dP) {
+            // left & right
+            adjacentCells.add(getAtLocation(x + dp, y));
+        }
+        for (int dp : dP) {
+            // up & down
+            adjacentCells.add(getAtLocation(x, y + dp));
+        }
+        return adjacentCells;
     }
 
     public Cell getAtLocation(int x, int y) {
@@ -49,6 +70,10 @@ public class Area {
         } catch (IndexOutOfBoundsException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public Integer getAreaSize() {
+        return areaSize;
     }
 
     private int xyToIndex(int x, int y) {
