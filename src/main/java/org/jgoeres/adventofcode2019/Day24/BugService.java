@@ -4,9 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
+import static org.jgoeres.adventofcode2019.Day24.Area.Position.BOTH;
 import static org.jgoeres.adventofcode2019.Day24.Cell.*;
 
 public class BugService {
@@ -19,7 +19,10 @@ public class BugService {
     private Area temp;
     private HashSet<Integer> history = new HashSet<>();
     private int generationCount = 0;
-    private final boolean DISPLAY = false;
+    private final boolean DISPLAY = true;
+
+    private HashMap<Integer, Area> allAreas = new HashMap<>();
+    private HashMap<Integer, Area> nextAreas = new HashMap<>();
 
     public BugService() {
         loadInputs(DEFAULT_INPUTS_PATH);
@@ -45,68 +48,74 @@ public class BugService {
     public void runNGenerations(int numGenerations) {
         for (int t = 0; t < numGenerations; t++) {
             calculateNextGeneration();
+            if (DISPLAY) {
+                printAllLevels();
+            }
         }
     }
 
     public void calculateNextGeneration() {
-        // Calculate the next generation for each cell.
-        for (int y = 0; y < AREA_SIZE; y++) {
-            for (int x = 0; x < AREA_SIZE; x++) {
-                Cell nextBug = calculateNextCellGeneration(x, y);
-                nextBugArea.setAtLocation(x, y, nextBug);
+        Iterator iter = allAreas.keySet().iterator();
+        while (iter.hasNext()) {
+            Integer level = (Integer) iter.next();
+            bugArea.calculateNextAreaGeneration(BOTH);
+//
+//            Area currentArea = allAreas.get(level);
+//            Area nextArea = nextAreas.get(level);
+//
+//            if (currentArea instanceof AreaRecursive) {
+//                AreaRecursive areaRecursive = (AreaRecursive) currentArea;
+//                // Create any required new areas for recursion
+//                if (areaRecursive.getAbove() == null) {
+//                    // If this area doesn't have anything above, create it
+//                    AreaRecursive newAbove = new AreaRecursive(AREA_SIZE, BELOW, areaRecursive);
+//                    newAbove.setAtLocation(2, 2, RECURSION);
+////                    allAreas.put(level - 1, newAbove);
+//                    allAreas.put(level - 1, newAbove);
+//                    // Also create a new next-tick placeholder
+//                    nextAreas.put(level - 1, new AreaRecursive(AREA_SIZE, BELOW, areaRecursive));
+//                }
+//                if (areaRecursive.getBelow() == null) {
+//                    // If this area doesn't have anything  below, create it
+//                    AreaRecursive newBelow = new AreaRecursive(AREA_SIZE, ABOVE, areaRecursive);
+//                    newBelow.setAtLocation(2, 2, RECURSION);
+//                    allAreas.put(level + 1, newBelow);
+//                    nextAreas.put(level + 1, new AreaRecursive(AREA_SIZE, ABOVE, areaRecursive));
+//
+//                }
+//            }
+//            // Calculate the next generation for each cell in this area.
+//            for (int y = 0; y < AREA_SIZE; y++) {
+//                for (int x = 0; x < AREA_SIZE; x++) {
+//                    Cell nextBug = currentArea.calculateNextCellGeneration(x, y);
+//                    nextArea.setAtLocation(x, y, nextBug);
+//                }
+//            }
+            /*** DEBUG ***/
+            if (DISPLAY) {
+                generationCount++;
+                System.out.println("After " + generationCount + " minutes:");
+//                printBugArea(currentArea);
             }
-        }
-        /*** DEBUG ***/
-        if (DISPLAY) {
-            generationCount++;
-            System.out.println("After " + generationCount + " minutes:");
-            printBugArea();
-        }
 
-        // Switch the nextArea in as current
-        temp = bugArea;
-        bugArea = nextBugArea;
-        nextBugArea = temp;
-
+            // Switch the nextArea in as current
+//            temp = bugArea;
+//            bugArea = nextBugArea;
+//            nextBugArea = temp;
+        }
+        // After we're done calculating the "next" of all areas, copy the *cell values* of the "nextAreas" back into "currentAreas"
+//        for (Map.Entry<Integer, Area> area : nextAreas.entrySet()) {
+//            Integer level = area.getKey();
+//            for (int y = 0; y < AREA_SIZE; y++) {
+//                for (int x = 0; x < AREA_SIZE; x++) {
+//                    Cell nextValue = nextAreas.get(level).getAtLocation(x, y);
+//                    allAreas.get(level).setAtLocation(x, y, nextValue);
+//                }
+//            }
+//        }
+        // Commit the nextGen values for every area
+        bugArea.commitNextGenToCurrent(BOTH);
         return;
-    }
-
-    public Cell calculateNextCellGeneration(int x, int y) {
-        // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
-        // An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
-        // Otherwise, a bug or empty space remains the same.
-
-        Cell currentCell = bugArea.getAtLocation(x, y);
-
-        ArrayList<Cell> adjacentCells = bugArea.getAdjacentCells(x, y);
-
-
-        // Having gotten all the adjacent cells, figure out the current cell's next generation
-        Cell nextCell = currentCell;    // by default, the cell remains what it is
-        int bugCount = 0;
-        switch (currentCell) {
-            case RECURSION:
-                // Recursion cells stay as recursion
-                nextCell = RECURSION;
-                break;
-            case BUG:
-                // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
-                for (Cell cell : adjacentCells) {
-                    if (cell.equals(BUG)) bugCount++;
-                    if (bugCount > 1) break;    // If we've got more than one, quit looking
-                }
-                nextCell = (bugCount == 1) ? BUG : EMPTY;
-                break;
-            case EMPTY:
-                // An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
-                for (Cell cell : adjacentCells) {
-                    if (cell.equals(BUG)) bugCount++;
-                    if (bugCount > 2) break;    // If we've got more than one, quit looking
-                }
-                nextCell = (bugCount == 1 || bugCount == 2) ? BUG : EMPTY;
-                break;
-        }
-        return nextCell;
     }
 
     public int calculateBioDiversity() {
@@ -127,15 +136,27 @@ public class BugService {
         return totalScore;
     }
 
-    public void printBugArea() {
-        for (int y = 0; y < AREA_SIZE; y++) {
-            String line = StringUtils.EMPTY;
-            for (int x = 0; x < AREA_SIZE; x++) {
-                line += bugArea.getAtLocation(x, y).getCharacter();
-            }
-            System.out.println(line);
+    //    public void printBugArea(Area bugArea) {
+//        for (int y = 0; y < AREA_SIZE; y++) {
+//            String line = StringUtils.EMPTY;
+//            for (int x = 0; x < AREA_SIZE; x++) {
+//                line += bugArea.getAtLocation(x, y).getCharacter();
+//            }
+//            System.out.println(line);
+//        }
+//        System.out.println(); // blank line at end
+//    }
+    public void printBugArea(Area bugArea) {
+        bugArea.printArea(BOTH, 0);
+    }
+
+    public void printAllLevels() {
+        for (Map.Entry<Integer, Area> area : allAreas.entrySet()) {
+            Integer level = area.getKey();
+//            System.out.println("Depth " + level + ":");
+            printBugArea(area.getValue());
         }
-        System.out.println(); // blank line at end
+
     }
 
     private void loadInputs(String pathToFile) {
@@ -163,11 +184,13 @@ public class BugService {
                 bugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
                 nextBugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
             }
+            allAreas.put(0, bugArea);
+            nextAreas.put(0, nextBugArea);
             /*** DEBUG ***/
             if (DISPLAY) {
                 // print initial state
                 System.out.println("Initial state:");
-                printBugArea();
+                printBugArea(bugArea);
             }
         } catch (Exception e) {
             System.out.println("Exception occurred: " + e.getMessage());

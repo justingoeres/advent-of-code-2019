@@ -1,15 +1,30 @@
 package org.jgoeres.adventofcode2019.Day24;
 
-import org.jgoeres.adventofcode2019.Day10.AsteroidVector;
+import javafx.geometry.Pos;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static org.jgoeres.adventofcode2019.Day24.Cell.EMPTY;
+import static org.jgoeres.adventofcode2019.Day24.Area.Position.*;
+import static org.jgoeres.adventofcode2019.Day24.Cell.*;
+import static org.jgoeres.adventofcode2019.Day24.Cell.BUG;
 
 public class Area {
+    Area above;
+    Area below;
+
     private final Integer areaSize;
     ArrayList<Cell> areaMap = new ArrayList<>();
+    ArrayList<Cell> nextGenArea = new ArrayList<>(); // maybe can leave this null
+    ArrayList<Cell> temp;
+
+    enum Position {
+        ABOVE,
+        BELOW,
+        BOTH,
+        NEITHER
+    }
 
     public Area(Integer areaSize) {
         this.areaSize = areaSize;
@@ -17,6 +32,7 @@ public class Area {
         for (int y = 0; y < areaSize; y++) {
             for (int x = 0; x < areaSize; x++) {
                 areaMap.add(EMPTY);
+                nextGenArea.add(EMPTY);
             }
         }
     }
@@ -35,6 +51,81 @@ public class Area {
 
     public ArrayList<Cell> getAreaMap() {
         return areaMap;
+    }
+
+    protected ArrayList<Cell> getNextGenArea() {
+        return nextGenArea;
+    }
+
+    public void calculateNextAreaGeneration(Position direction) {
+        // Calculate the next generation for this layer and all its neighbor layers (above & below)
+        nextGenArea.clear();
+        if ((direction == ABOVE || direction == Position.BOTH) && above != null) {
+            // if there's an area above this one, calculate it
+            above.calculateNextAreaGeneration(ABOVE);   // only go up so we don't recurse back into ourselves
+        }
+        if ((direction == Position.BELOW || direction == Position.BOTH) && below != null) {
+            // if there's an area below this one, calculate it
+            below.calculateNextAreaGeneration(BELOW);   // only go down so we don't recurse back into ourselves
+        }
+        for (int y = 0; y < areaSize; y++) {
+            for (int x = 0; x < areaSize; x++) {
+                Cell nextGenCell = calculateNextCellGeneration(x, y);
+                nextGenArea.add(nextGenCell);
+            }
+        }
+    }
+
+    public void commitNextGenToCurrent(Position direction) {
+        if ((direction == ABOVE || direction == Position.BOTH) && above != null) {
+            // if there's an area above this one, calculate it
+            above.commitNextGenToCurrent(ABOVE);   // only go up so we don't recurse back into ourselves
+        }
+        if ((direction == Position.BELOW || direction == Position.BOTH) && below != null) {
+            // if there's an area below this one, calculate it
+            below.commitNextGenToCurrent(BELOW);   // only go down so we don't recurse back into ourselves
+        }
+        // switch the next generation in as current for the next iteration
+        temp = areaMap;
+        areaMap = nextGenArea;
+        nextGenArea = temp;
+    }
+
+    public Cell calculateNextCellGeneration(int x, int y) {
+        // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
+        // An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
+        // Otherwise, a bug or empty space remains the same.
+
+        Cell currentCell = this.getAtLocation(x, y);
+
+        ArrayList<Cell> adjacentCells = this.getAdjacentCells(x, y);
+
+        // Having gotten all the adjacent cells, figure out the current cell's next generation
+        Cell nextCell = currentCell;    // by default, the cell remains what it is
+        int bugCount = 0;
+        switch (currentCell) {
+            case RECURSION:
+                // Recursion cells stay as recursion
+                nextCell = RECURSION;
+                break;
+            case BUG:
+                // A bug dies (becoming an empty space) unless there is exactly one bug adjacent to it.
+                for (Cell cell : adjacentCells) {
+                    if (cell.equals(BUG)) bugCount++;
+                    if (bugCount > 1) break;    // If we've got more than one, quit looking
+                }
+                nextCell = (bugCount == 1) ? BUG : EMPTY;
+                break;
+            case EMPTY:
+                // An empty space becomes infested with a bug if exactly one or two bugs are adjacent to it.
+                for (Cell cell : adjacentCells) {
+                    if (cell.equals(BUG)) bugCount++;
+                    if (bugCount > 2) break;    // If we've got more than one, quit looking
+                }
+                nextCell = (bugCount == 1 || bugCount == 2) ? BUG : EMPTY;
+                break;
+        }
+        return nextCell;
     }
 
     public ArrayList<Cell> getAdjacentCells(int x, int y) {
@@ -76,9 +167,29 @@ public class Area {
         return areaSize;
     }
 
-    private int xyToIndex(int x, int y) {
+    protected int xyToIndex(int x, int y) {
         int index = y * areaSize + x;
         return index;
+    }
+
+    public void printArea(Position direction, Integer depth) {
+        if ((direction == ABOVE || direction == Position.BOTH) && above != null) {
+            // if there's an area above this one, calculate it
+            above.printArea(ABOVE, depth - 1);   // only go up so we don't recurse back into ourselves
+        }
+        if ((direction == Position.BELOW || direction == Position.BOTH) && below != null) {
+            // if there's an area below this one, calculate it
+            below.printArea(BELOW, depth + 1);   // only go down so we don't recurse back into ourselves
+        }
+        System.out.println("Depth " + depth + ":");
+        for (int y = 0; y < areaSize; y++) {
+            String line = StringUtils.EMPTY;
+            for (int x = 0; x < areaSize; x++) {
+                line += getAtLocation(x, y).getCharacter();
+            }
+            System.out.println(line);
+        }
+        System.out.println(); // blank line at end
     }
 
     @Override

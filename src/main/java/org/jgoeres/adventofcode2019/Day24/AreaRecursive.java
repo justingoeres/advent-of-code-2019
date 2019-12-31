@@ -4,14 +4,13 @@ import org.jgoeres.adventofcode2019.common.DirectionURDL;
 
 import java.util.ArrayList;
 
-import static org.jgoeres.adventofcode2019.Day24.AreaRecursive.Position.ABOVE;
-import static org.jgoeres.adventofcode2019.Day24.AreaRecursive.Position.BELOW;
+import static org.jgoeres.adventofcode2019.Day24.Area.Position.*;
 import static org.jgoeres.adventofcode2019.Day24.Cell.EMPTY;
 import static org.jgoeres.adventofcode2019.Day24.Cell.RECURSION;
 
 public class AreaRecursive extends Area {
-    AreaRecursive above;
-    AreaRecursive below;
+//    AreaRecursive above;
+//    AreaRecursive below;
 
     public AreaRecursive(Integer areaSize, String areaString) {
         super(areaSize, areaString);
@@ -21,10 +20,11 @@ public class AreaRecursive extends Area {
         super(areaSize);
         switch (positionOfNeighbor) {
             case ABOVE:
-                setAbove(neighborArea);
+                above = neighborArea;
                 break;
             case BELOW:
-                setBelow(neighborArea);
+                below = neighborArea;
+                break;
         }
     }
 
@@ -37,7 +37,12 @@ public class AreaRecursive extends Area {
             // 'above' does not exist, so create it with ourselves in the below position
             above = new AreaRecursive(getAreaSize(), BELOW, this);
             // then return EMPTY because the new level is created empty
-            above.setAtLocation(2,2,RECURSION);
+            above.setAtLocation(2, 2, RECURSION);
+            above.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+
+            // Immediately process it
+            above.calculateNextAreaGeneration(NEITHER);
+            // What if we only process the new cell we just added?
             return EMPTY;
         }
     }
@@ -51,7 +56,13 @@ public class AreaRecursive extends Area {
             // 'below' does not exist, so create it with ourselves in the above position
             below = new AreaRecursive(getAreaSize(), ABOVE, this);
             // Put a recursive spot in the new level
-            below.setAtLocation(2,2,RECURSION);
+            below.setAtLocation(2, 2, RECURSION);
+            below.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+
+            // Immediately process it
+            below.calculateNextAreaGeneration(NEITHER);
+
+
             // then return EMPTY because the new level is created empty
             return EMPTY;
         }
@@ -138,35 +149,35 @@ public class AreaRecursive extends Area {
         return adjacentCells;
     }
 
-    public AreaRecursive findTopArea() {
-        // Scales the stack and finds the topmost area, then returns it
-        AreaRecursive area = this;
-        while ((area.above) != null) {
-            area = area.above;
-        }
-        return area;
-    }
+//    public AreaRecursive findTopArea() {
+//        // Scales the stack and finds the topmost area, then returns it
+//        AreaRecursive area = this;
+//        while ((area.above) != null) {
+//            area = area.above;
+//        }
+//        return area;
+//    }
+//
+//    public AreaRecursive getAbove() {
+//        return above;
+//    }
+//
+//    public void setAbove(AreaRecursive above) {
+//        this.above = above;
+//    }
+//
+//    public AreaRecursive getBelow() {
+//        return below;
+//    }
+//
+//    public void setBelow(AreaRecursive below) {
+//        this.below = below;
+//    }
 
-    public AreaRecursive getAbove() {
-        return above;
-    }
-
-    public void setAbove(AreaRecursive above) {
-        this.above = above;
-    }
-
-    public AreaRecursive getBelow() {
-        return below;
-    }
-
-    public void setBelow(AreaRecursive below) {
-        this.below = below;
-    }
-
-    enum Position {
-        ABOVE,
-        BELOW;
-    }
+//    enum Position {
+//        ABOVE,
+//        BELOW;
+//    }
 }
 
 
