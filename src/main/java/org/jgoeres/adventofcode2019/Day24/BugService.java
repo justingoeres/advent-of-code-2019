@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode2019.Day24;
 
-import org.apache.commons.lang3.StringUtils;
+import org.jgoeres.adventofcode2019.common.XYPoint;
+import org.jgoeres.adventofcode2019.common.XYZPoint;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -58,6 +59,7 @@ public class BugService {
         Iterator iter = allAreas.keySet().iterator();
         while (iter.hasNext()) {
             Integer level = (Integer) iter.next();
+            // TODO: Implement this:
             bugArea.calculateNextAreaGeneration(BOTH);
 //
 //            Area currentArea = allAreas.get(level);
@@ -91,12 +93,12 @@ public class BugService {
 //                    nextArea.setAtLocation(x, y, nextBug);
 //                }
 //            }
-            /*** DEBUG ***/
-            if (DISPLAY) {
-                generationCount++;
-                System.out.println("After " + generationCount + " minutes:");
-//                printBugArea(currentArea);
-            }
+//            /*** DEBUG ***/
+//            if (DISPLAY) {
+//                generationCount++;
+//                System.out.println("After " + generationCount + " minutes:");
+//                printBugArea(bugArea);
+//            }
 
             // Switch the nextArea in as current
 //            temp = bugArea;
@@ -115,6 +117,14 @@ public class BugService {
 //        }
         // Commit the nextGen values for every area
         bugArea.commitNextGenToCurrent(BOTH);
+
+        /*** DEBUG ***/
+        if (DISPLAY) {
+            generationCount++;
+            System.out.println("After " + generationCount + " minutes:");
+            printBugArea(bugArea);
+        }
+
         return;
     }
 
@@ -126,11 +136,24 @@ public class BugService {
         // Add up the biodiversity points for tiles with bugs.
         int cellScore = 0;
         int totalScore = 0;
-        for (Cell cell : bugArea.getAreaMap()) {
-            cellScore = (cellScore == 0) ? 1 : cellScore * 2;   // double the cellScore every time, starting from 1
-            if (cell.equals(BUG)) {
-                // if this is a bug, contribute it to the total score
-                totalScore += cellScore;
+////        for (Cell cell : bugArea.getAreaMap().entrySet()) {
+//        for (Map.Entry<XYZPoint, Cell> entry : bugArea.getAreaMap().entrySet()) {
+//            Cell cell = entry.getValue();
+//            cellScore = (cellScore == 0) ? 1 : cellScore * 2;   // double the cellScore every time, starting from 1
+//            if (cell.equals(BUG)) {
+//                // if this is a bug, contribute it to the total score
+//                totalScore += cellScore;
+//            }
+//        }
+        int depth = 0;  // Part A only uses one level and it's 0.
+        for (int y = 0; y < AREA_SIZE; y++) {
+            for (int x = 0; x < AREA_SIZE; x++) {
+                Cell cell = bugArea.getAtLocation(x, y, depth);
+                cellScore = (cellScore == 0) ? 1 : cellScore * 2;   // double the cellScore every time, starting from 1
+                if (cell.equals(BUG)) {
+                    // if this is a bug, contribute it to the total score
+                    totalScore += cellScore;
+                }
             }
         }
         return totalScore;
@@ -147,7 +170,7 @@ public class BugService {
 //        System.out.println(); // blank line at end
 //    }
     public void printBugArea(Area bugArea) {
-        bugArea.printArea(BOTH, 0);
+        bugArea.printArea(BOTH, 0); // TODO 0 is a hack
     }
 
     public void printAllLevels() {
@@ -175,14 +198,16 @@ public class BugService {
             }
             if (!initialSystemState.contains(RECURSION.getCharacter().toString())) {
                 // If the input does NOT contain a recursive cell
-                bugArea = new Area(AREA_SIZE, initialSystemState);
-                nextBugArea = new Area(AREA_SIZE, initialSystemState);
+//                bugArea = new Area(AREA_SIZE, initialSystemState);
+//                nextBugArea = new Area(AREA_SIZE, initialSystemState);
+                bugArea = new Area(AREA_SIZE, initialSystemState, 0);   // Initial layers are at depth 0.
+                nextBugArea = new Area(AREA_SIZE, initialSystemState, 0);
                 history.add(calculateBioDiversity());
-            } else {
-                // We have recursion so create a recursive area
-                // Create the area with no neighbors
-                bugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
-                nextBugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
+//            } else {
+//                // We have recursion so create a recursive area
+//                // Create the area with no neighbors
+//                bugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
+//                nextBugArea = new AreaRecursive(AREA_SIZE, initialSystemState);
             }
             allAreas.put(0, bugArea);
             nextAreas.put(0, nextBugArea);

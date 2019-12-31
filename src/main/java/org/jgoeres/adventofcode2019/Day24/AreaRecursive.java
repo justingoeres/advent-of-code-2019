@@ -1,6 +1,7 @@
 package org.jgoeres.adventofcode2019.Day24;
 
 import org.jgoeres.adventofcode2019.common.DirectionURDL;
+import org.jgoeres.adventofcode2019.common.XYZPoint;
 
 import java.util.ArrayList;
 
@@ -9,15 +10,15 @@ import static org.jgoeres.adventofcode2019.Day24.Cell.EMPTY;
 import static org.jgoeres.adventofcode2019.Day24.Cell.RECURSION;
 
 public class AreaRecursive extends Area {
-//    AreaRecursive above;
+    //    AreaRecursive above;
 //    AreaRecursive below;
 
     public AreaRecursive(Integer areaSize, String areaString) {
-        super(areaSize, areaString);
+        super(areaSize, areaString, 0);// TODO 0 is a hack
     }
 
     public AreaRecursive(Integer areaSize, Position positionOfNeighbor, AreaRecursive neighborArea) {
-        super(areaSize);
+        super(areaSize, 0);// TODO 0 is a hack
         switch (positionOfNeighbor) {
             case ABOVE:
                 above = neighborArea;
@@ -28,39 +29,43 @@ public class AreaRecursive extends Area {
         }
     }
 
-    private Cell getLocationAbove(int x, int y) {
+    private Cell getLocationAbove(int x, int y, int depth) {
         // Get the specified location from the level above,
         // creating the level if we have to
+        int newDepth = depth - 1;
         if (above != null) {
-            return above.getAtLocation(x, y);
+            return above.getAtLocation(x, y, newDepth);
         } else {
             // 'above' does not exist, so create it with ourselves in the below position
             above = new AreaRecursive(getAreaSize(), BELOW, this);
             // then return EMPTY because the new level is created empty
-            above.setAtLocation(2, 2, RECURSION);
-            above.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+            above.setAtLocation(2, 2, newDepth, RECURSION); // TODO 0 is a hack
+//            above.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+            above.getNextGenArea().put(new XYZPoint(2, 2, newDepth), RECURSION);
 
-            // Immediately process it
-            above.calculateNextAreaGeneration(NEITHER);
-            // What if we only process the new cell we just added?
+//            // Immediately process it
+//            above.calculateNextAreaGeneration(NEITHER);
+
             return EMPTY;
         }
     }
 
-    private Cell getLocationBelow(int x, int y) {
+    private Cell getLocationBelow(int x, int y, int depth) {
         // Get the specified location from the level above,
         // creating the level if we have to
+        int newDepth = depth + 1;
         if (below != null) {
-            return below.getAtLocation(x, y);
+            return below.getAtLocation(x, y, newDepth);
         } else {
             // 'below' does not exist, so create it with ourselves in the above position
             below = new AreaRecursive(getAreaSize(), ABOVE, this);
             // Put a recursive spot in the new level
-            below.setAtLocation(2, 2, RECURSION);
-            below.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+            below.setAtLocation(2, 2, newDepth, RECURSION); // TODO 0 is a hack
+//            below.getNextGenArea().set(xyToIndex(2, 2), RECURSION);
+            below.getNextGenArea().put(new XYZPoint(2, 2, newDepth), RECURSION); // TODO 0 is a hack
 
             // Immediately process it
-            below.calculateNextAreaGeneration(NEITHER);
+//            below.calculateNextAreaGeneration(NEITHER);
 
 
             // then return EMPTY because the new level is created empty
@@ -69,7 +74,7 @@ public class AreaRecursive extends Area {
     }
 
     @Override
-    public ArrayList<Cell> getAdjacentCells(int x, int y) {
+    public ArrayList<Cell> getAdjacentCells(int x, int y, int depth) {
         // Return the adjacent Cells to this one, accounting for recursive levels above or below as necesary
         ArrayList<Cell> adjacentCells = new ArrayList<>();
         for (DirectionURDL direction : DirectionURDL.values()) {
@@ -79,68 +84,68 @@ public class AreaRecursive extends Area {
                 case UP:
                     if (y == 0) {
                         // If along the top row, then "up" is (2,1) of the next recursive level up
-                        cell = getLocationAbove(2, 1);
+                        cell = getLocationAbove(2, 1, depth);
                         adjacentCells.add(cell);
                     } else if (x == 2 && y == 3) {
                         // If at 2,3 (below center), then "up" is the whole bottom row of the new recursive level DOWN
                         for (int xNeighbor = 0; xNeighbor < getAreaSize(); xNeighbor++) {
-                            cell = getLocationBelow(xNeighbor, 4);
+                            cell = getLocationBelow(xNeighbor, 4, depth);
                             adjacentCells.add(cell);
                         }
                     } else {
                         // else we're not in any special place, so just get the value of the cell
-                        adjacentCells.add(getAtLocation(x, y - 1));
+                        adjacentCells.add(getAtLocation(x, y - 1, depth));
                     }
                     break;
 
                 case DOWN:
                     if (y == 4) {
                         // If along the bottom row, then "down" is (2,3) of the next recursive level up
-                        cell = getLocationAbove(2, 3);
+                        cell = getLocationAbove(2, 3, depth);
                         adjacentCells.add(cell);
                     } else if (x == 2 && y == 1) {
                         // If at 2,1 (above center), then "down" is the whole top row of the new recursive level DOWN
                         for (int xNeighbor = 0; xNeighbor < getAreaSize(); xNeighbor++) {
-                            cell = getLocationBelow(xNeighbor, 0);
+                            cell = getLocationBelow(xNeighbor, 0, depth);
                             adjacentCells.add(cell);
                         }
                     } else {
                         // else we're not in any special place, so just get the value of the cell
-                        adjacentCells.add(getAtLocation(x, y + 1));
+                        adjacentCells.add(getAtLocation(x, y + 1, depth));
                     }
                     break;
 
                 case LEFT:
                     if (x == 0) {
                         // If along the left column, then "left" is (1,2) of the next recursive level up
-                        cell = getLocationAbove(1, 2);
+                        cell = getLocationAbove(1, 2, depth);
                         adjacentCells.add(cell);
                     } else if (x == 3 && y == 2) {
                         // If at 3,2 (right of center), then "left" is the whole right column of the new recursive level DOWN
                         for (int yNeighbor = 0; yNeighbor < getAreaSize(); yNeighbor++) {
-                            cell = getLocationBelow(4, yNeighbor);
+                            cell = getLocationBelow(4, yNeighbor, depth);
                             adjacentCells.add(cell);
                         }
                     } else {
                         // else we're not in any special place, so just get the value of the cell
-                        adjacentCells.add(getAtLocation(x - 1, y));
+                        adjacentCells.add(getAtLocation(x - 1, y, depth));
                     }
                     break;
 
                 case RIGHT:
                     if (x == 4) {
                         // If along the right column, then "right" is (3,2) of the next recursive level up
-                        cell = getLocationAbove(3, 2);
+                        cell = getLocationAbove(3, 2, depth);
                         adjacentCells.add(cell);
                     } else if (x == 1 && y == 2) {
                         // If at 3,2 (left of center), then "right" is the whole left column of the new recursive level DOWN
                         for (int yNeighbor = 0; yNeighbor < getAreaSize(); yNeighbor++) {
-                            cell = getLocationBelow(0, yNeighbor);
+                            cell = getLocationBelow(0, yNeighbor, depth);
                             adjacentCells.add(cell);
                         }
                     } else {
                         // else we're not in any special place, so just get the value of the cell
-                        adjacentCells.add(getAtLocation(x + 1, y));
+                        adjacentCells.add(getAtLocation(x + 1, y, depth));
                     }
                     break;
 
