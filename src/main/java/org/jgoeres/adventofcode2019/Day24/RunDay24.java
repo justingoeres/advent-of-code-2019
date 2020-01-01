@@ -22,15 +22,18 @@ public abstract class RunDay24 {
     }
 
     public static int problem24B() {
+        bugService = new BugService("data/day24/inputPartB.txt");
+
         // Day 24B
         System.out.println("=== DAY " + DAY + "B ===");
 
-        int result = 0;
+        bugService.runNGenerations(200);
+        int result = bugService.countBugs();
 
-        System.out.println("Day " + DAY + "B: Answer = " + result);
+        System.out.println("Day " + DAY + "B: Number of bugs after 200 minutes = " + result);
 
-//        Day 24B: Answer =
-//        Time elapsed:	xxx ms
+//        Day 24B: Number of bugs after 200 minutes = 2025
+//        Time elapsed:	933 ms
 
         return result;
     }

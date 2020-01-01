@@ -38,24 +38,12 @@ public class Day24Test {
         int result = 0;
         try {
 //            bugService.runNGenerations(4);
-            bugService.runNGenerations(11);
+            bugService.runNGenerations(10);
+            result = bugService.countBugs();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(2129920, result);
-    }
-
-    @Test
-    public void Day24BExample2() {
-        BugService bugService = new BugService("data/day24/example2PartB.txt");
-        int result = 0;
-        try {
-//            bugService.runNGenerations(4);
-            bugService.runNGenerations(11);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        Assert.assertEquals(2129920, result);
+        Assert.assertEquals(99, result);
     }
 
     @Test
@@ -66,6 +54,6 @@ public class Day24Test {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        Assert.assertEquals(0, result);
+        Assert.assertEquals(2025, result);
     }
 }
