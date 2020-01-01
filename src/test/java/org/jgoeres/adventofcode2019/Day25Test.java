@@ -11,6 +11,8 @@ public class Day25Test {
     public void Day25A() {
         int result = 0;
         try {
+            // Day 25's solution is output in a paragraph of text I don't feel like parsing.
+            // The solution is correct, by virtue of the fact that the program halts at all.
             result = RunDay25.problem25A();
         } catch (Exception e) {
             System.out.println(e.getMessage());
