@@ -1,5 +1,7 @@
 package org.jgoeres.adventofcode2019.common.intcode;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 import static org.jgoeres.adventofcode2019.common.intcode.ParamMode.RELATIVE;
@@ -24,6 +26,10 @@ public class CPU {
     public CPU(HashMap<Long, Long> programCode) {
         this.programCodeOriginal = programCode;
         reset();
+    }
+
+    public CPU(String inputFile) {
+        loadInputs(inputFile);
     }
 
     public void reset() {
@@ -159,7 +165,7 @@ public class CPU {
         Long val1 = getArgValue(instruction, 0);
         Long val2 = getArgValue(instruction, 1);
 //        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
-        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction, 2);  // instructions that write out always use the value of the raw parameter
 
         programCode.put(val3, val1 + val2);
         return true;
@@ -175,7 +181,7 @@ public class CPU {
         Long val1 = getArgValue(instruction, 0);
         Long val2 = getArgValue(instruction, 1);
 //        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
-        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction, 2);  // instructions that write out always use the value of the raw parameter
 
         programCode.put(val3, val1 * val2);
         return true;
@@ -188,7 +194,7 @@ public class CPU {
         // For example, the instruction 3,50 would take an
         // input value and store it at address 50.
         // Get the arguments
-        Long val1 = getOutputArgValue(instruction,0);
+        Long val1 = getOutputArgValue(instruction, 0);
         Long inputValue;
         if ((inputValue = inputQueue.poll()) == null) {
             // If there NOT is an input waiting for us
@@ -255,7 +261,7 @@ public class CPU {
         Long val1 = getArgValue(instruction, 0);
         Long val2 = getArgValue(instruction, 1);
 //        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
-        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction, 2);  // instructions that write out always use the value of the raw parameter
 
         Long lessThan = (val1 < val2) ? 1L : 0L;
         programCode.put(val3, lessThan);
@@ -272,7 +278,7 @@ public class CPU {
         Long val1 = getArgValue(instruction, 0);
         Long val2 = getArgValue(instruction, 1);
 //        Long val3 = instruction.getParam(2).getValue();  // instructions that write out always use the value of the raw parameter
-        Long val3 = getOutputArgValue(instruction,2);  // instructions that write out always use the value of the raw parameter
+        Long val3 = getOutputArgValue(instruction, 2);  // instructions that write out always use the value of the raw parameter
 
         Long equals = (val1.longValue() == val2.longValue()) ? 1L : 0L;
         programCode.put(val3, equals);
@@ -349,5 +355,29 @@ public class CPU {
 
     public boolean isHalted() {
         return halted;
+    }
+
+    public void loadInputs(String inputFile) {
+        // To load the program, simply read all the ints into an ArrayList.
+        // We will interpret opcodes/arguments/pc as we execute it later
+        HashMap<Long, Long> programCode = new HashMap<>();
+        String line;
+        try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
+            while ((line = br.readLine()) != null) {
+                Long addr = 0L;
+                String[] data = line.split(",");
+                // Add all the codes from this line to the programCode list
+                for (String element : data) {
+                    programCode.put(addr, Long.parseLong(element));
+                    addr++;
+                }
+            }
+            // Initialize the CPU with the code we just loaded.
+            this.programCodeOriginal = programCode;
+            reset();
+        } catch (Exception e) {
+            System.out.println("Exception occurred: " + e.getMessage());
+        }
+        return;
     }
 }

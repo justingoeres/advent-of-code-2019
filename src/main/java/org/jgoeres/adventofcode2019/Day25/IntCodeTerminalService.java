@@ -1,5 +1,6 @@
 package org.jgoeres.adventofcode2019.Day25;
 
+import org.jgoeres.adventofcode2019.Day23.NetworkCPU;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
 public class IntCodeTerminalService extends IntCodeProcessorService {
@@ -8,7 +9,7 @@ public class IntCodeTerminalService extends IntCodeProcessorService {
 
     public IntCodeTerminalService() {
         inputFile = DEFAULT_INPUTS_PATH;
-        cpu = loadInputs();
+        cpu = new TerminalCPU(DEFAULT_INPUTS_PATH);
     }
 
     public IntCodeTerminalService(String pathToFile) {

@@ -14,7 +14,7 @@ public class IntCodeProcessorService {
 
     public IntCodeProcessorService(String pathToFile) {
         inputFile = pathToFile;
-        cpu = loadInputs();
+        cpu = new CPU(pathToFile);
     }
 
     public void runToCompletion() {
