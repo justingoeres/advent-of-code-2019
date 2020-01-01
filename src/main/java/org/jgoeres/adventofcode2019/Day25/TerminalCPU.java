@@ -15,7 +15,6 @@ public class TerminalCPU extends CPU {
 
     private int itemsMask;
 
-
     public TerminalCPU(HashMap<Long, Long> programCode) {
         super(programCode);
     }
@@ -149,6 +148,16 @@ public class TerminalCPU extends CPU {
     }
 
     public String getNextAttempt() {
+        // Drop everything, then get the items for the next itemsMask and go East to try it on the door
+        String command = EMPTY;
+        command += commandDropAll();    // drop everything
+        command += createItemHandlingCommand(TAKE, itemsMask);
+        System.out.println("*** ITEMS MASK:\t" + itemsMask);
+        command += "east\n";
+        return command;
+    }
+
+    public String getAttemptWithMask(int itemsMask) {
         // Drop everything, then get the items for the next itemsMask and go East to try it on the door
         String command = EMPTY;
         command += commandDropAll();    // drop everything

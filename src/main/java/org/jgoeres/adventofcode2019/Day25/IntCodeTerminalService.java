@@ -14,4 +14,8 @@ public class IntCodeTerminalService extends IntCodeProcessorService {
     public IntCodeTerminalService(String pathToFile) {
         super(pathToFile);
     }
+
+    public String getItemTestCommand(int itemsMask) {
+        return ((TerminalCPU) cpu).getAttemptWithMask(itemsMask);
+    }
 }
