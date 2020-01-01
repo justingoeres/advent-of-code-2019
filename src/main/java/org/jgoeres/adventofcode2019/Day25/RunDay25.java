@@ -11,28 +11,51 @@ public abstract class RunDay25 {
         // Day 25A
         System.out.println("=== DAY " + DAY + "A ===");
 
+        String getAllItems = "north\n" +
+                "north\n" +
+                "north\n" +
+                "take mutex\n" +
+                "south\n" +
+                "south\n" +
+                "east\n" +
+                "north\n" +
+                "take loom\n" +
+                "south\n" +
+                "west\n" +
+                "south\n" +
+                "east\n" +
+                "east\n" +
+                "take ornament\n" +
+                "west\n" +
+                "take semiconductor\n" +
+                "west\n" +
+                "west\n" +
+                "west\n" +
+                "south\n" +
+                "east\n" +
+                "north\n" +
+                "take wreath\n" +
+                "south\n" +
+                "take asterisk\n" +
+                "west\n" +
+                "north\n" +
+                "take sand\n" +
+                "north\n" +
+                "take dark matter\n" +
+                "east\n";
+//n
+
+        intCodeTerminalService.executeToNextInput();
         int result = 0;
 
-        System.out.println("Day " + DAY + "A: Answer = " + result);
-
-//        Day 25A: Answer =
-//        Time elapsed:	xxx ms
+//      DAY 25 COMPLETION TEXT:
+//        A loud, robotic voice says "Analysis complete! You may proceed." and you enter the cockpit.
+//        Santa notices your small droid, looks puzzled for a moment, realizes what has happened, and radios your ship directly.
+//        "Oh, hello! You should be able to get in by typing 8912902 on the keypad at the main airlock."
 
         return result;
     }
 
-    public static int problem25B() {
-        // Day 25B
-        System.out.println("=== DAY " + DAY + "B ===");
-
-        int result = 0;
-
-        System.out.println("Day " + DAY + "B: Answer = " + result);
-
-//        Day 25B: Answer =
-//        Time elapsed:	xxx ms
-
-        return result;
-    }
+    // There is no Day 25 Part B
 
 }

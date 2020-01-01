@@ -18,14 +18,5 @@ public class Day25Test {
         Assert.assertEquals(0, result);
     }
 
-    @Test
-    public void Day25B() {
-        int result = 0;
-        try {
-            result = RunDay25.problem25B();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        Assert.assertEquals(0, result);
-    }
+    // There is no Day 25B
 }

@@ -1,6 +1,5 @@
 package org.jgoeres.adventofcode2019.Day25;
 
-import org.jgoeres.adventofcode2019.Day23.NetworkCPU;
 import org.jgoeres.adventofcode2019.common.intcode.IntCodeProcessorService;
 
 public class IntCodeTerminalService extends IntCodeProcessorService {

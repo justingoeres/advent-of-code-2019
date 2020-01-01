@@ -79,6 +79,7 @@ public class IntCodeProcessorService {
     }
 
     protected CPU loadInputs() {
+        // TODO Refactor out calls to this from all days; use CPU's own loader instead
         // To load the program, simply read all the ints into an ArrayList.
         // We will interpret opcodes/arguments/pc as we execute it later
         HashMap<Long, Long> programCode = new HashMap<>();

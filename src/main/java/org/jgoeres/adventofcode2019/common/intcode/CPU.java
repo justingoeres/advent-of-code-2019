@@ -151,6 +151,17 @@ public class CPU {
         this.inputQueue.add(inputValue);
     }
 
+    public void addToInputQueue(String inputString) {
+        // Make sure the input ends in a \n
+        final String NEWLINE = System.getProperty("line.separator");
+        if (!inputString.endsWith(NEWLINE)) inputString += NEWLINE;
+
+        // Add the whole string to the input queue
+        for (Character c : inputString.toCharArray()) {
+            addToInputQueue((long) c);
+        }
+    }
+
     /*********** OpCode Implementations ***********/
     private boolean add(Instruction instruction) {
         // ADD

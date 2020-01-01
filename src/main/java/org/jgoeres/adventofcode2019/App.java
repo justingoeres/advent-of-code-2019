@@ -24,6 +24,7 @@ import org.jgoeres.adventofcode2019.Day21.RunDay21;
 import org.jgoeres.adventofcode2019.Day22.RunDay22;
 import org.jgoeres.adventofcode2019.Day23.RunDay23;
 import org.jgoeres.adventofcode2019.Day24.RunDay24;
+import org.jgoeres.adventofcode2019.Day25.RunDay25;
 
 /**
  * Hello world!
@@ -54,8 +55,8 @@ public class App {
     static final boolean RUN_DAY_21 = false;
     static final boolean RUN_DAY_22 = false;
     static final boolean RUN_DAY_23 = false;
-    static final boolean RUN_DAY_24 = true;
-    static final boolean RUN_DAY_25 = false;
+    static final boolean RUN_DAY_24 = false;
+    static final boolean RUN_DAY_25 = true;
 
     private static long startTime = 0L;
     private static long totalElapsed = 0L;
@@ -402,13 +403,13 @@ public class App {
             blankLine();
         }
 
-//        if (RUN_DAY_25 || RUN_ALL) {
-//            setStartTime();
-//            RunDay25.problem25A();
-//            printElapsedTime();
-//
-//            blankLine();
-//        }
+        if (RUN_DAY_25 || RUN_ALL) {
+            setStartTime();
+            RunDay25.problem25A();
+            printElapsedTime();
+
+            blankLine();
+        }
 
         System.out.println("\n\nTOTAL ELAPSED TIME:\t" + totalElapsed + " ms");
     }
